@@ -18,11 +18,11 @@ Future<bool> checkDbExists() async {
 }
 
 void createListOfFields(int start, Function f) async {
-  //print(cur);
+  ////print(cur);
   final mydata = await rootBundle.loadString('assets/images/players_24.csv');
   final con = await CsvToListConverter().convert(mydata);
   int j = 0;
-  print(con[1][0].runtimeType);
+  //print(con[1][0].runtimeType);
   for (int i = start; i < 18350; i++) {
     var player = Player(
       sofifaId: con[i][j++],

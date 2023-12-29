@@ -43,14 +43,14 @@ class _PlayerDetailsState extends ConsumerState<PlayerDetails> {
         request: AdRequest(),
         adLoadCallback: InterstitialAdLoadCallback(
           onAdLoaded: (InterstitialAd ad) {
-            print('$ad loaded');
+            //print('$ad loaded');
             _interstitialAd = ad;
             _interstitialAd!.setImmersiveMode(true);
             _interstitialAd!.show();
             //ref.read(videoAdProvider.notifier).increment();
           },
           onAdFailedToLoad: (LoadAdError error) {
-            print('InterstitialAd failed to load: $error.');
+            //print('InterstitialAd failed to load: $error.');
           },
         ));
   }
@@ -66,7 +66,7 @@ class _PlayerDetailsState extends ConsumerState<PlayerDetails> {
     });
     var det =
         await PlayersDatabase.instance.getPlayerDetails(widget.player['id']);
-    print(det[0]);
+    //print(det[0]);
     setState(() {
       playerDetails = det[0];
       loading = false;

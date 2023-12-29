@@ -23,7 +23,7 @@ class _SearchScreenState extends State<SearchScreen>
       loading = true;
     });
     var playerResults = await PlayersDatabase.instance.searchPlayers(st);
-    print(playerResults.length);
+    //print(playerResults.length);
     setState(() {
       players = playerResults;
       loading = false;

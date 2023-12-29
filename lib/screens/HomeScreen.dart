@@ -32,7 +32,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       loading = true;
     });
     var top100Players = await PlayersDatabase.instance.top100Players();
-    print(top100Players.length);
+    //print(top100Players.length);
     setState(() {
       players = top100Players;
       loading = false;
@@ -52,7 +52,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   color: posColor,
                 ),
                 child: Text(
-                  'Player Stats 23',
+                  'Player Stats 24',
                   style: TextStyle(color: Colors.black, fontSize: 21),
                 ),
               ),
@@ -60,7 +60,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 title: const Text('Favourites'),
                 onTap: () {
                   final count = ref.watch(videoAdProvider);
-                  print(count);
+                  //print(count);
                   ref.read(videoAdProvider.notifier).increment();
                   Navigator.push(
                       context,
@@ -76,7 +76,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 title: const Text('Emerging Players'),
                 onTap: () {
                   final count = ref.watch(videoAdProvider);
-                  print(count);
+                  //print(count);
                   ref.read(videoAdProvider.notifier).increment();
                   Navigator.push(
                       context,
@@ -92,7 +92,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 title: const Text('Free Agents'),
                 onTap: () {
                   final count = ref.watch(videoAdProvider);
-                  print(count);
+                  //print(count);
                   ref.read(videoAdProvider.notifier).increment();
                   Navigator.push(
                       context,
@@ -108,7 +108,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ),
         ),
         appBar: AppBar(
-          title: Text("Player Stats 23"),
+          title: Text("Player Stats 24"),
         ),
         body: !loading
             ? Column(

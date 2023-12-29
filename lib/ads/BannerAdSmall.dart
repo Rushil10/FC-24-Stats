@@ -20,7 +20,7 @@ class _BannerSmallAdState extends State<BannerSmallAd> {
   }
 
   void setUpBannerAd() async {
-    print("Banner Ad");
+    //print("Banner Ad");
     _ad = BannerAd(
       adUnitId: AdHelper.bannerAdUnitId,
       size: AdSize.banner,
@@ -35,7 +35,7 @@ class _BannerSmallAdState extends State<BannerSmallAd> {
           // Releases an ad resource when it fails to load
           ad.dispose();
 
-          print('Ad load failed (code=${error.code} message=${error.message})');
+          //print('Ad load failed (code=${error.code} message=${error.message})');
         },
       ),
     );

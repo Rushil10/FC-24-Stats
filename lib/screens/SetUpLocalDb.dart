@@ -40,12 +40,12 @@ class _SetUpLocalDbState extends State<SetUpLocalDb> {
       });
       checkingDb();
     }
-    print(setUp);
+    //print(setUp);
   }
 
   void checkingDb() async {
     bool created = await checkDbExists();
-    print('Db Created  $created');
+    //print('Db Created  $created');
     if (created) {
       startSettingUpLocalDb();
     } else {
@@ -54,7 +54,7 @@ class _SetUpLocalDbState extends State<SetUpLocalDb> {
   }
 
   void changeCompleted(int i) async {
-    print(i / 18349);
+    //print(i / 18349);
     if (i == 18349) {
       storage.write(key: 'db', value: 'done');
       setState(() {
@@ -72,7 +72,7 @@ class _SetUpLocalDbState extends State<SetUpLocalDb> {
 
   void startSettingUpLocalDb() async {
     var start = await PlayersDatabase.instance.getNumberOfRows();
-    print('Number of rows is $start');
+    //print('Number of rows is $start');
     if (start == 18349) {
       storage.write(key: 'db', value: 'done');
       setState(() {
@@ -88,7 +88,7 @@ class _SetUpLocalDbState extends State<SetUpLocalDb> {
   void setUpDb() async {
     var created = await PlayersDatabase.instance.database;
     startSettingUpLocalDb();
-    print(created);
+    //print(created);
   }
 
   String percent() {
@@ -124,7 +124,7 @@ class _SetUpLocalDbState extends State<SetUpLocalDb> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Text(
-                                  'Player Stats 23',
+                                  'Player Stats 24',
                                   style: TextStyle(
                                     color: posColor,
                                     fontSize: 35,

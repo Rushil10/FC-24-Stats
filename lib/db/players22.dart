@@ -25,7 +25,7 @@ class PlayersDatabase {
 
 // Delete the database
     await deleteDatabase(path);
-    print("Deleted Database");
+    //print("Deleted Database");
   }
 
   Future<Database> _initDB(String filePath) async {
@@ -38,14 +38,14 @@ class PlayersDatabase {
   Future<void> dropTable() async {
     final db = await instance.database;
     await db.execute('DROP TABLE IF EXISTS players');
-    print('DATABASE DELETED');
+    //print('DATABASE DELETED');
   }
 
   void checkIfDBCreated() async {
     //var created = PlayersDatabase.instance.database;
     //await PlayersDatabase.instance.deleteDB();
     var created = await PlayersDatabase.instance.database;
-    print(created);
+    //print(created);
     //PlayersDatabase.instance.dropTable();
     //createListOfFields();
     //readDB();
@@ -60,7 +60,7 @@ class PlayersDatabase {
   Future<void> readDb() async {
     final db = await instance.database;
     List<Map> li = await db.query('players');
-    print(li.length);
+    //print(li.length);
   }
 
   Future getNumberOfRows() async {
@@ -108,7 +108,7 @@ class PlayersDatabase {
     List<Map> li = await db.rawQuery('''
     SELECT * FROM players JOIN favourites Where players.id=favourites.playerId
     ''');
-    //print(li);
+    ////print(li);
     return li;
   }
 
@@ -117,7 +117,7 @@ class PlayersDatabase {
     List<Map> li = await db.rawQuery('''
     SELECT * FROM players where club_name ="" or club_name is null
     ''');
-    //print(li);
+    ////print(li);
     return li;
   }
 
@@ -143,9 +143,9 @@ class PlayersDatabase {
         'playerId': id,
       };
       final i = await db.insert("favourites", fav);
-      print("Added");
+      //print("Added");
     }
-    print(li);
+    //print(li);
   }
 
   Future _createDB(Database db, int version) async {
@@ -250,7 +250,7 @@ CREATE TABLE players (
     (fid INTEGER PRIMARY KEY,
     playerId INTEGER)
 ''');
-    print("Tabel Created");
+    //print("Tabel Created");
   }
 
   Future insertPlayer(Player player) async {
@@ -265,6 +265,6 @@ CREATE TABLE players (
     //     .rawInsert('INSERT INTO table_name ($columns) VALUES ($values)');
 
     final id = await db.insert("players", player.toJson());
-    print("Inserted in db players");
+    //print("Inserted in db players");
   }
 }
