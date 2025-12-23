@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.0+1
+version: 2.0.1+7
 
 environment:
   sdk: '>=3.3.0-174.3.beta <4.0.0'
@@ -28,13 +28,18 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
-  flutter_native_splash: ^2.2.16
+  # Updated to a newer version that supports modern Android Gradle Plugin / namespace
+  flutter_native_splash: ^2.4.1
   csv: ^5.0.1
-  sqflite: ^2.2.4+1
-  flutter_secure_storage: ^7.0.1
+  # Upgrade sqflite to a newer version that supports the v2 Android embedding
+  sqflite: ^2.3.3+1
+  # Upgraded to a newer version that supports modern Android Gradle Plugin / namespace
+  flutter_secure_storage: ^9.0.0
   flutter_riverpod: ^2.1.3
-  google_mobile_ads: ^2.3.0
-  flutter_launcher_icons: ^0.11.0
+  # Upgraded to a newer version that supports modern Android Gradle Plugin / namespace
+  google_mobile_ads: ^5.3.0
+  # Upgraded to be compatible with newer flutter_native_splash / image versions
+  flutter_launcher_icons: ^0.14.4
   flutter:
     sdk: flutter
 
