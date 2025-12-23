@@ -5,8 +5,7 @@ class SkillCard extends StatelessWidget {
   final rating;
   final skill;
   final cardWidth;
-  const SkillCard({Key? key, this.rating, this.skill, this.cardWidth})
-      : super(key: key);
+  const SkillCard({super.key, this.rating, this.skill, this.cardWidth});
 
   Color bgColor() {
     if (rating >= 90) {
@@ -32,7 +31,7 @@ class SkillCard extends StatelessWidget {
     MediaQueryData queryData;
     queryData = MediaQuery.of(context);
     return Container(
-      margin: EdgeInsets.fromLTRB(15, 5, 15, 0),
+      margin: const EdgeInsets.fromLTRB(15, 5, 15, 0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
@@ -54,7 +53,7 @@ class SkillCard extends StatelessWidget {
           ),
           Text(
             skill,
-            style: TextStyle(fontSize: 15),
+            style: const TextStyle(fontSize: 15),
           ),
         ],
       ),

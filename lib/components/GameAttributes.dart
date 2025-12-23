@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 class GameAttributes extends StatelessWidget {
   final gameData;
-  const GameAttributes({Key? key, this.gameData}) : super(key: key);
+  const GameAttributes({super.key, this.gameData});
 
   String workRateAtt() {
     var work = gameData['work_rate'];
@@ -34,22 +34,22 @@ class GameAttributes extends StatelessWidget {
     double remWidth = width - 24;
     List<String> playerTraits = gameData['player_traits'].split(',');
     return Container(
-        margin: EdgeInsets.all(11),
-        padding: EdgeInsets.fromLTRB(0, 0, 0, 11),
+        margin: const EdgeInsets.all(11),
+        padding: const EdgeInsets.fromLTRB(0, 0, 0, 11),
         decoration: BoxDecoration(border: Border.all(color: posColor)),
         child: Column(children: [
           Container(
-            padding: EdgeInsets.fromLTRB(0, 7, 0, 7),
+            padding: const EdgeInsets.fromLTRB(0, 7, 0, 7),
             alignment: Alignment.center,
-            decoration: BoxDecoration(color: posColor),
-            child: Text('CLUB DETAILS',
+            decoration: const BoxDecoration(color: posColor),
+            child: const Text('CLUB DETAILS',
                 style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w800,
                     color: Colors.black)),
           ),
           Container(
-            margin: EdgeInsets.fromLTRB(0, 9, 0, 0),
+            margin: const EdgeInsets.fromLTRB(0, 9, 0, 0),
             child: Column(
               children: [
                 Row(
@@ -58,11 +58,11 @@ class GameAttributes extends StatelessWidget {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text('Skill Moves'),
+                        const Text('Skill Moves'),
                         Row(
                           children: [
                             Text(gameData['skill_moves'].toString()),
-                            Text(' '),
+                            const Text(' '),
                             Icon(
                               Icons.star,
                               color: Colors.yellow[800],
@@ -78,11 +78,11 @@ class GameAttributes extends StatelessWidget {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text('Weak Foot'),
+                        const Text('Weak Foot'),
                         Row(
                           children: [
                             Text(gameData['weak_foot'].toString()),
-                            Text(' '),
+                            const Text(' '),
                             Icon(
                               Icons.star,
                               color: Colors.yellow[800],
@@ -98,12 +98,12 @@ class GameAttributes extends StatelessWidget {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text('Reputation'),
+                        const Text('Reputation'),
                         Row(
                           children: [
                             Text(gameData['international_reputation']
                                 .toString()),
-                            Text(' '),
+                            const Text(' '),
                             Icon(
                               Icons.star,
                               color: Colors.yellow[800],
@@ -124,7 +124,7 @@ class GameAttributes extends StatelessWidget {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text('Work Rates (Att)'),
+                        const Text('Work Rates (Att)'),
                         Text(
                           workRateAtt(),
                           style: TextStyle(color: workRateColor(workRateAtt())),
@@ -137,7 +137,7 @@ class GameAttributes extends StatelessWidget {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text('Work Rates (Def)'),
+                        const Text('Work Rates (Def)'),
                         Text(
                           workRateDef(),
                           style: TextStyle(color: workRateColor(workRateDef())),
@@ -208,11 +208,11 @@ class GameAttributes extends StatelessWidget {
                   height: 9,
                 ),
                 Container(
-                  margin: EdgeInsets.fromLTRB(15, 15, 15, 9),
-                  padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
+                  margin: const EdgeInsets.fromLTRB(15, 15, 15, 9),
+                  padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
                   alignment: Alignment.center,
-                  decoration: BoxDecoration(color: posColor),
-                  child: Text('Traits',
+                  decoration: const BoxDecoration(color: posColor),
+                  child: const Text('Traits',
                       style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w800,
@@ -221,7 +221,7 @@ class GameAttributes extends StatelessWidget {
                 ListView.builder(
                     shrinkWrap: true,
                     scrollDirection: Axis.vertical,
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     itemCount: playerTraits.length,
                     itemBuilder: (context, index) {
                       return Center(

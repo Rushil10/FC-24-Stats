@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class BannerSmallAd extends StatefulWidget {
-  BannerSmallAd({Key? key}) : super(key: key);
+  const BannerSmallAd({super.key});
 
   @override
   _BannerSmallAdState createState() => _BannerSmallAdState();
@@ -13,6 +13,7 @@ class _BannerSmallAdState extends State<BannerSmallAd> {
   late BannerAd _ad;
   bool isLoading = false;
 
+  @override
   void initState() {
     super.initState();
     setUpBannerAd();
@@ -24,7 +25,7 @@ class _BannerSmallAdState extends State<BannerSmallAd> {
     _ad = BannerAd(
       adUnitId: AdHelper.bannerAdUnitId,
       size: AdSize.banner,
-      request: AdRequest(),
+      request: const AdRequest(),
       listener: BannerAdListener(
         onAdLoaded: (_) {
           setState(() {
@@ -46,10 +47,10 @@ class _BannerSmallAdState extends State<BannerSmallAd> {
   Widget build(BuildContext context) {
     return Container(
       child: isLoading
-          ? Container(
-              child: AdWidget(ad: _ad),
+          ? SizedBox(
               width: _ad.size.width.toDouble(),
               height: _ad.size.height.toDouble(),
+              child: AdWidget(ad: _ad),
               //alignment: Alignment.center,
             )
           : Container(),

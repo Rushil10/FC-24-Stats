@@ -14,7 +14,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class PlayerDetails extends ConsumerStatefulWidget {
   final player;
   final count;
-  PlayerDetails({Key? key, this.player, this.count}) : super(key: key);
+  const PlayerDetails({super.key, this.player, this.count});
 
   @override
   _PlayerDetailsState createState() => _PlayerDetailsState();
@@ -27,6 +27,7 @@ class _PlayerDetailsState extends ConsumerState<PlayerDetails> {
   InterstitialAd? _interstitialAd;
   bool fav = false;
 
+  @override
   void initState() {
     super.initState();
     ref.read(videoAdProvider);
@@ -40,7 +41,7 @@ class _PlayerDetailsState extends ConsumerState<PlayerDetails> {
   void addInterstitialAd() async {
     InterstitialAd.load(
         adUnitId: AdHelper.videoAdUnitId,
-        request: AdRequest(),
+        request: const AdRequest(),
         adLoadCallback: InterstitialAdLoadCallback(
           onAdLoaded: (InterstitialAd ad) {
             //print('$ad loaded');
@@ -55,6 +56,7 @@ class _PlayerDetailsState extends ConsumerState<PlayerDetails> {
         ));
   }
 
+  @override
   void dispose() {
     super.dispose();
     _interstitialAd?.dispose();
@@ -87,6 +89,7 @@ class _PlayerDetailsState extends ConsumerState<PlayerDetails> {
     });
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -116,7 +119,7 @@ class _PlayerDetailsState extends ConsumerState<PlayerDetails> {
                           ClubDetails(
                             clubData: playerDetails,
                           ),
-                          MediumNativeAd(),
+                          const MediumNativeAd(),
                           GameAttributes(
                             gameData: playerDetails,
                           ),
@@ -127,7 +130,7 @@ class _PlayerDetailsState extends ConsumerState<PlayerDetails> {
                       )
                     : Center(
                         child: Container(
-                          child: Text('Loading'),
+                          child: const Text('Loading'),
                         ),
                       ))),
         BannerSmallAd(),

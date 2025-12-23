@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class ClubDetails extends StatelessWidget {
   final clubData;
-  const ClubDetails({Key? key, this.clubData}) : super(key: key);
+  const ClubDetails({super.key, this.clubData});
 
   String convertWage(var val) {
     if (val == 0) {
@@ -11,12 +11,12 @@ class ClubDetails extends StatelessWidget {
     }
     var w = val.toString().length;
     if (w >= 4 && w <= 7) {
-      String v = '\u{20AC}' + val.toString().substring(0, w - 3);
+      String v = '\u{20AC}${val.toString().substring(0, w - 3)}';
       v += "K";
       return v;
     }
     if (w > 7) {
-      String v = '\u{20AC}' + val.toString().substring(0, w - 6);
+      String v = '\u{20AC}${val.toString().substring(0, w - 6)}';
       v += "M";
       return v;
     }
@@ -28,16 +28,16 @@ class ClubDetails extends StatelessWidget {
     double width = MediaQuery.of(context).size.width;
     double remWidth = width - 24;
     return Container(
-      margin: EdgeInsets.all(11),
-      padding: EdgeInsets.fromLTRB(0, 0, 0, 11),
+      margin: const EdgeInsets.all(11),
+      padding: const EdgeInsets.fromLTRB(0, 0, 0, 11),
       decoration: BoxDecoration(border: Border.all(color: posColor)),
       child: Column(
         children: [
           Container(
-            padding: EdgeInsets.fromLTRB(0, 7, 0, 7),
+            padding: const EdgeInsets.fromLTRB(0, 7, 0, 7),
             alignment: Alignment.center,
-            decoration: BoxDecoration(color: posColor),
-            child: Text('CLUB DETAILS',
+            decoration: const BoxDecoration(color: posColor),
+            child: const Text('CLUB DETAILS',
                 style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w800,
@@ -45,7 +45,7 @@ class ClubDetails extends StatelessWidget {
           ),
           clubData['club_logo_url'].length > 0
               ? Center(
-                  child: Container(
+                  child: SizedBox(
                     width: 0.15 * width,
                     height: 0.15 * width,
                     child: Image.network(
@@ -78,46 +78,46 @@ class ClubDetails extends StatelessWidget {
               : Container(),
           Center(
             child: Container(
-              padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+              padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
               child: Text(
                 clubData['club_name'].length > 0
                     ? clubData['club_name']
                     : "Free Agent",
-                style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18),
+                style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 18),
               ),
             ),
           ),
           Center(
             child: Container(
-              padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
+              padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
               child: Text(
                 clubData['league_name'],
-                style: TextStyle(fontSize: 15),
+                style: const TextStyle(fontSize: 15),
               ),
             ),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
+              const Text(
                 'Joined: ',
                 style: TextStyle(fontSize: 15),
               ),
               Text(
                 clubData['club_joined'],
-                style: TextStyle(fontSize: 15),
+                style: const TextStyle(fontSize: 15),
               ),
-              Text(
+              const Text(
                 ' - ',
                 style: TextStyle(fontSize: 15),
               ),
-              Text(
+              const Text(
                 'Contract Until: ',
                 style: TextStyle(fontSize: 15),
               ),
               Text(
                 clubData['club_contract_valid_until'].toString(),
-                style: TextStyle(fontSize: 15),
+                style: const TextStyle(fontSize: 15),
               )
             ],
           ),
@@ -129,7 +129,7 @@ class ClubDetails extends StatelessWidget {
             children: [
               Column(
                 children: [
-                  Text(
+                  const Text(
                     'Wage',
                     style: TextStyle(fontSize: 15),
                   ),
@@ -138,7 +138,7 @@ class ClubDetails extends StatelessWidget {
                   ),
                   Text(
                     convertWage(clubData['wage_eur']),
-                    style: TextStyle(fontSize: 15),
+                    style: const TextStyle(fontSize: 15),
                   )
                 ],
               ),
@@ -147,7 +147,7 @@ class ClubDetails extends StatelessWidget {
               ),
               Column(
                 children: [
-                  Text(
+                  const Text(
                     'Value',
                     style: TextStyle(fontSize: 15),
                   ),
@@ -156,7 +156,7 @@ class ClubDetails extends StatelessWidget {
                   ),
                   Text(
                     convertWage(clubData['value_eur']),
-                    style: TextStyle(fontSize: 15),
+                    style: const TextStyle(fontSize: 15),
                   )
                 ],
               ),
@@ -165,7 +165,7 @@ class ClubDetails extends StatelessWidget {
               ),
               Column(
                 children: [
-                  Text(
+                  const Text(
                     'Clause',
                     style: TextStyle(fontSize: 15),
                   ),
@@ -174,7 +174,7 @@ class ClubDetails extends StatelessWidget {
                   ),
                   Text(
                     convertWage(clubData['release_clause_eur']),
-                    style: TextStyle(fontSize: 15),
+                    style: const TextStyle(fontSize: 15),
                   )
                 ],
               )

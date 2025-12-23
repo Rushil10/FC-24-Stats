@@ -4,7 +4,7 @@ import 'package:fc_stats_24/utlis/CustomColors.dart';
 import 'package:flutter/material.dart';
 
 class BottomTabs extends StatefulWidget {
-  const BottomTabs({Key? key}) : super(key: key);
+  const BottomTabs({super.key});
 
   @override
   _BottomTabsState createState() => _BottomTabsState();

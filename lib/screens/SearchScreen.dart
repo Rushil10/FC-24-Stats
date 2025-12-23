@@ -4,7 +4,7 @@ import 'package:fc_stats_24/utlis/CustomColors.dart';
 import 'package:flutter/material.dart';
 
 class SearchScreen extends StatefulWidget {
-  const SearchScreen({Key? key}) : super(key: key);
+  const SearchScreen({super.key});
 
   @override
   _SearchScreenState createState() => _SearchScreenState();
@@ -30,16 +30,17 @@ class _SearchScreenState extends State<SearchScreen>
     });
   }
 
+  @override
   Widget build(BuildContext context) {
     //super.build(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text("Search"),
+        title: const Text("Search"),
       ),
       body: Column(
         children: [
           Container(
-            margin: EdgeInsets.all(15),
+            margin: const EdgeInsets.all(15),
             child: TextField(
               textAlignVertical: TextAlignVertical.center,
               autofocus: false,
@@ -62,7 +63,7 @@ class _SearchScreenState extends State<SearchScreen>
                   fillColor: posColor,
                   hintStyle: TextStyle(color: Colors.grey[500], fontSize: 19),
                   filled: true),
-              style: TextStyle(color: Colors.black, fontSize: 19),
+              style: const TextStyle(color: Colors.black, fontSize: 19),
             ),
           ),
           Expanded(
@@ -74,7 +75,7 @@ class _SearchScreenState extends State<SearchScreen>
                           playerData: players[index],
                         );
                       })
-                  : Center(
+                  : const Center(
                       child: CircularProgressIndicator(
                         color: posColor,
                       ),

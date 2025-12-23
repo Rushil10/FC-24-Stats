@@ -6,8 +6,7 @@ class AttributeRating extends StatelessWidget {
   final heading;
   final cardWidth;
   const AttributeRating(
-      {Key? key, this.heading, this.attribute, this.cardWidth})
-      : super(key: key);
+      {super.key, this.heading, this.attribute, this.cardWidth});
 
   Color bgColor() {
     if (attribute >= 90) {

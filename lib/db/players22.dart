@@ -1,8 +1,5 @@
-import 'dart:ffi';
-
 import 'package:fc_stats_24/db/Player.dart';
 import 'package:path/path.dart';
-import 'package:sqflite/src/factory_impl.dart' show databaseFactory;
 import 'package:sqflite/sqflite.dart';
 
 class PlayersDatabase {
@@ -13,60 +10,116 @@ class PlayersDatabase {
   PlayersDatabase._init();
 
   Future<Database> get database async {
-    if (_database != null) return _database!;
+    if (_database != null) {
+      return _database!;
+    }
 
     _database = await _initDB('players22.db');
     return _database!;
   }
 
   Future deleteDB() async {
-    final dbPath = await getDatabasesPath();
-    final path = join(dbPath, 'players22.db');
-
-// Delete the database
-    await deleteDatabase(path);
-    //print("Deleted Database");
+    try {
+      
+      // Close existing connection first
+      if (_database != null) {
+        try {
+          await _database!.close();
+        } catch (e) {
+        }
+        _database = null;
+      }
+      
+      final dbPath = await getDatabasesPath();
+      final path = join(dbPath, 'players22.db');
+      
+      if (await databaseExists(path)) {
+        await deleteDatabase(path);
+      } else {
+      }
+    } catch (e, stackTrace) {
+      rethrow;
+    }
   }
 
   Future<Database> _initDB(String filePath) async {
-    final dbPath = await getDatabasesPath();
-    final path = join(dbPath, filePath);
-
-    return await openDatabase(path, version: 1, onCreate: _createDB);
+    try {
+      final dbPath = await getDatabasesPath();
+      final path = join(dbPath, filePath);
+      
+      // Add a timeout to the open operation
+      final db = await openDatabase(
+        path,
+        version: 3,
+        onCreate: _createDB,
+        onUpgrade: (db, oldVersion, newVersion) async {
+          if (oldVersion < 3) {
+             await db.execute("DROP TABLE IF EXISTS players");
+             await _createDB(db, newVersion);
+          }
+        },
+      ).timeout(const Duration(seconds: 10), onTimeout: () {
+          throw Exception('openDatabase timeout');
+      });
+      
+      return db;
+    } catch (e, stackTrace) {
+      
+      // If there's an error, try to delete corrupted database
+      try {
+        final dbPath = await getDatabasesPath();
+        final path = join(dbPath, filePath);
+        // Don't use databaseExists check here, just try to delete
+        await deleteDatabase(path);
+      } catch (deleteError) {
+      }
+      
+      rethrow;
+    }
   }
 
   Future<void> dropTable() async {
     final db = await instance.database;
     await db.execute('DROP TABLE IF EXISTS players');
-    //print('DATABASE DELETED');
   }
 
   void checkIfDBCreated() async {
-    //var created = PlayersDatabase.instance.database;
-    //await PlayersDatabase.instance.deleteDB();
     var created = await PlayersDatabase.instance.database;
-    //print(created);
-    //PlayersDatabase.instance.dropTable();
-    //createListOfFields();
-    //readDB();
   }
 
   Future<bool> checkDbExists() async {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, 'players22.db');
-    return databaseFactory.databaseExists(path);
+    return await databaseExists(path);
   }
 
   Future<void> readDb() async {
     final db = await instance.database;
     List<Map> li = await db.query('players');
-    //print(li.length);
   }
 
   Future getNumberOfRows() async {
-    final db = await instance.database;
-    List<Map> li = await db.rawQuery('SELECT id from players');
-    return li.length;
+    try {
+      final db = await instance.database.timeout(
+        Duration(seconds: 5),
+        onTimeout: () {
+          throw Exception('Database connection timeout');
+        },
+      );
+      
+      // Use COUNT(*) instead of SELECT id - much faster!
+      final result = await db.rawQuery('SELECT COUNT(*) as count FROM players')
+          .timeout(
+            Duration(seconds: 5),
+            onTimeout: () {
+              throw Exception('Query timeout');
+            },
+          );
+      final count = Sqflite.firstIntValue(result) ?? 0;
+      return count;
+    } catch (e, stackTrace) {
+      rethrow;
+    }
   }
 
   Future top100Players() async {
@@ -79,7 +132,7 @@ class PlayersDatabase {
   Future getPlayerDetails(var id) async {
     final db = await instance.database;
     List<Map> li = await db.rawQuery('''
-    SELECT * FROM players WHERE id=${id};
+    SELECT * FROM players WHERE id=$id;
     ''');
     return li;
   }
@@ -87,7 +140,7 @@ class PlayersDatabase {
   Future searchPlayers(var st) async {
     final db = await instance.database;
     List<Map> li = await db.rawQuery('''
-    SELECT * FROM players WHERE long_name like '%${st}%' limit 50;
+    SELECT * FROM players WHERE long_name like '%$st%' limit 50;
     ''');
     return li;
   }
@@ -95,12 +148,9 @@ class PlayersDatabase {
   Future<bool> checkFav(var id) async {
     final db = await instance.database;
     List<Map> li = await db.rawQuery('''
-    SELECT * FROM favourites Where playerId=${id};
+    SELECT * FROM favourites Where playerId=$id;
     ''');
-    if (li.length > 0) {
-      return true;
-    }
-    return false;
+    return li.isNotEmpty;
   }
 
   Future getFavourites() async {
@@ -108,7 +158,6 @@ class PlayersDatabase {
     List<Map> li = await db.rawQuery('''
     SELECT * FROM players JOIN favourites Where players.id=favourites.playerId
     ''');
-    ////print(li);
     return li;
   }
 
@@ -117,7 +166,6 @@ class PlayersDatabase {
     List<Map> li = await db.rawQuery('''
     SELECT * FROM players where club_name ="" or club_name is null
     ''');
-    ////print(li);
     return li;
   }
 
@@ -132,24 +180,23 @@ class PlayersDatabase {
   Future searchFavourites(var id) async {
     final db = await instance.database;
     List<Map> li = await db.rawQuery('''
-    SELECT * FROM favourites Where playerId=${id};
+    SELECT * FROM favourites Where playerId=$id;
     ''');
-    if (li.length > 0) {
+    if (li.isNotEmpty) {
       await db.execute('''
-      DELETE FROM favourites Where playerId=${id}
+      DELETE FROM favourites Where playerId=$id
       ''');
     } else {
       Map<String, dynamic> fav = {
         'playerId': id,
       };
-      final i = await db.insert("favourites", fav);
-      //print("Added");
+      await db.insert("favourites", fav);
     }
-    //print(li);
   }
 
   Future _createDB(Database db, int version) async {
-    await db.execute('''
+    try {
+      await db.execute('''
 CREATE TABLE players (
         id INTEGER PRIMARY KEY,
         sofifa_id DECIMAL NOT NULL,
@@ -174,18 +221,18 @@ CREATE TABLE players (
         club_loaned_from VARCHAR,
         club_joined DATE,
         club_contract_valid_until DECIMAL,
-        nationality_id DECIMAL NOT NULL,
-        nationality_name VARCHAR NOT NULL,
+        nationality_id DECIMAL,
+        nationality_name VARCHAR,
         nation_team_id DECIMAL,
         nation_position VARCHAR,
         nation_jersey_number DECIMAL,
-        preferred_foot VARCHAR NOT NULL,
-        weak_foot DECIMAL NOT NULL,
-        skill_moves DECIMAL NOT NULL,
-        international_reputation DECIMAL NOT NULL,
-        work_rate VARCHAR NOT NULL,
-        body_type VARCHAR NOT NULL,
-        real_face BOOLEAN NOT NULL,
+        preferred_foot VARCHAR,
+        weak_foot DECIMAL,
+        skill_moves DECIMAL,
+        international_reputation DECIMAL,
+        work_rate VARCHAR,
+        body_type VARCHAR,
+        real_face BOOLEAN,
         release_clause_eur DECIMAL,
         player_tags VARCHAR,
         player_traits VARCHAR,
@@ -195,76 +242,72 @@ CREATE TABLE players (
         dribbling DECIMAL,
         defending DECIMAL,
         physic DECIMAL,
-        attacking_crossing DECIMAL NOT NULL,
-        attacking_finishing DECIMAL NOT NULL,
-        attacking_heading_accuracy DECIMAL NOT NULL,
-        attacking_short_passing DECIMAL NOT NULL,
-        attacking_volleys DECIMAL NOT NULL,
-        skill_dribbling DECIMAL NOT NULL,
-        skill_curve DECIMAL NOT NULL,
-        skill_fk_accuracy DECIMAL NOT NULL,
-        skill_long_passing DECIMAL NOT NULL,
-        skill_ball_control DECIMAL NOT NULL,
-        movement_acceleration DECIMAL NOT NULL,
-        movement_sprint_speed DECIMAL NOT NULL,
-        movement_agility DECIMAL NOT NULL,
-        movement_reactions DECIMAL NOT NULL,
-        movement_balance DECIMAL NOT NULL,
-        power_shot_power DECIMAL NOT NULL,
-        power_jumping DECIMAL NOT NULL,
-        power_stamina DECIMAL NOT NULL,
-        power_strength DECIMAL NOT NULL,
-        power_long_shots DECIMAL NOT NULL,
-        mentality_aggression DECIMAL NOT NULL,
-        mentality_interceptions DECIMAL NOT NULL,
-        mentality_positioning DECIMAL NOT NULL,
-        mentality_vision DECIMAL NOT NULL,
-        mentality_penalties DECIMAL NOT NULL,
-        mentality_composure DECIMAL NOT NULL,
-        defending_marking_awareness DECIMAL NOT NULL,
-        defending_standing_tackle DECIMAL NOT NULL,
-        defending_sliding_tackle DECIMAL NOT NULL,
-        goalkeeping_diving DECIMAL NOT NULL,
-        goalkeeping_handling DECIMAL NOT NULL,
-        goalkeeping_kicking DECIMAL NOT NULL,
-        goalkeeping_positioning DECIMAL NOT NULL,
-        goalkeeping_reflexes DECIMAL NOT NULL,
+        attacking_crossing DECIMAL,
+        attacking_finishing DECIMAL,
+        attacking_heading_accuracy DECIMAL,
+        attacking_short_passing DECIMAL,
+        attacking_volleys DECIMAL,
+        skill_dribbling DECIMAL,
+        skill_curve DECIMAL,
+        skill_fk_accuracy DECIMAL,
+        skill_long_passing DECIMAL,
+        skill_ball_control DECIMAL,
+        movement_acceleration DECIMAL,
+        movement_sprint_speed DECIMAL,
+        movement_agility DECIMAL,
+        movement_reactions DECIMAL,
+        movement_balance DECIMAL,
+        power_shot_power DECIMAL,
+        power_jumping DECIMAL,
+        power_stamina DECIMAL,
+        power_strength DECIMAL,
+        power_long_shots DECIMAL,
+        mentality_aggression DECIMAL,
+        mentality_interceptions DECIMAL,
+        mentality_positioning DECIMAL,
+        mentality_vision DECIMAL,
+        mentality_penalties DECIMAL,
+        mentality_composure DECIMAL,
+        defending_marking_awareness DECIMAL,
+        defending_standing_tackle DECIMAL,
+        defending_sliding_tackle DECIMAL,
+        goalkeeping_diving DECIMAL,
+        goalkeeping_handling DECIMAL,
+        goalkeeping_kicking DECIMAL,
+        goalkeeping_positioning DECIMAL,
+        goalkeeping_reflexes DECIMAL,
         goalkeeping_speed DECIMAL,
-        ls VARCHAR NOT NULL,
-        st VARCHAR NOT NULL,
-        rs VARCHAR NOT NULL,
-        lw VARCHAR NOT NULL,
-        lf VARCHAR NOT NULL,
-        cf VARCHAR NOT NULL,
-        rf VARCHAR NOT NULL,
-        rw VARCHAR NOT NULL,
+        ls VARCHAR,
+        st VARCHAR,
+        rs VARCHAR,
+        lw VARCHAR,
+        lf VARCHAR,
+        cf VARCHAR,
+        rf VARCHAR,
+        rw VARCHAR,
         club_flag_url VARCHAR,
         player_face_url VARCHAR,
         club_logo_url VARCHAR,
         nation_logo_url VARCHAR,
-        nation_flag_url VARCHAR NOT NULL
+        nation_flag_url VARCHAR
 )
 ''');
-    await db.execute('''
+      await db.execute('''
     CREATE TABLE favourites
     (fid INTEGER PRIMARY KEY,
     playerId INTEGER)
 ''');
-    //print("Tabel Created");
+    } catch (e, stackTrace) {
+      rethrow;
+    }
   }
 
   Future insertPlayer(Player player) async {
-    final db = await instance.database;
-
-    // final json = note.toJson();
-    // final columns =
-    //     '${NoteFields.title}, ${NoteFields.description}, ${NoteFields.time}';
-    // final values =
-    //     '${json[NoteFields.title]}, ${json[NoteFields.description]}, ${json[NoteFields.time]}';
-    // final id = await db
-    //     .rawInsert('INSERT INTO table_name ($columns) VALUES ($values)');
-
-    final id = await db.insert("players", player.toJson());
-    //print("Inserted in db players");
+    try {
+      final db = await instance.database;
+      final id = await db.insert("players", player.toJson());
+    } catch (e, stackTrace) {
+      rethrow;
+    }
   }
 }

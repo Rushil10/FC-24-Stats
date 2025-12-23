@@ -10,7 +10,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({super.key});
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -21,6 +21,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   var loading = true;
   var players = [];
 
+  @override
   void initState() {
     super.initState();
     ref.read(videoAdProvider);
@@ -39,6 +40,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     });
   }
 
+  @override
   Widget build(BuildContext context) {
     MediaQueryData queryData;
     queryData = MediaQuery.of(context);
@@ -108,20 +110,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ),
         ),
         appBar: AppBar(
-          title: Text("Player Stats 24"),
+          title: const Text("Player Stats 24"),
         ),
         body: !loading
             ? Column(
                 children: [
                   Container(
-                    padding: EdgeInsets.fromLTRB(15, 5, 15, 5),
+                    padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Container(
                           width: queryData.size.width * 0.12,
                           alignment: Alignment.center,
-                          child: Text(
+                          child: const Text(
                             'OVR',
                             style: TextStyle(
                                 fontWeight: FontWeight.w600, fontSize: 16),
@@ -130,7 +132,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         Container(
                           width: queryData.size.width * 0.12,
                           alignment: Alignment.center,
-                          child: Text(
+                          child: const Text(
                             'POT',
                             style: TextStyle(
                                 fontWeight: FontWeight.w600, fontSize: 16),
@@ -139,7 +141,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         Container(
                           width: queryData.size.width * 0.12,
                           alignment: Alignment.center,
-                          child: Text(
+                          child: const Text(
                             'AGE',
                             style: TextStyle(
                                 fontWeight: FontWeight.w600, fontSize: 16),
@@ -160,10 +162,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ],
               )
             : Center(
-                child: Container(
+                child: SizedBox(
                   height: 45,
                   width: 45,
-                  child: CircularProgressIndicator(
+                  child: const CircularProgressIndicator(
                     color: posColor,
                   ),
                 ),

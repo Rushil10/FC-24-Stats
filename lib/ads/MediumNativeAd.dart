@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class MediumNativeAd extends StatefulWidget {
-  const MediumNativeAd({Key? key}) : super(key: key);
+  const MediumNativeAd({super.key});
 
   @override
   _MediumNativeAdState createState() => _MediumNativeAdState();
@@ -14,6 +14,7 @@ class _MediumNativeAdState extends State<MediumNativeAd> {
   late NativeAd _adMedium;
   bool _isAdLoadedMedium = false;
 
+  @override
   void initState() {
     super.initState();
     getNativeAdd();
@@ -48,16 +49,16 @@ class _MediumNativeAdState extends State<MediumNativeAd> {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     return Container(
-        margin: EdgeInsets.all(11),
-        padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+        margin: const EdgeInsets.all(11),
+        padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
         decoration: BoxDecoration(border: Border.all(color: posColor)),
         child: Column(
           children: [
             Container(
-              padding: EdgeInsets.fromLTRB(0, 7, 0, 7),
+              padding: const EdgeInsets.fromLTRB(0, 7, 0, 7),
               alignment: Alignment.center,
-              decoration: BoxDecoration(color: posColor),
-              child: Text('Sponsored Ad',
+              decoration: const BoxDecoration(color: posColor),
+              child: const Text('Sponsored Ad',
                   style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w800,
@@ -67,12 +68,12 @@ class _MediumNativeAdState extends State<MediumNativeAd> {
                 ? Padding(
                     padding: const EdgeInsets.all(5.0),
                     child: SizedBox(
-                      child: AdWidget(ad: _adMedium),
                       height: width - 35,
                       width: width - 35,
+                      child: AdWidget(ad: _adMedium),
                     ),
                   )
-                : Padding(
+                : const Padding(
                     padding: EdgeInsets.all(15),
                     child: SizedBox(
                       width: 45,

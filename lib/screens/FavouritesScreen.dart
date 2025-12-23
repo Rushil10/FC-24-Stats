@@ -10,7 +10,7 @@ class Favourites extends StatefulWidget {
   final type;
   final title;
   final count;
-  Favourites({Key? key, this.type, this.title, this.count}) : super(key: key);
+  const Favourites({super.key, this.type, this.title, this.count});
 
   @override
   _FavouritesState createState() => _FavouritesState();
@@ -22,6 +22,7 @@ class _FavouritesState extends State<Favourites> {
   var players = [];
   InterstitialAd? _interstitialAd;
 
+  @override
   void initState() {
     super.initState();
     if (widget.type == "Fav") {
@@ -41,7 +42,7 @@ class _FavouritesState extends State<Favourites> {
   void addInterstitialAd() async {
     InterstitialAd.load(
         adUnitId: AdHelper.videoAdUnitId,
-        request: AdRequest(),
+        request: const AdRequest(),
         adLoadCallback: InterstitialAdLoadCallback(
           onAdLoaded: (InterstitialAd ad) {
             //print('$ad loaded');
@@ -80,6 +81,7 @@ class _FavouritesState extends State<Favourites> {
     });
   }
 
+  @override
   Widget build(BuildContext context) {
     MediaQueryData queryData;
     queryData = MediaQuery.of(context);
@@ -91,14 +93,14 @@ class _FavouritesState extends State<Favourites> {
             ? Column(
                 children: [
                   Container(
-                    padding: EdgeInsets.fromLTRB(15, 5, 15, 5),
+                    padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Container(
                           width: queryData.size.width * 0.12,
                           alignment: Alignment.center,
-                          child: Text(
+                          child: const Text(
                             'OVR',
                             style: TextStyle(
                                 fontWeight: FontWeight.w600, fontSize: 16),
@@ -107,7 +109,7 @@ class _FavouritesState extends State<Favourites> {
                         Container(
                           width: queryData.size.width * 0.12,
                           alignment: Alignment.center,
-                          child: Text(
+                          child: const Text(
                             'POT',
                             style: TextStyle(
                                 fontWeight: FontWeight.w600, fontSize: 16),
@@ -116,7 +118,7 @@ class _FavouritesState extends State<Favourites> {
                         Container(
                           width: queryData.size.width * 0.12,
                           alignment: Alignment.center,
-                          child: Text(
+                          child: const Text(
                             'AGE',
                             style: TextStyle(
                                 fontWeight: FontWeight.w600, fontSize: 16),
@@ -137,10 +139,10 @@ class _FavouritesState extends State<Favourites> {
                 ],
               )
             : Center(
-                child: Container(
+                child: SizedBox(
                   width: 45,
                   height: 45,
-                  child: CircularProgressIndicator(
+                  child: const CircularProgressIndicator(
                     color: posColor,
                   ),
                 ),

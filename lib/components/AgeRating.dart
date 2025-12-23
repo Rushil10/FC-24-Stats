@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class AgeRating extends StatelessWidget {
   final age;
   final cardWidth;
-  const AgeRating({Key? key, this.age, this.cardWidth}) : super(key: key);
+  const AgeRating({super.key, this.age, this.cardWidth});
 
   Color bgColor() {
     if (age >= 35) {

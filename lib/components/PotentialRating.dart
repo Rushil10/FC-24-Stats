@@ -4,8 +4,7 @@ import 'package:flutter/material.dart';
 class PotentialRating extends StatelessWidget {
   final potential;
   final cardWidth;
-  const PotentialRating({Key? key, this.potential, this.cardWidth})
-      : super(key: key);
+  const PotentialRating({super.key, this.potential, this.cardWidth});
 
   Color bgColor() {
     if (potential >= 90) {

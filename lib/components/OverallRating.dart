@@ -4,8 +4,7 @@ import 'package:flutter/material.dart';
 class OverallRating extends StatelessWidget {
   final overall;
   final cardWidth;
-  const OverallRating({Key? key, this.overall, this.cardWidth})
-      : super(key: key);
+  const OverallRating({super.key, this.overall, this.cardWidth});
 
   Color bgColor() {
     if (overall >= 90) {

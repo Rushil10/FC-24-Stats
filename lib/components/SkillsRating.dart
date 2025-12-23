@@ -5,26 +5,26 @@ import 'package:flutter/material.dart';
 
 class SkillsRating extends StatelessWidget {
   final skills;
-  const SkillsRating({Key? key, this.skills}) : super(key: key);
+  const SkillsRating({super.key, this.skills});
   @override
   Widget build(BuildContext context) {
     //print(skills['goalkeeping_speed'].runtimeType);
     return Container(
-        margin: EdgeInsets.all(11),
-        padding: EdgeInsets.fromLTRB(0, 0, 0, 11),
+        margin: const EdgeInsets.all(11),
+        padding: const EdgeInsets.fromLTRB(0, 0, 0, 11),
         decoration: BoxDecoration(border: Border.all(color: posColor)),
         child: Column(children: [
           Container(
-            padding: EdgeInsets.fromLTRB(0, 7, 0, 7),
+            padding: const EdgeInsets.fromLTRB(0, 7, 0, 7),
             alignment: Alignment.center,
-            decoration: BoxDecoration(color: posColor),
-            child: Text('SKILLS',
+            decoration: const BoxDecoration(color: posColor),
+            child: const Text('SKILLS',
                 style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w800,
                     color: Colors.black)),
           ),
-          SkillHeader(
+          const SkillHeader(
             header: 'PACE',
           ),
           SkillCard(
@@ -37,7 +37,7 @@ class SkillsRating extends StatelessWidget {
             cardWidth: ratingWidthDetails,
             skill: 'Sprint Speed',
           ),
-          SkillHeader(
+          const SkillHeader(
             header: 'SHOOTING',
           ),
           SkillCard(
@@ -70,7 +70,7 @@ class SkillsRating extends StatelessWidget {
             cardWidth: ratingWidthDetails,
             skill: 'Penalties',
           ),
-          SkillHeader(
+          const SkillHeader(
             header: 'PASSING',
           ),
           SkillCard(
@@ -103,7 +103,7 @@ class SkillsRating extends StatelessWidget {
             cardWidth: ratingWidthDetails,
             skill: 'Curve',
           ),
-          SkillHeader(
+          const SkillHeader(
             header: 'DRIBBLING',
           ),
           SkillCard(
@@ -136,7 +136,7 @@ class SkillsRating extends StatelessWidget {
             cardWidth: ratingWidthDetails,
             skill: 'Composure',
           ),
-          SkillHeader(
+          const SkillHeader(
             header: 'DEFENDING',
           ),
           SkillCard(
@@ -169,7 +169,7 @@ class SkillsRating extends StatelessWidget {
             cardWidth: ratingWidthDetails,
             skill: 'Jumping',
           ),
-          SkillHeader(
+          const SkillHeader(
             header: 'PHYSICAL',
           ),
           SkillCard(
@@ -187,7 +187,7 @@ class SkillsRating extends StatelessWidget {
             cardWidth: ratingWidthDetails,
             skill: 'Aggression',
           ),
-          SkillHeader(
+          const SkillHeader(
             header: 'GOALKEEPING',
           ),
           SkillCard(

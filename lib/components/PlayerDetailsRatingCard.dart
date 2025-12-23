@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 
 class PlayerDetailsRatingCard extends StatelessWidget {
   final playerData;
-  const PlayerDetailsRatingCard({Key? key, this.playerData}) : super(key: key);
+  const PlayerDetailsRatingCard({super.key, this.playerData});
 
   String playerPositions() {
     String pos = playerData['player_positions'];
@@ -25,27 +25,27 @@ class PlayerDetailsRatingCard extends StatelessWidget {
     double width = MediaQuery.of(context).size.width;
     double remWidth = width - 24;
     return Container(
-      margin: EdgeInsets.all(11),
-      padding: EdgeInsets.fromLTRB(0, 0, 0, 11),
+      margin: const EdgeInsets.all(11),
+      padding: const EdgeInsets.fromLTRB(0, 0, 0, 11),
       decoration: BoxDecoration(border: Border.all(color: posColor)),
       child: Column(
         children: [
           Container(
-            padding: EdgeInsets.fromLTRB(0, 7, 0, 7),
+            padding: const EdgeInsets.fromLTRB(0, 7, 0, 7),
             alignment: Alignment.center,
-            decoration: BoxDecoration(color: posColor),
-            child: Text('PLAYER DETAILS',
+            decoration: const BoxDecoration(color: posColor),
+            child: const Text('PLAYER DETAILS',
                 style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w800,
                     color: Colors.black)),
           ),
           Container(
-            padding: EdgeInsets.fromLTRB(0, 9, 0, 9),
+            padding: const EdgeInsets.fromLTRB(0, 9, 0, 9),
             child: Row(
               //crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Container(
+                SizedBox(
                   width: remWidth * 0.32,
                   height: 0.38 * remWidth,
                   child: Column(
@@ -55,7 +55,7 @@ class PlayerDetailsRatingCard extends StatelessWidget {
                         alignment: Alignment.topRight,
                         child: Column(
                           children: [
-                            Text(
+                            const Text(
                               'OVR',
                               style: TextStyle(
                                   fontWeight: FontWeight.w500, fontSize: 15),
@@ -73,7 +73,7 @@ class PlayerDetailsRatingCard extends StatelessWidget {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            Text(
+                            const Text(
                               'AGE',
                               style: TextStyle(
                                   fontWeight: FontWeight.w500, fontSize: 15),
@@ -88,7 +88,7 @@ class PlayerDetailsRatingCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                Container(
+                SizedBox(
                   //decoration: BoxDecoration(color: Colors.green),
                   width: remWidth * 0.35,
                   height: remWidth * 0.38,
@@ -104,7 +104,7 @@ class PlayerDetailsRatingCard extends StatelessWidget {
                               fontSize: posFontSize),
                         ),
                       ),
-                      Container(
+                      SizedBox(
                         height: remWidth * 0.32,
                         width: remWidth * 0.32,
                         child: Image.network(
@@ -138,7 +138,7 @@ class PlayerDetailsRatingCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                Container(
+                SizedBox(
                   width: remWidth * 0.32,
                   height: remWidth * 0.38,
                   child: Column(
@@ -148,7 +148,7 @@ class PlayerDetailsRatingCard extends StatelessWidget {
                         alignment: Alignment.topLeft,
                         child: Column(
                           children: [
-                            Text(
+                            const Text(
                               'POT',
                               style: TextStyle(
                                   fontWeight: FontWeight.w500, fontSize: 15),
@@ -166,7 +166,7 @@ class PlayerDetailsRatingCard extends StatelessWidget {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            Text(
+                            const Text(
                               'FOOT',
                               style: TextStyle(
                                   fontWeight: FontWeight.w500, fontSize: 15),
@@ -187,7 +187,7 @@ class PlayerDetailsRatingCard extends StatelessWidget {
           Center(
             child: Text(
               playerData['long_name'],
-              style: TextStyle(fontSize: 16),
+              style: const TextStyle(fontSize: 16),
             ),
           ),
           Container(
@@ -199,7 +199,7 @@ class PlayerDetailsRatingCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 playerData['nation_flag_url'].length > 0
-                    ? Container(
+                    ? SizedBox(
                         width: 0.045 * remWidth,
                         child: Image.network(
                           playerData['nation_flag_url'],
@@ -229,39 +229,39 @@ class PlayerDetailsRatingCard extends StatelessWidget {
                       )
                     : Container(width: 0.045 * remWidth),
                 Container(
-                  child: Text(' '),
+                  child: const Text(' '),
                 ),
                 Container(
                   child: Text(
                     playerData['nationality_name'],
-                    style: TextStyle(fontSize: 14),
+                    style: const TextStyle(fontSize: 14),
                   ),
                 ),
                 Container(
-                  child: Text(' - '),
+                  child: const Text(' - '),
                 ),
                 Container(
                   child: Text(
                     playerData['dob'],
-                    style: TextStyle(fontSize: 14),
+                    style: const TextStyle(fontSize: 14),
                   ),
                 ),
                 Container(
-                  child: Text(' - '),
+                  child: const Text(' - '),
                 ),
                 Container(
                   child: Text(
-                    playerData['height_cm'].toString() + ' cm',
-                    style: TextStyle(fontSize: 14),
+                    '${playerData['height_cm']} cm',
+                    style: const TextStyle(fontSize: 14),
                   ),
                 ),
                 Container(
-                  child: Text(' - '),
+                  child: const Text(' - '),
                 ),
                 Container(
                   child: Text(
-                    playerData['weight_kg'].toString() + ' kg',
-                    style: TextStyle(fontSize: 14),
+                    '${playerData['weight_kg']} kg',
+                    style: const TextStyle(fontSize: 14),
                   ),
                 )
               ],
@@ -273,9 +273,9 @@ class PlayerDetailsRatingCard extends StatelessWidget {
           Container(
             child: Row(
               children: [
-                Container(
+                SizedBox(
                   width: 0.5 * remWidth,
-                  child: Row(
+                  child: const Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
@@ -289,12 +289,12 @@ class PlayerDetailsRatingCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                Container(
+                SizedBox(
                   width: 0.5 * remWidth,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
+                      const Text(
                         'Jersey: ',
                         style: TextStyle(fontSize: 15),
                       ),
@@ -302,7 +302,7 @@ class PlayerDetailsRatingCard extends StatelessWidget {
                         playerData['club_jersey_number'] == 0
                             ? 'None'
                             : playerData['club_jersey_number'].toString(),
-                        style: TextStyle(color: lightGreen, fontSize: 15),
+                        style: const TextStyle(color: lightGreen, fontSize: 15),
                       )
                     ],
                   ),

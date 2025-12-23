@@ -9,7 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class PlayerCard extends ConsumerStatefulWidget {
   final playerData;
-  const PlayerCard({Key? key, this.playerData}) : super(key: key);
+  const PlayerCard({super.key, this.playerData});
 
   @override
   ConsumerState<PlayerCard> createState() => _PlayerCardState();
@@ -54,7 +54,7 @@ class _PlayerCardState extends ConsumerState<PlayerCard> {
         onTapPlayer(count);
       },
       child: Padding(
-        padding: EdgeInsets.fromLTRB(15, 7, 15, 7),
+        padding: const EdgeInsets.fromLTRB(15, 7, 15, 7),
         child: Row(
           children: [
             Container(
@@ -124,7 +124,7 @@ class _PlayerCardState extends ConsumerState<PlayerCard> {
               ],
             ),
             Expanded(child: Container()),
-            Container(
+            SizedBox(
               width: queryData.size.width * 0.11,
               height: queryData.size.width * 0.11,
               child: Image.network(

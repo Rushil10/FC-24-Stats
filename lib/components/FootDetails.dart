@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class FootDetails extends StatelessWidget {
   final foot;
   final cardWidth;
-  const FootDetails({Key? key, this.cardWidth, this.foot}) : super(key: key);
+  const FootDetails({super.key, this.cardWidth, this.foot});
 
   Color bgColor() {
     if (foot == "Left") {
