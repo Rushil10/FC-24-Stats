@@ -1,6 +1,6 @@
 import 'package:fc_stats_24/components/playerCard.dart';
 import 'package:fc_stats_24/db/players22.dart';
-import 'package:fc_stats_24/utlis/CustomColors.dart';
+import 'package:fc_stats_24/theme.dart';
 import 'package:flutter/material.dart';
 
 class SearchResultsScreen extends StatefulWidget {
@@ -55,7 +55,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
     setState(() {
       loading = true;
     });
-    
+
     final results = await PlayersDatabase.instance.filterPlayers(
       query: widget.query,
       minOverall: widget.minOverall,
@@ -73,8 +73,6 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
       roles: widget.roles,
     );
 
-
-
     if (mounted) {
       setState(() {
         players = results;
@@ -85,18 +83,22 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final appColors = Theme.of(context).extension<AppColors>()!;
+    final surfaceColor = Theme.of(context).colorScheme.surface;
+    final scaffoldColor = Theme.of(context).scaffoldBackgroundColor;
+
     return Scaffold(
-      backgroundColor: const Color(0xFF1E2228),
+      backgroundColor: surfaceColor,
       appBar: AppBar(
         title: const Text("Search Results"),
-        backgroundColor: Colors.black,
+        backgroundColor: scaffoldColor,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
         ),
       ),
       body: loading
-          ? const Center(child: CircularProgressIndicator(color: posColor))
+          ? Center(child: CircularProgressIndicator(color: appColors.posColor))
           : players.isEmpty
               ? const Center(
                   child: Text(

@@ -1,6 +1,5 @@
-
 import 'package:flutter/material.dart';
-import 'package:fc_stats_24/utlis/CustomColors.dart';
+import 'package:fc_stats_24/theme.dart';
 
 // A generic button for the filter grid
 class FilterGridButton extends StatelessWidget {
@@ -17,11 +16,14 @@ class FilterGridButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final appColors = Theme.of(context).extension<AppColors>()!;
+    final surfaceColor = Theme.of(context).colorScheme.surface;
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: const Color(0xFF1E2228), // Dark tile color
+          color: surfaceColor,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(color: Colors.white.withOpacity(0.1)),
         ),
@@ -42,7 +44,7 @@ class FilterGridButton extends StatelessWidget {
             Text(
               value ?? 'Any',
               style: TextStyle(
-                color: value != null ? posColor : Colors.white,
+                color: value != null ? appColors.posColor : Colors.white,
                 fontWeight: FontWeight.bold,
                 fontSize: 14,
               ),
@@ -74,11 +76,14 @@ class RangeFilterSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final appColors = Theme.of(context).extension<AppColors>()!;
+    final surfaceColor = Theme.of(context).colorScheme.surface;
+
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 8),
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
       decoration: BoxDecoration(
-        color: const Color(0xFF1E2228),
+        color: surfaceColor,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.white.withOpacity(0.1)),
       ),
@@ -110,10 +115,10 @@ class RangeFilterSection extends StatelessWidget {
           const SizedBox(height: 8),
           SliderTheme(
             data: SliderThemeData(
-              activeTrackColor: posColor,
+              activeTrackColor: appColors.posColor,
               inactiveTrackColor: Colors.grey[800],
               thumbColor: Colors.white,
-              overlayColor: posColor.withOpacity(0.2),
+              overlayColor: appColors.posColor.withOpacity(0.2),
               trackHeight: 4,
               thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 8),
             ),
@@ -136,16 +141,18 @@ class _ValueBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final appColors = Theme.of(context).extension<AppColors>()!;
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: const Color(0xFF2C3036),
+        color: appColors.surfaceColorLight,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Text(
         text,
-        style: const TextStyle(
-          color: posColor,
+        style: TextStyle(
+          color: appColors.posColor,
           fontWeight: FontWeight.bold,
           fontSize: 14,
         ),
