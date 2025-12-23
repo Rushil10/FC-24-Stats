@@ -1,5 +1,5 @@
 import 'package:fc_stats_24/ads/ad_helper.dart';
-import 'package:fc_stats_24/utlis/CustomColors.dart';
+import 'package:fc_stats_24/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
@@ -45,16 +45,19 @@ class _MediumNativeAdState extends State<MediumNativeAd> {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
+    final appColors = Theme.of(context).extension<AppColors>()!;
+
     return Container(
         margin: const EdgeInsets.all(11),
         padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-        decoration: BoxDecoration(border: Border.all(color: posColor)),
+        decoration:
+            BoxDecoration(border: Border.all(color: appColors.posColor)),
         child: Column(
           children: [
             Container(
               padding: const EdgeInsets.fromLTRB(0, 7, 0, 7),
               alignment: Alignment.center,
-              decoration: const BoxDecoration(color: posColor),
+              decoration: BoxDecoration(color: appColors.posColor),
               child: const Text('Sponsored Ad',
                   style: TextStyle(
                       fontSize: 16,

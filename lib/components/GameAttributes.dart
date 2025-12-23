@@ -1,5 +1,6 @@
 import 'package:fc_stats_24/components/AttributeRating.dart';
-import 'package:fc_stats_24/utlis/CustomColors.dart';
+import 'package:fc_stats_24/layout.dart';
+import 'package:fc_stats_24/theme.dart';
 import 'package:flutter/material.dart';
 
 class GameAttributes extends StatelessWidget {
@@ -18,30 +19,31 @@ class GameAttributes extends StatelessWidget {
     return wr[1];
   }
 
-  Color workRateColor(var rate) {
+  Color workRateColor(var rate, AppColors appColors) {
     if (rate == "High") {
-      return darkGreen;
+      return appColors.darkGreen;
     } else if (rate == "Medium") {
-      return yellow;
+      return appColors.yellow;
     } else {
-      return red;
+      return appColors.red;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
-    double remWidth = width - 24;
     List<String> playerTraits = gameData['player_traits'].split(',');
+    final appColors = Theme.of(context).extension<AppColors>()!;
+
     return Container(
         margin: const EdgeInsets.all(11),
         padding: const EdgeInsets.fromLTRB(0, 0, 0, 11),
-        decoration: BoxDecoration(border: Border.all(color: posColor)),
+        decoration:
+            BoxDecoration(border: Border.all(color: appColors.posColor)),
         child: Column(children: [
           Container(
             padding: const EdgeInsets.fromLTRB(0, 7, 0, 7),
             alignment: Alignment.center,
-            decoration: const BoxDecoration(color: posColor),
+            decoration: BoxDecoration(color: appColors.posColor),
             child: const Text('CLUB DETAILS',
                 style: TextStyle(
                     fontSize: 16,
@@ -127,7 +129,8 @@ class GameAttributes extends StatelessWidget {
                         const Text('Work Rates (Att)'),
                         Text(
                           workRateAtt(),
-                          style: TextStyle(color: workRateColor(workRateAtt())),
+                          style: TextStyle(
+                              color: workRateColor(workRateAtt(), appColors)),
                         )
                       ],
                     ),
@@ -140,7 +143,8 @@ class GameAttributes extends StatelessWidget {
                         const Text('Work Rates (Def)'),
                         Text(
                           workRateDef(),
-                          style: TextStyle(color: workRateColor(workRateDef())),
+                          style: TextStyle(
+                              color: workRateColor(workRateDef(), appColors)),
                         )
                       ],
                     )
@@ -154,7 +158,7 @@ class GameAttributes extends StatelessWidget {
                   children: [
                     AttributeRating(
                       heading: 'PAC',
-                      cardWidth: 0.085,
+                      cardWidth: AppLayout.ratingWidthDetails,
                       attribute: gameData['pace'],
                     ),
                     Container(
@@ -162,7 +166,7 @@ class GameAttributes extends StatelessWidget {
                     ),
                     AttributeRating(
                       heading: 'SHO',
-                      cardWidth: 0.085,
+                      cardWidth: AppLayout.ratingWidthDetails,
                       attribute: gameData['shooting'],
                     ),
                     Container(
@@ -170,7 +174,7 @@ class GameAttributes extends StatelessWidget {
                     ),
                     AttributeRating(
                       heading: 'PAS',
-                      cardWidth: 0.085,
+                      cardWidth: AppLayout.ratingWidthDetails,
                       attribute: gameData['passing'],
                     ),
                   ],
@@ -183,7 +187,7 @@ class GameAttributes extends StatelessWidget {
                   children: [
                     AttributeRating(
                       heading: 'DRI',
-                      cardWidth: 0.085,
+                      cardWidth: AppLayout.ratingWidthDetails,
                       attribute: gameData['dribbling'],
                     ),
                     Container(
@@ -191,7 +195,7 @@ class GameAttributes extends StatelessWidget {
                     ),
                     AttributeRating(
                       heading: 'PHY',
-                      cardWidth: 0.085,
+                      cardWidth: AppLayout.ratingWidthDetails,
                       attribute: gameData['physic'],
                     ),
                     Container(
@@ -199,7 +203,7 @@ class GameAttributes extends StatelessWidget {
                     ),
                     AttributeRating(
                       heading: 'DEF',
-                      cardWidth: 0.085,
+                      cardWidth: AppLayout.ratingWidthDetails,
                       attribute: gameData['defending'],
                     ),
                   ],
@@ -211,7 +215,7 @@ class GameAttributes extends StatelessWidget {
                   margin: const EdgeInsets.fromLTRB(15, 15, 15, 9),
                   padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
                   alignment: Alignment.center,
-                  decoration: const BoxDecoration(color: posColor),
+                  decoration: BoxDecoration(color: appColors.posColor),
                   child: const Text('Traits',
                       style: TextStyle(
                           fontSize: 15,

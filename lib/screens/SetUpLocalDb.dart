@@ -1,7 +1,7 @@
 import 'package:fc_stats_24/ads/BannerAdSmall.dart';
 import 'package:fc_stats_24/db/configureDB.dart';
 import 'package:fc_stats_24/screens/BottomTabs.dart';
-import 'package:fc_stats_24/utlis/CustomColors.dart';
+import 'package:fc_stats_24/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -32,10 +32,10 @@ class _SetUpLocalDbState extends State<SetUpLocalDb> {
           return null;
         },
       );
-      
+
       if (setUp == "done") {
         if (mounted) {
-           Navigator.of(context).pushAndRemoveUntil(
+          Navigator.of(context).pushAndRemoveUntil(
               MaterialPageRoute(builder: (context) => const BottomTabs()),
               (Route<dynamic> route) => false);
         }
@@ -60,14 +60,13 @@ class _SetUpLocalDbState extends State<SetUpLocalDb> {
 
   void startSmartSetup() async {
     try {
-      
       // Use the new smart setup function that handles everything
       await setupDatabaseIfNeeded((progress) {
         changeCompleted(progress);
       });
-      
+
       await storage.write(key: 'db', value: 'done');
-      
+
       if (mounted) {
         setState(() {
           loading = false;
@@ -78,19 +77,17 @@ class _SetUpLocalDbState extends State<SetUpLocalDb> {
             (Route<dynamic> route) => false);
       }
     } catch (e, stackTrace) {
-      
-      
       // Show error to user
       if (mounted) {
         setState(() {
           loading = false;
         });
-        
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Database setup failed: $e'),
             backgroundColor: Colors.red,
-            duration: Duration(seconds: 5),
+            duration: const Duration(seconds: 5),
           ),
         );
       }
@@ -99,15 +96,13 @@ class _SetUpLocalDbState extends State<SetUpLocalDb> {
 
   void changeCompleted(int currentRow) async {
     if (mounted) {
-      final totalRows = 18349;
+      const totalRows = 18349;
       final progress = currentRow / totalRows;
-      
-      
-      
+
       setState(() {
         completed = progress;
       });
-    } 
+    }
   }
 
   String percent() {
@@ -120,6 +115,8 @@ class _SetUpLocalDbState extends State<SetUpLocalDb> {
 
   @override
   Widget build(BuildContext context) {
+    final appColors = Theme.of(context).extension<AppColors>()!;
+
     return Scaffold(
       body: Container(
           decoration: const BoxDecoration(
@@ -143,10 +140,10 @@ class _SetUpLocalDbState extends State<SetUpLocalDb> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                const Text(
+                                Text(
                                   'Player Stats 24',
                                   style: TextStyle(
-                                    color: posColor,
+                                    color: appColors.posColor,
                                     fontSize: 35,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -154,10 +151,10 @@ class _SetUpLocalDbState extends State<SetUpLocalDb> {
                                 Container(
                                   height: 5,
                                 ),
-                                const Text(
+                                Text(
                                   'Storing Over 20000 Players',
                                   style: TextStyle(
-                                    color: posColor,
+                                    color: appColors.posColor,
                                     fontSize: 18,
                                   ),
                                 ),
@@ -168,7 +165,7 @@ class _SetUpLocalDbState extends State<SetUpLocalDb> {
                             child: LinearProgressIndicator(
                               value: completed,
                               minHeight: 12.5,
-                              color: posColor,
+                              color: appColors.posColor,
                             )),
                         completed < 1
                             ? const Text(
@@ -187,10 +184,10 @@ class _SetUpLocalDbState extends State<SetUpLocalDb> {
                         Container(
                           height: 25,
                         ),
-                        const Text(
+                        Text(
                           'App will Work Offline as well',
                           style: TextStyle(
-                            color: posColor,
+                            color: appColors.posColor,
                             fontSize: 18,
                           ),
                         ),
@@ -203,8 +200,8 @@ class _SetUpLocalDbState extends State<SetUpLocalDb> {
                   child: SizedBox(
                     width: 45,
                     height: 45,
-                    child: const CircularProgressIndicator(
-                      color: posColor,
+                    child: CircularProgressIndicator(
+                      color: appColors.posColor,
                     ),
                   ),
                 )),

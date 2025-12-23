@@ -1,4 +1,5 @@
-import 'package:fc_stats_24/utlis/CustomColors.dart';
+import 'package:fc_stats_24/layout.dart';
+import 'package:fc_stats_24/theme.dart';
 import 'package:flutter/material.dart';
 
 class SkillCard extends StatelessWidget {
@@ -7,23 +8,19 @@ class SkillCard extends StatelessWidget {
   final cardWidth;
   const SkillCard({super.key, this.rating, this.skill, this.cardWidth});
 
-  Color bgColor() {
+  Color bgColor(BuildContext context) {
+    final appColors = Theme.of(context).extension<AppColors>()!;
     if (rating == null) return Colors.grey;
     if (rating >= 90) {
-      const color = darkGreen;
-      return color;
+      return appColors.darkGreen;
     } else if (rating >= 80) {
-      const color = green;
-      return color;
+      return appColors.green;
     } else if (rating >= 70) {
-      const color = lightGreen;
-      return color;
+      return appColors.lightGreen;
     } else if (rating >= 50) {
-      const color = yellow;
-      return color;
+      return appColors.yellow;
     } else {
-      const color = red;
-      return color;
+      return appColors.red;
     }
   }
 
@@ -31,6 +28,7 @@ class SkillCard extends StatelessWidget {
   Widget build(BuildContext context) {
     MediaQueryData queryData;
     queryData = MediaQuery.of(context);
+
     return Container(
       margin: const EdgeInsets.fromLTRB(15, 5, 15, 0),
       child: Row(
@@ -39,13 +37,13 @@ class SkillCard extends StatelessWidget {
           Container(
             width: queryData.size.width * cardWidth,
             height: queryData.size.width * cardWidth,
-            decoration: BoxDecoration(color: bgColor()),
+            decoration: BoxDecoration(color: bgColor(context)),
             child: Center(
               child: Text(
                 rating?.toString() ?? "-",
-                style: TextStyle(
-                    fontSize: playerDetailsRatingFont,
-                    fontWeight: ratingFontWeight),
+                style: const TextStyle(
+                    fontSize: AppLayout.playerDetailsRatingFont,
+                    fontWeight: AppLayout.ratingFontWeight),
               ),
             ),
           ),

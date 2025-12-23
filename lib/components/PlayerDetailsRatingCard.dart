@@ -2,7 +2,8 @@ import 'package:fc_stats_24/components/AgeRating.dart';
 import 'package:fc_stats_24/components/FootDetails.dart';
 import 'package:fc_stats_24/components/OverallRating.dart';
 import 'package:fc_stats_24/components/PotentialRating.dart';
-import 'package:fc_stats_24/utlis/CustomColors.dart';
+import 'package:fc_stats_24/layout.dart';
+import 'package:fc_stats_24/theme.dart';
 import 'package:flutter/material.dart';
 
 class PlayerDetailsRatingCard extends StatelessWidget {
@@ -24,16 +25,23 @@ class PlayerDetailsRatingCard extends StatelessWidget {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double remWidth = width - 24;
+
+    final appColors = Theme.of(context).extension<AppColors>()!;
+    // Using hardcoded values from CustomColors for card width/fonts to maintain layout if they were layout constants
+    // If detailsPageWidth, posFontSize etc were purely visual constants, they should be in theme or strictly local.
+    // For now, I'll keep the layout constants as literals or defined locally, or if they were global, consider moving them to a 'LayoutConstants' class.
+    // Assuming detailsPageWidth = 0.09, posFontSize = 16, posDetFontWeight = w900 for now based on previous file content.
+
     return Container(
       margin: const EdgeInsets.all(11),
       padding: const EdgeInsets.fromLTRB(0, 0, 0, 11),
-      decoration: BoxDecoration(border: Border.all(color: posColor)),
+      decoration: BoxDecoration(border: Border.all(color: appColors.posColor)),
       child: Column(
         children: [
           Container(
             padding: const EdgeInsets.fromLTRB(0, 7, 0, 7),
             alignment: Alignment.center,
-            decoration: const BoxDecoration(color: posColor),
+            decoration: BoxDecoration(color: appColors.posColor),
             child: const Text('PLAYER DETAILS',
                 style: TextStyle(
                     fontSize: 16,
@@ -62,7 +70,7 @@ class PlayerDetailsRatingCard extends StatelessWidget {
                             ),
                             OverallRating(
                               overall: playerData['overall'],
-                              cardWidth: detailsPageWidth,
+                              cardWidth: AppLayout.detailsPageWidth,
                             ),
                           ],
                         ),
@@ -80,7 +88,7 @@ class PlayerDetailsRatingCard extends StatelessWidget {
                             ),
                             AgeRating(
                               age: playerData['age'],
-                              cardWidth: detailsPageWidth,
+                              cardWidth: AppLayout.detailsPageWidth,
                             )
                           ],
                         ),
@@ -99,9 +107,9 @@ class PlayerDetailsRatingCard extends StatelessWidget {
                         child: Text(
                           playerPositions(),
                           style: TextStyle(
-                              color: posColor,
-                              fontWeight: posDetFontWeight,
-                              fontSize: posFontSize),
+                              color: appColors.posColor,
+                              fontWeight: AppLayout.posDetFontWeight,
+                              fontSize: AppLayout.posFontSize),
                         ),
                       ),
                       SizedBox(
@@ -155,7 +163,7 @@ class PlayerDetailsRatingCard extends StatelessWidget {
                             ),
                             PotentialRating(
                               potential: playerData['potential'],
-                              cardWidth: detailsPageWidth,
+                              cardWidth: AppLayout.detailsPageWidth,
                             ),
                           ],
                         ),
@@ -173,7 +181,7 @@ class PlayerDetailsRatingCard extends StatelessWidget {
                             ),
                             FootDetails(
                               foot: playerData['preferred_foot'],
-                              cardWidth: detailsPageWidth,
+                              cardWidth: AppLayout.detailsPageWidth,
                             )
                           ],
                         ),
@@ -275,16 +283,17 @@ class PlayerDetailsRatingCard extends StatelessWidget {
               children: [
                 SizedBox(
                   width: 0.5 * remWidth,
-                  child: const Row(
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
+                      const Text(
                         'REAL FACE: ',
                         style: TextStyle(fontSize: 15),
                       ),
                       Text(
                         'Yes',
-                        style: TextStyle(color: lightGreen, fontSize: 15),
+                        style: TextStyle(
+                            color: appColors.lightGreen, fontSize: 15),
                       )
                     ],
                   ),
@@ -302,7 +311,8 @@ class PlayerDetailsRatingCard extends StatelessWidget {
                         playerData['club_jersey_number'] == 0
                             ? 'None'
                             : playerData['club_jersey_number'].toString(),
-                        style: const TextStyle(color: lightGreen, fontSize: 15),
+                        style: TextStyle(
+                            color: appColors.lightGreen, fontSize: 15),
                       )
                     ],
                   ),

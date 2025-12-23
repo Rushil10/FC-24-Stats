@@ -1,12 +1,10 @@
 import 'package:fc_stats_24/State/VideoAdState.dart';
 import 'package:fc_stats_24/ads/BannerAdSmall.dart';
-import 'package:fc_stats_24/ads/ad_helper.dart';
 import 'package:fc_stats_24/components/playerCard.dart';
 import 'package:fc_stats_24/db/players22.dart';
 import 'package:fc_stats_24/screens/FavouritesScreen.dart';
-import 'package:fc_stats_24/utlis/CustomColors.dart';
+import 'package:fc_stats_24/theme.dart';
 import 'package:flutter/material.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
@@ -17,7 +15,6 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
-  @override
   var loading = true;
   var players = [];
 
@@ -43,16 +40,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget build(BuildContext context) {
     MediaQueryData queryData;
     queryData = MediaQuery.of(context);
+    final appColors = Theme.of(context).extension<AppColors>()!;
+
     return Scaffold(
         drawer: Drawer(
           child: ListView(
             padding: EdgeInsets.zero,
             children: [
-              const DrawerHeader(
+              DrawerHeader(
                 decoration: BoxDecoration(
-                  color: posColor,
+                  color: appColors.posColor,
                 ),
-                child: Text(
+                child: const Text(
                   'Player Stats 24',
                   style: TextStyle(color: Colors.black, fontSize: 21),
                 ),
@@ -161,8 +160,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 child: SizedBox(
                   height: 45,
                   width: 45,
-                  child: const CircularProgressIndicator(
-                    color: posColor,
+                  child: CircularProgressIndicator(
+                    color: appColors.posColor,
                   ),
                 ),
               ));

@@ -2,8 +2,9 @@ import 'package:fc_stats_24/State/VideoAdState.dart';
 import 'package:fc_stats_24/components/AgeRating.dart';
 import 'package:fc_stats_24/components/OverallRating.dart';
 import 'package:fc_stats_24/components/PotentialRating.dart';
+import 'package:fc_stats_24/layout.dart';
 import 'package:fc_stats_24/screens/PlayerDetails.dart';
-import 'package:fc_stats_24/utlis/CustomColors.dart';
+import 'package:fc_stats_24/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -46,6 +47,8 @@ class _PlayerCardState extends ConsumerState<PlayerCard> {
   Widget build(BuildContext context) {
     MediaQueryData queryData;
     queryData = MediaQuery.of(context);
+    final appColors = Theme.of(context).extension<AppColors>()!;
+
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {
@@ -62,21 +65,21 @@ class _PlayerCardState extends ConsumerState<PlayerCard> {
                 children: [
                   OverallRating(
                     overall: widget.playerData['overall'],
-                    cardWidth: mainPageWidth,
+                    cardWidth: AppLayout.mainPageWidth,
                   ),
                   Container(
                     width: queryData.size.width * 0.01,
                   ),
                   PotentialRating(
                     potential: widget.playerData['potential'],
-                    cardWidth: mainPageWidth,
+                    cardWidth: AppLayout.mainPageWidth,
                   ),
                   Container(
                     width: queryData.size.width * 0.01,
                   ),
                   AgeRating(
                     age: widget.playerData['age'],
-                    cardWidth: mainPageWidth,
+                    cardWidth: AppLayout.mainPageWidth,
                   ),
                   Container(
                     width: queryData.size.width * 0.02,
@@ -92,8 +95,9 @@ class _PlayerCardState extends ConsumerState<PlayerCard> {
                   alignment: Alignment.centerLeft,
                   child: Text(
                     widget.playerData['short_name'],
-                    style: TextStyle(
-                        fontSize: ratingCardFont, fontWeight: ratingCardWeight),
+                    style: const TextStyle(
+                        fontSize: AppLayout.ratingCardFont,
+                        fontWeight: AppLayout.ratingCardWeight),
                   ),
                 ),
                 Align(
@@ -101,9 +105,9 @@ class _PlayerCardState extends ConsumerState<PlayerCard> {
                   child: Text(
                     playerPositions(),
                     style: TextStyle(
-                        color: posColor,
-                        fontWeight: posFontWeight,
-                        fontSize: clubNameFontSize),
+                        color: appColors.posColor,
+                        fontWeight: AppLayout.posFontWeight,
+                        fontSize: AppLayout.clubNameFontSize),
                   ),
                 ),
                 Align(
@@ -116,7 +120,8 @@ class _PlayerCardState extends ConsumerState<PlayerCard> {
                           ? widget.playerData['club_name']
                           : "Free Agent",
                       style: TextStyle(
-                          color: clubNameColor, fontSize: clubNameFontSize),
+                          color: appColors.clubNameColor,
+                          fontSize: AppLayout.clubNameFontSize),
                     ),
                   ),
                 )

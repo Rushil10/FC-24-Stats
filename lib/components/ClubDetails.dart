@@ -1,4 +1,4 @@
-import 'package:fc_stats_24/utlis/CustomColors.dart';
+import 'package:fc_stats_24/theme.dart';
 import 'package:flutter/material.dart';
 
 class ClubDetails extends StatelessWidget {
@@ -27,16 +27,18 @@ class ClubDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double remWidth = width - 24;
+    final appColors = Theme.of(context).extension<AppColors>()!;
+
     return Container(
       margin: const EdgeInsets.all(11),
       padding: const EdgeInsets.fromLTRB(0, 0, 0, 11),
-      decoration: BoxDecoration(border: Border.all(color: posColor)),
+      decoration: BoxDecoration(border: Border.all(color: appColors.posColor)),
       child: Column(
         children: [
           Container(
             padding: const EdgeInsets.fromLTRB(0, 7, 0, 7),
             alignment: Alignment.center,
-            decoration: const BoxDecoration(color: posColor),
+            decoration: BoxDecoration(color: appColors.posColor),
             child: const Text('CLUB DETAILS',
                 style: TextStyle(
                     fontSize: 16,
@@ -83,7 +85,8 @@ class ClubDetails extends StatelessWidget {
                 clubData['club_name'].length > 0
                     ? clubData['club_name']
                     : "Free Agent",
-                style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 18),
+                style:
+                    const TextStyle(fontWeight: FontWeight.w700, fontSize: 18),
               ),
             ),
           ),

@@ -1,7 +1,7 @@
 import 'package:fc_stats_24/ads/ad_helper.dart';
 import 'package:fc_stats_24/components/playerCard.dart';
 import 'package:fc_stats_24/db/players22.dart';
-import 'package:fc_stats_24/utlis/CustomColors.dart';
+import 'package:fc_stats_24/theme.dart';
 import 'package:fc_stats_24/ads/BannerAdSmall.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -20,7 +20,6 @@ class Favourites extends ConsumerStatefulWidget {
 }
 
 class _FavouritesState extends ConsumerState<Favourites> {
-  @override
   var loading = true;
   var players = [];
   InterstitialAd? _interstitialAd;
@@ -85,6 +84,8 @@ class _FavouritesState extends ConsumerState<Favourites> {
   Widget build(BuildContext context) {
     MediaQueryData queryData;
     queryData = MediaQuery.of(context);
+    final appColors = Theme.of(context).extension<AppColors>()!;
+
     return Scaffold(
         appBar: AppBar(
           title: Text(widget.title),
@@ -142,8 +143,8 @@ class _FavouritesState extends ConsumerState<Favourites> {
                 child: SizedBox(
                   width: 45,
                   height: 45,
-                  child: const CircularProgressIndicator(
-                    color: posColor,
+                  child: CircularProgressIndicator(
+                    color: appColors.posColor,
                   ),
                 ),
               ));

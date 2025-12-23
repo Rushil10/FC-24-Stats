@@ -1,6 +1,6 @@
 import 'package:fc_stats_24/screens/HomeScreen.dart';
 import 'package:fc_stats_24/screens/SearchScreen.dart';
-import 'package:fc_stats_24/utlis/CustomColors.dart';
+import 'package:fc_stats_24/theme.dart';
 import 'package:flutter/material.dart';
 
 class BottomTabs extends StatefulWidget {
@@ -25,6 +25,8 @@ class _BottomTabsState extends State<BottomTabs> {
 
   @override
   Widget build(BuildContext context) {
+    final appColors = Theme.of(context).extension<AppColors>()!;
+
     return Scaffold(
       //body: _widgetOptions.elementAt(_selectedIndex),
       body: IndexedStack(
@@ -47,7 +49,7 @@ class _BottomTabsState extends State<BottomTabs> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: posColor,
+        selectedItemColor: appColors.posColor,
         backgroundColor: Colors.black,
         showSelectedLabels: false,
         showUnselectedLabels: false,
