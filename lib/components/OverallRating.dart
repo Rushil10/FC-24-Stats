@@ -7,6 +7,7 @@ class OverallRating extends StatelessWidget {
   const OverallRating({super.key, this.overall, this.cardWidth});
 
   Color bgColor() {
+    if (overall == null) return Colors.grey;
     if (overall >= 90) {
       const color = darkGreen;
       return color;
@@ -35,7 +36,7 @@ class OverallRating extends StatelessWidget {
       decoration: BoxDecoration(color: bgColor()),
       child: Center(
         child: Text(
-          overall.toString(),
+          overall?.toString() ?? "-",
           style: TextStyle(fontSize: ratingFont, fontWeight: ratingFontWeight),
         ),
       ),

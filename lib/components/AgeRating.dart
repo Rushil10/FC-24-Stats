@@ -7,6 +7,7 @@ class AgeRating extends StatelessWidget {
   const AgeRating({super.key, this.age, this.cardWidth});
 
   Color bgColor() {
+    if (age == null) return Colors.grey;
     if (age >= 35) {
       const color = red;
       return color;
@@ -35,7 +36,7 @@ class AgeRating extends StatelessWidget {
       decoration: BoxDecoration(color: bgColor()),
       child: Center(
         child: Text(
-          age.toString(),
+          age?.toString() ?? "-",
           style: TextStyle(fontSize: ratingFont, fontWeight: ratingFontWeight),
         ),
       ),

@@ -9,6 +9,7 @@ class AttributeRating extends StatelessWidget {
       {super.key, this.heading, this.attribute, this.cardWidth});
 
   Color bgColor() {
+    if (attribute == null) return Colors.grey;
     if (attribute >= 90) {
       const color = darkGreen;
       return color;
@@ -44,7 +45,7 @@ class AttributeRating extends StatelessWidget {
           decoration: BoxDecoration(color: bgColor()),
           child: Center(
             child: Text(
-              attribute.toString(),
+              attribute?.toString() ?? "-",
               style: TextStyle(
                   fontSize: playerDetailsRatingFont,
                   fontWeight: ratingFontWeight),

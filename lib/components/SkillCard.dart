@@ -8,6 +8,7 @@ class SkillCard extends StatelessWidget {
   const SkillCard({super.key, this.rating, this.skill, this.cardWidth});
 
   Color bgColor() {
+    if (rating == null) return Colors.grey;
     if (rating >= 90) {
       const color = darkGreen;
       return color;
@@ -41,7 +42,7 @@ class SkillCard extends StatelessWidget {
             decoration: BoxDecoration(color: bgColor()),
             child: Center(
               child: Text(
-                rating.toString(),
+                rating?.toString() ?? "-",
                 style: TextStyle(
                     fontSize: playerDetailsRatingFont,
                     fontWeight: ratingFontWeight),

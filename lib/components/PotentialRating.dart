@@ -7,6 +7,7 @@ class PotentialRating extends StatelessWidget {
   const PotentialRating({super.key, this.potential, this.cardWidth});
 
   Color bgColor() {
+    if (potential == null) return Colors.grey;
     if (potential >= 90) {
       const color = darkGreen;
       return color;
@@ -35,7 +36,7 @@ class PotentialRating extends StatelessWidget {
       decoration: BoxDecoration(color: bgColor()),
       child: Center(
         child: Text(
-          potential.toString(),
+          potential?.toString() ?? "-",
           style: TextStyle(fontSize: ratingFont, fontWeight: ratingFontWeight),
         ),
       ),
