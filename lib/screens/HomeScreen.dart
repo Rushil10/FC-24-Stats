@@ -33,7 +33,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       loading = true;
     });
     var top100Players = await PlayersDatabase.instance.top100Players();
-    //print(top100Players.length);
     setState(() {
       players = top100Players;
       loading = false;
@@ -62,7 +61,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 title: const Text('Favourites'),
                 onTap: () {
                   final count = ref.watch(videoAdProvider);
-                  //print(count);
                   ref.read(videoAdProvider.notifier).increment();
                   Navigator.push(
                       context,
@@ -78,7 +76,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 title: const Text('Emerging Players'),
                 onTap: () {
                   final count = ref.watch(videoAdProvider);
-                  //print(count);
                   ref.read(videoAdProvider.notifier).increment();
                   Navigator.push(
                       context,
@@ -94,7 +91,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 title: const Text('Free Agents'),
                 onTap: () {
                   final count = ref.watch(videoAdProvider);
-                  //print(count);
                   ref.read(videoAdProvider.notifier).increment();
                   Navigator.push(
                       context,

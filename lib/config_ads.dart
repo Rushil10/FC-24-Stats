@@ -1,0 +1,1 @@
+const bool SHOW_ADS = false;

@@ -1,4 +1,6 @@
+import 'package:fc_stats_24/config_ads.dart';
 import 'package:fc_stats_24/State/VideoAdState.dart';
+
 import 'package:fc_stats_24/ads/BannerAdSmall.dart';
 import 'package:fc_stats_24/ads/ad_helper.dart';
 import 'package:fc_stats_24/components/ClubDetails.dart';
@@ -31,7 +33,7 @@ class _PlayerDetailsState extends ConsumerState<PlayerDetails> {
   void initState() {
     super.initState();
     ref.read(videoAdProvider);
-    if (widget.count % 5 == 0) {
+    if (SHOW_ADS && widget.count % 5 == 0) {
       addInterstitialAd();
     }
     getPlayerData();
@@ -44,15 +46,12 @@ class _PlayerDetailsState extends ConsumerState<PlayerDetails> {
         request: const AdRequest(),
         adLoadCallback: InterstitialAdLoadCallback(
           onAdLoaded: (InterstitialAd ad) {
-            //print('$ad loaded');
             _interstitialAd = ad;
             _interstitialAd!.setImmersiveMode(true);
             _interstitialAd!.show();
-            //ref.read(videoAdProvider.notifier).increment();
+            ref.read(videoAdProvider.notifier).increment();
           },
-          onAdFailedToLoad: (LoadAdError error) {
-            //print('InterstitialAd failed to load: $error.');
-          },
+          onAdFailedToLoad: (LoadAdError error) {},
         ));
   }
 
@@ -68,7 +67,6 @@ class _PlayerDetailsState extends ConsumerState<PlayerDetails> {
     });
     var det =
         await PlayersDatabase.instance.getPlayerDetails(widget.player['id']);
-    //print(det[0]);
     setState(() {
       playerDetails = det[0];
       loading = false;
@@ -119,7 +117,7 @@ class _PlayerDetailsState extends ConsumerState<PlayerDetails> {
                           ClubDetails(
                             clubData: playerDetails,
                           ),
-                          const MediumNativeAd(),
+                          if (SHOW_ADS) const MediumNativeAd(),
                           GameAttributes(
                             gameData: playerDetails,
                           ),
@@ -133,7 +131,7 @@ class _PlayerDetailsState extends ConsumerState<PlayerDetails> {
                           child: const Text('Loading'),
                         ),
                       ))),
-        BannerSmallAd(),
+        if (SHOW_ADS) BannerSmallAd(),
       ]),
     );
   }

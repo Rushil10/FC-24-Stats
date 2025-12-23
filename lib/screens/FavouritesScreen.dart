@@ -5,8 +5,11 @@ import 'package:fc_stats_24/utlis/CustomColors.dart';
 import 'package:fc_stats_24/ads/BannerAdSmall.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fc_stats_24/State/VideoAdState.dart';
+import 'package:fc_stats_24/config_ads.dart';
 
-class Favourites extends StatefulWidget {
+class Favourites extends ConsumerStatefulWidget {
   final type;
   final title;
   final count;
@@ -16,7 +19,7 @@ class Favourites extends StatefulWidget {
   _FavouritesState createState() => _FavouritesState();
 }
 
-class _FavouritesState extends State<Favourites> {
+class _FavouritesState extends ConsumerState<Favourites> {
   @override
   var loading = true;
   var players = [];
@@ -34,7 +37,7 @@ class _FavouritesState extends State<Favourites> {
     if (widget.type == "Free") {
       getAllFreePlayers();
     }
-    if (widget.count % 5 == 0) {
+    if (SHOW_ADS && widget.count % 5 == 0) {
       addInterstitialAd();
     }
   }
@@ -45,15 +48,12 @@ class _FavouritesState extends State<Favourites> {
         request: const AdRequest(),
         adLoadCallback: InterstitialAdLoadCallback(
           onAdLoaded: (InterstitialAd ad) {
-            //print('$ad loaded');
             _interstitialAd = ad;
             _interstitialAd!.setImmersiveMode(true);
             _interstitialAd!.show();
-            //ref.read(videoAdProvider.notifier).increment();
+            ref.read(videoAdProvider.notifier).increment();
           },
-          onAdFailedToLoad: (LoadAdError error) {
-            //print('InterstitialAd failed to load: $error.');
-          },
+          onAdFailedToLoad: (LoadAdError error) {},
         ));
   }
 
@@ -135,7 +135,7 @@ class _FavouritesState extends State<Favourites> {
                               playerData: players[index],
                             );
                           })),
-                  BannerSmallAd(),
+                  if (SHOW_ADS) BannerSmallAd(),
                 ],
               )
             : Center(

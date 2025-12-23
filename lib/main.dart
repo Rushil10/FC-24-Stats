@@ -1,3 +1,4 @@
+import 'package:fc_stats_24/config_ads.dart';
 import 'package:flutter/services.dart';
 import 'package:fc_stats_24/screens/SetUpLocalDb.dart';
 import 'package:fc_stats_24/theme.dart';
@@ -9,7 +10,9 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
       overlays: [SystemUiOverlay.bottom, SystemUiOverlay.top]);
-  MobileAds.instance.initialize();
+  if (SHOW_ADS) {
+    MobileAds.instance.initialize();
+  }
   runApp(const ProviderScope(child: MyApp()));
 }
 

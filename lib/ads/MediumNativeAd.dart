@@ -34,10 +34,7 @@ class _MediumNativeAdState extends State<MediumNativeAd> {
           });
         },
         onAdFailedToLoad: (ad, error) {
-          // Releases an ad resource when it fails to load
           ad.dispose();
-
-          //print('Ad load failed (code=${error.code} message=${error.message})');
         },
       ),
     );

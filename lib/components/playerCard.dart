@@ -50,7 +50,6 @@ class _PlayerCardState extends ConsumerState<PlayerCard> {
       behavior: HitTestBehavior.opaque,
       onTap: () {
         final count = ref.watch(videoAdProvider);
-        //print(count);
         onTapPlayer(count);
       },
       child: Padding(

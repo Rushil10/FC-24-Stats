@@ -60,15 +60,12 @@ class _SetUpLocalDbState extends State<SetUpLocalDb> {
 
   void startSmartSetup() async {
     try {
-      print('[SetUpLocalDb] Starting smart database setup...');
       
       // Use the new smart setup function that handles everything
       await setupDatabaseIfNeeded((progress) {
         changeCompleted(progress);
       });
       
-      // Setup completed successfully
-      print('[SetUpLocalDb] Database setup completed successfully!');
       await storage.write(key: 'db', value: 'done');
       
       if (mounted) {
@@ -81,8 +78,7 @@ class _SetUpLocalDbState extends State<SetUpLocalDb> {
             (Route<dynamic> route) => false);
       }
     } catch (e, stackTrace) {
-      print('[SetUpLocalDb] ERROR in startSmartSetup: $e');
-      print('[SetUpLocalDb] Stack trace: $stackTrace');
+      
       
       // Show error to user
       if (mounted) {
@@ -106,14 +102,12 @@ class _SetUpLocalDbState extends State<SetUpLocalDb> {
       final totalRows = 18349;
       final progress = currentRow / totalRows;
       
-      print('[SetUpLocalDb] Progress update: row $currentRow/$totalRows (${(progress * 100).toStringAsFixed(2)}%)');
+      
       
       setState(() {
         completed = progress;
       });
-    } else {
-      print('[SetUpLocalDb] Widget not mounted, skipping progress update');
-    }
+    } 
   }
 
   String percent() {

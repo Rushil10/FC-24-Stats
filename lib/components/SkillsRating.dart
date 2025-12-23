@@ -8,7 +8,6 @@ class SkillsRating extends StatelessWidget {
   const SkillsRating({super.key, this.skills});
   @override
   Widget build(BuildContext context) {
-    //print(skills['goalkeeping_speed'].runtimeType);
     return Container(
         margin: const EdgeInsets.all(11),
         padding: const EdgeInsets.fromLTRB(0, 0, 0, 11),
