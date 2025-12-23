@@ -310,4 +310,110 @@ CREATE TABLE players (
       rethrow;
     }
   }
+  Future<List<String>> getDistinctLeagues() async {
+    final db = await instance.database;
+    final result = await db.rawQuery('SELECT DISTINCT league_name FROM players WHERE league_name IS NOT NULL ORDER BY league_name');
+    return result.map((e) => e['league_name'] as String).toList();
+  }
+
+  Future<List<String>> getDistinctNationalities() async {
+    final db = await instance.database;
+    final result = await db.rawQuery('SELECT DISTINCT nationality_name FROM players WHERE nationality_name IS NOT NULL ORDER BY nationality_name');
+    return result.map((e) => e['nationality_name'] as String).toList();
+  }
+
+  Future<List<String>> getDistinctClubs() async {
+    final db = await instance.database;
+    final result = await db.rawQuery('SELECT DISTINCT club_name FROM players WHERE club_name IS NOT NULL ORDER BY club_name');
+    return result.map((e) => e['club_name'] as String).toList();
+  }
+
+  Future<List<Map>> filterPlayers({
+    String? query,
+    double? minOverall,
+    double? maxOverall,
+    double? minPotential,
+    double? maxPotential,
+    double? minAge,
+    double? maxAge,
+    List<String>? positions, // e.g. ['ST', 'CF']
+    String? preferredFoot,
+    String? league,
+    String? nationality,
+    String? club,
+    String? playStyles, // Search in player_traits
+    String? roles,      // Search in player_tags or work_rate
+  }) async {
+    final db = await instance.database;
+    String whereClause = '1=1';
+    List<dynamic> args = [];
+
+    if (query != null && query.isNotEmpty) {
+      whereClause += " AND long_name LIKE ?";
+      args.add('%$query%');
+    }
+    if (minOverall != null) {
+      whereClause += " AND overall >= ?";
+      args.add(minOverall);
+    }
+    if (maxOverall != null) {
+      whereClause += " AND overall <= ?";
+      args.add(maxOverall);
+    }
+    if (minPotential != null) {
+      whereClause += " AND potential >= ?";
+      args.add(minPotential);
+    }
+    if (maxPotential != null) {
+      whereClause += " AND potential <= ?";
+      args.add(maxPotential);
+    }
+    if (minAge != null) {
+      whereClause += " AND age >= ?";
+      args.add(minAge);
+    }
+    if (maxAge != null) {
+      whereClause += " AND age <= ?";
+      args.add(maxAge);
+    }
+    if (preferredFoot != null) {
+      whereClause += " AND preferred_foot = ?";
+      args.add(preferredFoot);
+    }
+    if (league != null) {
+      whereClause += " AND league_name = ?";
+      args.add(league);
+    }
+    if (nationality != null) {
+      whereClause += " AND nationality_name = ?";
+      args.add(nationality);
+    }
+    if (club != null) {
+      whereClause += " AND club_name = ?";
+      args.add(club);
+    }
+    if (playStyles != null && playStyles.isNotEmpty) {
+      whereClause += " AND player_traits LIKE ?";
+      args.add('%$playStyles%');
+    }
+    if (roles != null && roles.isNotEmpty) {
+       // Search in work_rate or player_tags
+       whereClause += " AND (work_rate LIKE ? OR player_tags LIKE ?)";
+       args.add('%$roles%');
+       args.add('%$roles%');
+    }
+
+    if (positions != null && positions.isNotEmpty) {
+      // Assuming player_positions is a string like "ST, CF"
+      String posWhere = positions.map((_) => "player_positions LIKE ?").join(' OR ');
+      whereClause += " AND ($posWhere)";
+      args.addAll(positions.map((p) => '%$p%'));
+    }
+
+    // Limit to avoid UI lag
+    final result = await db.rawQuery('SELECT * FROM players WHERE $whereClause LIMIT 50', args);
+    return result;
+  }
+
+
 }
