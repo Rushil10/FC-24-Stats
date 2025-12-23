@@ -20,23 +20,20 @@ class PlayersDatabase {
 
   Future deleteDB() async {
     try {
-      
       // Close existing connection first
       if (_database != null) {
         try {
           await _database!.close();
-        } catch (e) {
-        }
+        } catch (e) {}
         _database = null;
       }
-      
+
       final dbPath = await getDatabasesPath();
       final path = join(dbPath, 'players22.db');
-      
+
       if (await databaseExists(path)) {
         await deleteDatabase(path);
-      } else {
-      }
+      } else {}
     } catch (e, stackTrace) {
       rethrow;
     }
@@ -46,7 +43,7 @@ class PlayersDatabase {
     try {
       final dbPath = await getDatabasesPath();
       final path = join(dbPath, filePath);
-      
+
       // Add a timeout to the open operation
       final db = await openDatabase(
         path,
@@ -54,26 +51,24 @@ class PlayersDatabase {
         onCreate: _createDB,
         onUpgrade: (db, oldVersion, newVersion) async {
           if (oldVersion < 3) {
-             await db.execute("DROP TABLE IF EXISTS players");
-             await _createDB(db, newVersion);
+            await db.execute("DROP TABLE IF EXISTS players");
+            await _createDB(db, newVersion);
           }
         },
       ).timeout(const Duration(seconds: 10), onTimeout: () {
-          throw Exception('openDatabase timeout');
+        throw Exception('openDatabase timeout');
       });
-      
+
       return db;
     } catch (e, stackTrace) {
-      
       // If there's an error, try to delete corrupted database
       try {
         final dbPath = await getDatabasesPath();
         final path = join(dbPath, filePath);
         // Don't use databaseExists check here, just try to delete
         await deleteDatabase(path);
-      } catch (deleteError) {
-      }
-      
+      } catch (deleteError) {}
+
       rethrow;
     }
   }
@@ -106,15 +101,15 @@ class PlayersDatabase {
           throw Exception('Database connection timeout');
         },
       );
-      
+
       // Use COUNT(*) instead of SELECT id - much faster!
-      final result = await db.rawQuery('SELECT COUNT(*) as count FROM players')
-          .timeout(
-            Duration(seconds: 5),
-            onTimeout: () {
-              throw Exception('Query timeout');
-            },
-          );
+      final result =
+          await db.rawQuery('SELECT COUNT(*) as count FROM players').timeout(
+        Duration(seconds: 5),
+        onTimeout: () {
+          throw Exception('Query timeout');
+        },
+      );
       final count = Sqflite.firstIntValue(result) ?? 0;
       return count;
     } catch (e, stackTrace) {
@@ -310,22 +305,95 @@ CREATE TABLE players (
       rethrow;
     }
   }
+
   Future<List<String>> getDistinctLeagues() async {
     final db = await instance.database;
-    final result = await db.rawQuery('SELECT DISTINCT league_name FROM players WHERE league_name IS NOT NULL ORDER BY league_name');
+    final result = await db.rawQuery(
+        'SELECT DISTINCT league_name FROM players WHERE league_name IS NOT NULL AND league_name != "" ORDER BY league_name');
     return result.map((e) => e['league_name'] as String).toList();
   }
 
   Future<List<String>> getDistinctNationalities() async {
     final db = await instance.database;
-    final result = await db.rawQuery('SELECT DISTINCT nationality_name FROM players WHERE nationality_name IS NOT NULL ORDER BY nationality_name');
+    final result = await db.rawQuery(
+        'SELECT DISTINCT nationality_name FROM players WHERE nationality_name IS NOT NULL AND nationality_name != "" ORDER BY nationality_name');
     return result.map((e) => e['nationality_name'] as String).toList();
   }
 
   Future<List<String>> getDistinctClubs() async {
     final db = await instance.database;
-    final result = await db.rawQuery('SELECT DISTINCT club_name FROM players WHERE club_name IS NOT NULL ORDER BY club_name');
+    final result = await db.rawQuery(
+        'SELECT DISTINCT club_name FROM players WHERE club_name IS NOT NULL AND club_name != "" ORDER BY club_name');
     return result.map((e) => e['club_name'] as String).toList();
+  }
+
+  Future<List<String>> getDistinctTraits() async {
+    final db = await instance.database;
+    // player_traits is a comma separated string
+    final result = await db.rawQuery(
+        'SELECT DISTINCT player_traits FROM players WHERE player_traits IS NOT NULL AND player_traits != ""');
+
+    Set<String> traits = {};
+    for (var row in result) {
+      String traitStr = row['player_traits'] as String;
+      List<String> traitList = traitStr.split(',');
+      for (var t in traitList) {
+        String trimmed = t.trim();
+        if (trimmed.isNotEmpty) {
+          traits.add(trimmed);
+        }
+      }
+    }
+    List<String> sortedTraits = traits.toList();
+    sortedTraits.sort();
+    return sortedTraits;
+  }
+
+  Future<List<String>> getDistinctPositions() async {
+    final db = await instance.database;
+    final result = await db.rawQuery(
+        'SELECT DISTINCT player_positions FROM players WHERE player_positions IS NOT NULL AND player_positions != ""');
+
+    Set<String> positions = {};
+    for (var row in result) {
+      String posStr = row['player_positions'] as String;
+      List<String> posList = posStr.split(',');
+      for (var p in posList) {
+        String trimmed = p.trim();
+        if (trimmed.isNotEmpty) {
+          positions.add(trimmed);
+        }
+      }
+    }
+    List<String> sortedPositions = positions.toList();
+    // Logical football order is better but alphabetical is a safe start for now unless I define the order.
+    // Let's use a standard priority order.
+    const order = [
+      'GK',
+      'CB',
+      'LB',
+      'LWB',
+      'RB',
+      'RWB',
+      'CDM',
+      'CM',
+      'LM',
+      'RM',
+      'CAM',
+      'LW',
+      'RW',
+      'CF',
+      'ST'
+    ];
+    sortedPositions.sort((a, b) {
+      int idxA = order.indexOf(a);
+      int idxB = order.indexOf(b);
+      if (idxA != -1 && idxB != -1) return idxA.compareTo(idxB);
+      if (idxA != -1) return -1;
+      if (idxB != -1) return 1;
+      return a.compareTo(b);
+    });
+    return sortedPositions;
   }
 
   Future<List<Map>> filterPlayers({
@@ -336,20 +404,21 @@ CREATE TABLE players (
     double? maxPotential,
     double? minAge,
     double? maxAge,
-    List<String>? positions, // e.g. ['ST', 'CF']
+    List<String>? positions,
     String? preferredFoot,
-    String? league,
-    String? nationality,
-    String? club,
-    String? playStyles, // Search in player_traits
-    String? roles,      // Search in player_tags or work_rate
+    List<String>? leagues,
+    List<String>? nationalities,
+    List<String>? clubs,
+    List<String>? playStyles,
+    String? roles,
   }) async {
     final db = await instance.database;
     String whereClause = '1=1';
     List<dynamic> args = [];
 
     if (query != null && query.isNotEmpty) {
-      whereClause += " AND long_name LIKE ?";
+      whereClause += " AND (long_name LIKE ? OR short_name LIKE ?)";
+      args.add('%$query%');
       args.add('%$query%');
     }
     if (minOverall != null) {
@@ -380,40 +449,47 @@ CREATE TABLE players (
       whereClause += " AND preferred_foot = ?";
       args.add(preferredFoot);
     }
-    if (league != null) {
-      whereClause += " AND league_name = ?";
-      args.add(league);
+
+    if (leagues != null && leagues.isNotEmpty) {
+      String inClause = leagues.map((_) => "?").join(',');
+      whereClause += " AND league_name IN ($inClause)";
+      args.addAll(leagues);
     }
-    if (nationality != null) {
-      whereClause += " AND nationality_name = ?";
-      args.add(nationality);
+
+    if (nationalities != null && nationalities.isNotEmpty) {
+      String inClause = nationalities.map((_) => "?").join(',');
+      whereClause += " AND nationality_name IN ($inClause)";
+      args.addAll(nationalities);
     }
-    if (club != null) {
-      whereClause += " AND club_name = ?";
-      args.add(club);
+
+    if (clubs != null && clubs.isNotEmpty) {
+      String inClause = clubs.map((_) => "?").join(',');
+      whereClause += " AND club_name IN ($inClause)";
+      args.addAll(clubs);
     }
+
     if (playStyles != null && playStyles.isNotEmpty) {
-      whereClause += " AND player_traits LIKE ?";
-      args.add('%$playStyles%');
+      for (var trait in playStyles) {
+        whereClause += " AND player_traits LIKE ?";
+        args.add('%$trait%');
+      }
     }
+
     if (roles != null && roles.isNotEmpty) {
-       // Search in work_rate or player_tags
-       whereClause += " AND (work_rate LIKE ? OR player_tags LIKE ?)";
-       args.add('%$roles%');
-       args.add('%$roles%');
+      whereClause += " AND (work_rate LIKE ? OR player_tags LIKE ?)";
+      args.add('%$roles%');
+      args.add('%$roles%');
     }
 
     if (positions != null && positions.isNotEmpty) {
-      // Assuming player_positions is a string like "ST, CF"
-      String posWhere = positions.map((_) => "player_positions LIKE ?").join(' OR ');
+      String posWhere =
+          positions.map((_) => "player_positions LIKE ?").join(' OR ');
       whereClause += " AND ($posWhere)";
       args.addAll(positions.map((p) => '%$p%'));
     }
 
-    // Limit to avoid UI lag
-    final result = await db.rawQuery('SELECT * FROM players WHERE $whereClause LIMIT 50', args);
+    final result = await db.rawQuery(
+        'SELECT * FROM players WHERE $whereClause LIMIT 100', args);
     return result;
   }
-
-
 }

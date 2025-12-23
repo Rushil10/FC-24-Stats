@@ -13,10 +13,10 @@ class SearchResultsScreen extends StatefulWidget {
   final double maxAge;
   final List<String> selectedPositions;
   final String? preferredFoot;
-  final String? league;
-  final String? nationality;
-  final String? club;
-  final String? playStyles;
+  final List<String> leagues;
+  final List<String> nationalities;
+  final List<String> clubs;
+  final List<String> playStyles;
   final String? roles;
 
   const SearchResultsScreen({
@@ -30,10 +30,10 @@ class SearchResultsScreen extends StatefulWidget {
     required this.maxAge,
     required this.selectedPositions,
     this.preferredFoot,
-    this.league,
-    this.nationality,
-    this.club,
-    this.playStyles,
+    required this.leagues,
+    required this.nationalities,
+    required this.clubs,
+    required this.playStyles,
     this.roles,
   });
 
@@ -66,9 +66,9 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
       maxAge: widget.maxAge,
       positions: widget.selectedPositions,
       preferredFoot: widget.preferredFoot,
-      league: widget.league,
-      nationality: widget.nationality,
-      club: widget.club,
+      leagues: widget.leagues,
+      nationalities: widget.nationalities,
+      clubs: widget.clubs,
       playStyles: widget.playStyles,
       roles: widget.roles,
     );

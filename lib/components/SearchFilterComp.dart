@@ -4,13 +4,15 @@ import 'package:fc_stats_24/theme.dart';
 // A generic button for the filter grid
 class FilterGridButton extends StatelessWidget {
   final String label;
-  final String? value; // e.g. "(3) Selected" or "Men"
+  final String? value;
+  final IconData icon;
   final VoidCallback onTap;
 
   const FilterGridButton({
     super.key,
     required this.label,
     this.value,
+    required this.icon,
     required this.onTap,
   });
 
@@ -18,37 +20,73 @@ class FilterGridButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final appColors = Theme.of(context).extension<AppColors>()!;
     final surfaceColor = Theme.of(context).colorScheme.surface;
+    final bool isSelected = value != null && value != 'Any' && value != 'All';
 
     return GestureDetector(
       onTap: onTap,
-      child: Container(
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
         decoration: BoxDecoration(
-          color: surfaceColor,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.white.withOpacity(0.1)),
+          color:
+              isSelected ? appColors.posColor.withOpacity(0.08) : surfaceColor,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: isSelected
+                ? appColors.posColor.withOpacity(0.5)
+                : Colors.white.withOpacity(0.08),
+            width: 1.0,
+          ),
         ),
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        child: Row(
           children: [
-            Text(
-              label.toUpperCase(),
-              style: const TextStyle(
-                color: Colors.grey,
-                fontWeight: FontWeight.bold,
-                fontSize: 12,
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: isSelected
+                    ? appColors.posColor.withOpacity(0.15)
+                    : Colors.grey[850],
+                shape: BoxShape.circle,
               ),
-              textAlign: TextAlign.center,
+              child: Icon(
+                icon,
+                color: isSelected
+                    ? appColors.posColor
+                    : Colors.white.withOpacity(0.6),
+                size: 16,
+              ),
             ),
-            const SizedBox(height: 4),
-            Text(
-              value ?? 'Any',
-              style: TextStyle(
-                color: value != null ? appColors.posColor : Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 14,
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    label.toUpperCase(),
+                    style: TextStyle(
+                      color: isSelected
+                          ? appColors.posColor.withOpacity(0.9)
+                          : Colors.white.withOpacity(0.85),
+                      fontWeight: FontWeight.w900,
+                      fontSize: 10,
+                      letterSpacing: 0.8,
+                    ),
+                  ),
+                  if (isSelected) ...[
+                    const SizedBox(height: 2),
+                    Text(
+                      value!,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 13,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ],
               ),
-              textAlign: TextAlign.center,
             ),
           ],
         ),
@@ -81,11 +119,11 @@ class RangeFilterSection extends StatelessWidget {
 
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 8),
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+      padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
       decoration: BoxDecoration(
         color: surfaceColor,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.white.withOpacity(0.1)),
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: Colors.white.withOpacity(0.05)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -95,32 +133,41 @@ class RangeFilterSection extends StatelessWidget {
             children: [
               Text(
                 title.toUpperCase(),
-                style: const TextStyle(
-                  color: Colors.grey,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14,
+                style: TextStyle(
+                  color: Colors.white.withOpacity(0.9),
+                  fontWeight: FontWeight.w800,
+                  fontSize: 13,
+                  letterSpacing: 0.8,
                 ),
               ),
-              Row(
-                children: [
-                  _ValueBox(values.start.round().toString()),
-                  const SizedBox(width: 8),
-                  const Text("-", style: TextStyle(color: Colors.grey)),
-                  const SizedBox(width: 8),
-                  _ValueBox(values.end.round().toString()),
-                ],
-              )
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: appColors.posColor.withOpacity(0.08),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(
+                  "${values.start.round()} - ${values.end.round()}",
+                  style: TextStyle(
+                    color: appColors.posColor,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 13,
+                  ),
+                ),
+              ),
             ],
           ),
-          const SizedBox(height: 8),
           SliderTheme(
             data: SliderThemeData(
-              activeTrackColor: appColors.posColor,
-              inactiveTrackColor: Colors.grey[800],
+              activeTrackColor: appColors.posColor.withOpacity(0.8),
+              inactiveTrackColor: Colors.grey[900],
               thumbColor: Colors.white,
-              overlayColor: appColors.posColor.withOpacity(0.2),
-              trackHeight: 4,
-              thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 8),
+              overlayColor: appColors.posColor.withOpacity(0.1),
+              trackHeight: 3,
+              rangeThumbShape:
+                  const RoundRangeSliderThumbShape(enabledThumbRadius: 8),
+              rangeTrackShape: const RoundedRectRangeSliderTrackShape(),
             ),
             child: RangeSlider(
               values: values,
@@ -130,32 +177,6 @@ class RangeFilterSection extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _ValueBox extends StatelessWidget {
-  final String text;
-  const _ValueBox(this.text);
-
-  @override
-  Widget build(BuildContext context) {
-    final appColors = Theme.of(context).extension<AppColors>()!;
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      decoration: BoxDecoration(
-        color: appColors.surfaceColorLight,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Text(
-        text,
-        style: TextStyle(
-          color: appColors.posColor,
-          fontWeight: FontWeight.bold,
-          fontSize: 14,
-        ),
       ),
     );
   }

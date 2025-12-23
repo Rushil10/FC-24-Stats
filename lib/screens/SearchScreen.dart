@@ -1,19 +1,21 @@
 import 'dart:async';
 import 'package:fc_stats_24/components/SearchFilterComp.dart';
-import 'package:fc_stats_24/components/playerCard.dart';
 import 'package:fc_stats_24/db/players22.dart';
 import 'package:fc_stats_24/screens/SearchResultsScreen.dart';
+import 'package:fc_stats_24/screens/SelectionScreen.dart';
 import 'package:fc_stats_24/theme.dart';
+import 'package:fc_stats_24/providers/search_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SearchScreen extends StatefulWidget {
+class SearchScreen extends ConsumerStatefulWidget {
   const SearchScreen({super.key});
 
   @override
   _SearchScreenState createState() => _SearchScreenState();
 }
 
-class _SearchScreenState extends State<SearchScreen>
+class _SearchScreenState extends ConsumerState<SearchScreen>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
@@ -22,25 +24,16 @@ class _SearchScreenState extends State<SearchScreen>
   final FocusNode _searchFocusNode = FocusNode();
   Timer? _debounce;
 
-  // Filter States
-  RangeValues _overallRange = const RangeValues(0, 99);
-  RangeValues _potentialRange = const RangeValues(0, 99);
-  RangeValues _ageRange = const RangeValues(15, 45);
-
-  List<String> _selectedPositions = [];
-  String? _selectedFoot;
-  String? _selectedLeague;
-  String? _selectedNationality;
-  String? _selectedClub;
-  // Play Styles and Roles (simple text search or selection)
-  String?
-      _selectedPlayStyles; // Comma separated if multiple? Or just single for now for simplicity
-  String? _selectedRoles; // "Work Rate" or similar
-
   // Overlay Results
   List<Map> _overlayResults = [];
   bool _isLoadingOverlay = false;
   bool _showOverlay = false;
+
+  Future<List<String>>? _positionsFuture;
+  Future<List<String>> _getPositions() {
+    _positionsFuture ??= PlayersDatabase.instance.getDistinctPositions();
+    return _positionsFuture!;
+  }
 
   void _onSearchChanged(String query) {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
@@ -67,7 +60,6 @@ class _SearchScreenState extends State<SearchScreen>
         setState(() {
           _overlayResults = results;
           _isLoadingOverlay = false;
-          // If query was cleared while fetching
           if (_searchController.text.isEmpty) {
             _showOverlay = false;
           }
@@ -77,232 +69,189 @@ class _SearchScreenState extends State<SearchScreen>
   }
 
   void _navigateToResults() {
+    final filters = ref.read(searchFiltersProvider);
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => SearchResultsScreen(
           query: _searchController.text,
-          minOverall: _overallRange.start,
-          maxOverall: _overallRange.end,
-          minPotential: _potentialRange.start,
-          maxPotential: _potentialRange.end,
-          minAge: _ageRange.start,
-          maxAge: _ageRange.end,
-          selectedPositions: _selectedPositions,
-          preferredFoot: _selectedFoot,
-          league: _selectedLeague,
-          nationality: _selectedNationality,
-          club: _selectedClub,
-          playStyles: _selectedPlayStyles,
-          roles: _selectedRoles,
+          minOverall: filters.overallRange.start,
+          maxOverall: filters.overallRange.end,
+          minPotential: filters.potentialRange.start,
+          maxPotential: filters.potentialRange.end,
+          minAge: filters.ageRange.start,
+          maxAge: filters.ageRange.end,
+          selectedPositions: filters.selectedPositions,
+          preferredFoot: filters.preferredFoot,
+          leagues: filters.selectedLeagues,
+          nationalities: filters.selectedNationalities,
+          clubs: filters.selectedClubs,
+          playStyles: filters.selectedPlayStyles,
+          roles: filters.selectedRoles,
         ),
       ),
     );
   }
 
-  // --- Generic Filter API Selectors ---
-
-  void _openGenericSelector(
-      String title, Future<List<String>> fetcher, Function(String) onSelect) {
-    final appColors = Theme.of(context).extension<AppColors>()!;
-    final surfaceColor = Theme.of(context).colorScheme.surface;
-
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: surfaceColor,
-      isScrollControlled: true,
-      builder: (context) {
-        return DraggableScrollableSheet(
-          initialChildSize: 0.7,
-          minChildSize: 0.5,
-          maxChildSize: 0.9,
-          builder: (context, scrollController) {
-            return FutureBuilder<List<String>>(
-              future: fetcher,
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return Center(
-                      child:
-                          CircularProgressIndicator(color: appColors.posColor));
-                }
-                var items = snapshot.data!;
-                return Container(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    children: [
-                      Text("Select $title",
-                          style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold)),
-                      const SizedBox(height: 10),
-                      Expanded(
-                        child: ListView.builder(
-                          controller: scrollController,
-                          itemCount: items.length,
-                          itemBuilder: (context, index) {
-                            return ListTile(
-                              title: Text(items[index],
-                                  style: const TextStyle(color: Colors.white)),
-                              onTap: () {
-                                onSelect(items[index]);
-                                Navigator.pop(context);
-                              },
-                            );
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            );
-          },
-        );
-      },
+  Future<void> _navigateToSelector({
+    required String title,
+    required Future<List<String>> fetcher,
+    required List<String> initialSelected,
+    required Function(List<String>) onResult,
+  }) async {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SelectionScreen(
+          title: title,
+          fetcher: fetcher,
+          initialSelected: initialSelected,
+          onChanged: onResult,
+        ),
+      ),
     );
   }
 
-  // Simple text input selector for PlayStyles/Roles if no list available
-  void _openTextSelector(
-      String title, String? currentValue, Function(String) onSave) {
+  void _openPositionSelector() async {
     final appColors = Theme.of(context).extension<AppColors>()!;
     final surfaceColor = Theme.of(context).colorScheme.surface;
 
-    TextEditingController c = TextEditingController(text: currentValue);
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            backgroundColor: surfaceColor,
-            title: Text("Enter $title",
-                style: const TextStyle(color: Colors.white)),
-            content: TextField(
-              controller: c,
-              style: const TextStyle(color: Colors.white),
-              decoration: const InputDecoration(
-                  hintText: "e.g. Finesse Shot",
-                  hintStyle: TextStyle(color: Colors.grey)),
-            ),
-            actions: [
-              TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: const Text("Cancel")),
-              TextButton(
-                  onPressed: () {
-                    onSave(c.text);
-                    Navigator.pop(context);
-                  },
-                  child: Text("Save",
-                      style: TextStyle(color: appColors.posColor))),
-            ],
-          );
-        });
-  }
+    final positions = await _getPositions();
+    if (!mounted) return;
 
-  void _openPositionSelector() {
-    final appColors = Theme.of(context).extension<AppColors>()!;
-    final surfaceColor = Theme.of(context).colorScheme.surface;
-
-    final positions = [
-      'GK',
-      'CB',
-      'LB',
-      'RB',
-      'CDM',
-      'CM',
-      'CAM',
-      'RM',
-      'LM',
-      'LW',
-      'RW',
-      'ST',
-      'CF'
-    ];
     showModalBottomSheet(
       context: context,
       backgroundColor: surfaceColor,
       isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
       builder: (context) {
-        return StatefulBuilder(
-          builder: (context, setModalState) {
-            return Container(
-              padding: const EdgeInsets.all(20),
-              height: MediaQuery.of(context).size.height * 0.6,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text("Select Positions",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 20),
-                  Expanded(
-                    child: GridView.builder(
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 4,
-                        childAspectRatio: 1.5,
-                        crossAxisSpacing: 10,
-                        mainAxisSpacing: 10,
-                      ),
-                      itemCount: positions.length,
-                      itemBuilder: (context, index) {
-                        final pos = positions[index];
-                        final isSelected = _selectedPositions.contains(pos);
-                        return GestureDetector(
-                          onTap: () {
-                            setModalState(() {
-                              if (isSelected) {
-                                _selectedPositions.remove(pos);
-                              } else {
-                                _selectedPositions.add(pos);
-                              }
-                            });
-                            setState(() {}); // Update main screen
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
+        return Consumer(builder: (context, ref, child) {
+          final currentPositions =
+              ref.watch(searchFiltersProvider).selectedPositions;
+          return Container(
+            padding: const EdgeInsets.fromLTRB(20, 24, 20, 24),
+            height: MediaQuery.of(context).size.height * 0.7,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text("Field Positions",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 22,
+                                fontWeight: FontWeight.w900)),
+                        Text("${currentPositions.length} Selected",
+                            style: TextStyle(
+                                color: appColors.posColor.withOpacity(0.8),
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold)),
+                      ],
+                    ),
+                    IconButton(
+                      onPressed: () => Navigator.pop(context),
+                      icon: const Icon(Icons.close, color: Colors.white),
+                    )
+                  ],
+                ),
+                const SizedBox(height: 24),
+                Expanded(
+                  child: GridView.builder(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      childAspectRatio: 2.2,
+                      crossAxisSpacing: 12,
+                      mainAxisSpacing: 12,
+                    ),
+                    itemCount: positions.length,
+                    itemBuilder: (context, index) {
+                      final pos = positions[index];
+                      final isSelected = currentPositions.contains(pos);
+                      return InkWell(
+                        onTap: () {
+                          ref
+                              .read(searchFiltersProvider.notifier)
+                              .togglePosition(pos);
+                        },
+                        borderRadius: BorderRadius.circular(12),
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 200),
+                          decoration: BoxDecoration(
+                            color: isSelected
+                                ? appColors.posColor.withOpacity(0.1)
+                                : Colors.white.withOpacity(0.05),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
                               color: isSelected
                                   ? appColors.posColor
-                                  : Colors.grey[800],
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            alignment: Alignment.center,
-                            child: Text(
-                              pos,
-                              style: TextStyle(
-                                color: isSelected ? Colors.black : Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
+                                  : Colors.transparent,
+                              width: 1.5,
                             ),
                           ),
-                        );
-                      },
-                    ),
+                          alignment: Alignment.center,
+                          child: Text(
+                            pos,
+                            style: TextStyle(
+                              color: isSelected
+                                  ? Colors.white
+                                  : Colors.white.withOpacity(0.6),
+                              fontWeight: isSelected
+                                  ? FontWeight.w900
+                                  : FontWeight.w600,
+                              fontSize: 15,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
                   ),
-                ],
-              ),
-            );
-          },
-        );
+                ),
+                const SizedBox(height: 20),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () => Navigator.pop(context),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: appColors.posColor,
+                      foregroundColor: Colors.black,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16)),
+                      elevation: 0,
+                    ),
+                    child: const Text("DONE",
+                        style: TextStyle(
+                            fontWeight: FontWeight.w900, letterSpacing: 1.1)),
+                  ),
+                ),
+              ],
+            ),
+          );
+        });
       },
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    super.build(context); // Keep state
+    super.build(context);
 
     final appColors = Theme.of(context).extension<AppColors>()!;
     final surfaceColor = Theme.of(context).colorScheme.surface;
     final scaffoldColor = Theme.of(context).scaffoldBackgroundColor;
+    final filters = ref.watch(searchFiltersProvider);
+    final filtersNotifier = ref.read(searchFiltersProvider.notifier);
 
     return Scaffold(
       backgroundColor: scaffoldColor,
-      resizeToAvoidBottomInset:
-          false, // Prevent resizing when keyboard opens for overlay stability
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Text("Player Potentials",
             style: TextStyle(fontWeight: FontWeight.bold)),
@@ -311,61 +260,40 @@ class _SearchScreenState extends State<SearchScreen>
         actions: [
           IconButton(
             icon: const Icon(Icons.filter_alt_off),
-            onPressed: () {
-              setState(() {
-                _searchController.clear();
-                _showOverlay = false;
-                _overallRange = const RangeValues(0, 99);
-                _potentialRange = const RangeValues(0, 99);
-                _ageRange = const RangeValues(15, 45);
-                _selectedPositions = [];
-                _selectedFoot = null;
-                _selectedLeague = null;
-                _selectedNationality = null;
-                _selectedClub = null;
-                _selectedPlayStyles = null;
-                _selectedRoles = null;
-              });
-            },
+            onPressed: () => filtersNotifier.reset(),
           )
         ],
       ),
       body: Stack(
         children: [
-          // Main Body with Filters
           Padding(
-            padding:
-                const EdgeInsets.only(top: 80), // Reserve space for search bar
+            padding: const EdgeInsets.only(top: 80),
             child: SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Column(
                 children: [
-                  // Range Sliders
                   RangeFilterSection(
                     title: "Overall",
-                    values: _overallRange,
+                    values: filters.overallRange,
                     min: 0,
                     max: 99,
-                    onChanged: (v) => setState(() => _overallRange = v),
+                    onChanged: (v) => filtersNotifier.setOverallRange(v),
                   ),
                   RangeFilterSection(
                     title: "Potential",
-                    values: _potentialRange,
+                    values: filters.potentialRange,
                     min: 0,
                     max: 99,
-                    onChanged: (v) => setState(() => _potentialRange = v),
+                    onChanged: (v) => filtersNotifier.setPotentialRange(v),
                   ),
                   RangeFilterSection(
                     title: "Age",
-                    values: _ageRange,
+                    values: filters.ageRange,
                     min: 15,
                     max: 45,
-                    onChanged: (v) => setState(() => _ageRange = v),
+                    onChanged: (v) => filtersNotifier.setAgeRange(v),
                   ),
-
                   const SizedBox(height: 16),
-
-                  // Filter Grid
                   GridView.count(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
@@ -374,89 +302,105 @@ class _SearchScreenState extends State<SearchScreen>
                     mainAxisSpacing: 12,
                     childAspectRatio: 2.5,
                     children: [
-                      // Position
                       FilterGridButton(
                         label: "Position",
-                        value: _selectedPositions.isEmpty
+                        icon: Icons.place,
+                        value: filters.selectedPositions.isEmpty
                             ? "All"
-                            : "(${_selectedPositions.length}) Selected",
+                            : "(${filters.selectedPositions.length}) Selected",
                         onTap: _openPositionSelector,
                       ),
-                      // Foot
                       FilterGridButton(
                         label: "Foot",
-                        value: _selectedFoot ?? "Any",
+                        icon: Icons.directions_walk,
+                        value: filters.preferredFoot ?? "Any",
                         onTap: () {
-                          setState(() {
-                            if (_selectedFoot == null)
-                              _selectedFoot = "Left";
-                            else if (_selectedFoot == "Left")
-                              _selectedFoot = "Right";
-                            else
-                              _selectedFoot = null;
-                          });
+                          if (filters.preferredFoot == null)
+                            filtersNotifier.setPreferredFoot("Left");
+                          else if (filters.preferredFoot == "Left")
+                            filtersNotifier.setPreferredFoot("Right");
+                          else
+                            filtersNotifier.setPreferredFoot(null);
                         },
                       ),
-                      // League
                       FilterGridButton(
                         label: "League",
-                        value: _selectedLeague ?? "Any",
-                        onTap: () => _openGenericSelector("League",
-                            PlayersDatabase.instance.getDistinctLeagues(),
-                            (val) {
-                          setState(() => _selectedLeague = val);
-                        }),
+                        icon: Icons.emoji_events,
+                        value: filters.selectedLeagues.isEmpty
+                            ? "Any"
+                            : filters.selectedLeagues.length == 1
+                                ? filters.selectedLeagues.first
+                                : "(${filters.selectedLeagues.length}) Selected",
+                        onTap: () => _navigateToSelector(
+                          title: "League",
+                          fetcher:
+                              PlayersDatabase.instance.getDistinctLeagues(),
+                          initialSelected: filters.selectedLeagues,
+                          onResult: (res) => filtersNotifier.setLeagues(res),
+                        ),
                       ),
-                      // Nationality
                       FilterGridButton(
                         label: "Nationality",
-                        value: _selectedNationality ?? "Any",
-                        onTap: () => _openGenericSelector("Nationality",
-                            PlayersDatabase.instance.getDistinctNationalities(),
-                            (val) {
-                          setState(() => _selectedNationality = val);
-                        }),
+                        icon: Icons.flag,
+                        value: filters.selectedNationalities.isEmpty
+                            ? "Any"
+                            : filters.selectedNationalities.length == 1
+                                ? filters.selectedNationalities.first
+                                : "(${filters.selectedNationalities.length}) Selected",
+                        onTap: () => _navigateToSelector(
+                          title: "Nationality",
+                          fetcher: PlayersDatabase.instance
+                              .getDistinctNationalities(),
+                          initialSelected: filters.selectedNationalities,
+                          onResult: (res) =>
+                              filtersNotifier.setNationalities(res),
+                        ),
                       ),
-                      // Club
                       FilterGridButton(
                         label: "Club",
-                        value: _selectedClub ?? "Any",
-                        onTap: () => _openGenericSelector(
-                            "Club", PlayersDatabase.instance.getDistinctClubs(),
-                            (val) {
-                          setState(() => _selectedClub = val);
-                        }),
+                        icon: Icons.home,
+                        value: filters.selectedClubs.isEmpty
+                            ? "Any"
+                            : filters.selectedClubs.length == 1
+                                ? filters.selectedClubs.first
+                                : "(${filters.selectedClubs.length}) Selected",
+                        onTap: () => _navigateToSelector(
+                          title: "Club",
+                          fetcher: PlayersDatabase.instance.getDistinctClubs(),
+                          initialSelected: filters.selectedClubs,
+                          onResult: (res) => filtersNotifier.setClubs(res),
+                        ),
                       ),
-                      // Play Styles (Traits)
                       FilterGridButton(
                         label: "Play Styles",
-                        value: _selectedPlayStyles ?? "Any",
-                        onTap: () => _openTextSelector(
-                            "Play Style (Trait)", _selectedPlayStyles, (val) {
-                          setState(() =>
-                              _selectedPlayStyles = val.isEmpty ? null : val);
-                        }),
+                        icon: Icons.star,
+                        value: filters.selectedPlayStyles.isEmpty
+                            ? "Any"
+                            : "(${filters.selectedPlayStyles.length}) Selected",
+                        onTap: () => _navigateToSelector(
+                          title: "Play Styles",
+                          fetcher: PlayersDatabase.instance.getDistinctTraits(),
+                          initialSelected: filters.selectedPlayStyles,
+                          onResult: (res) => filtersNotifier.setPlayStyles(res),
+                        ),
                       ),
-                      // Roles (Work Rate)
                       FilterGridButton(
                         label: "Roles",
-                        value: _selectedRoles ?? "Any",
-                        onTap: () => _openTextSelector(
-                            "Work Rate (e.g. High/High)", _selectedRoles,
-                            (val) {
-                          setState(
-                              () => _selectedRoles = val.isEmpty ? null : val);
-                        }),
+                        icon: Icons.work,
+                        value: filters.selectedRoles ?? "Any",
+                        onTap: () {
+                          // Roles (Work rate) can still be a simple text or a dialog for now
+                          // User specifically asked for full screen for League, Club, Nationality, Play Style
+                          _openRolesSelector();
+                        },
                       ),
                     ],
                   ),
-                  const SizedBox(height: 100), // Space for bottom button
+                  const SizedBox(height: 100),
                 ],
               ),
             ),
           ),
-
-          // Fixed Search Bar at Top
           Positioned(
             top: 0,
             left: 0,
@@ -488,14 +432,12 @@ class _SearchScreenState extends State<SearchScreen>
               ),
             ),
           ),
-
-          // Results Overlay (Conditionally shown below Search Bar)
           if (_showOverlay)
             Positioned(
-              top: 80, // Height of Search Bar container
+              top: 80,
               left: 16,
               right: 16,
-              height: MediaQuery.of(context).size.height * 0.5, // Half height
+              height: MediaQuery.of(context).size.height * 0.5,
               child: Container(
                 decoration: BoxDecoration(
                   color: surfaceColor,
@@ -540,7 +482,6 @@ class _SearchScreenState extends State<SearchScreen>
                               : ListView.builder(
                                   itemCount: _overlayResults.length,
                                   itemBuilder: (context, index) {
-                                    // Simplified result item
                                     final p = _overlayResults[index];
                                     return ListTile(
                                       leading: CircleAvatar(
@@ -559,12 +500,7 @@ class _SearchScreenState extends State<SearchScreen>
                                           style: TextStyle(
                                               color: appColors.posColor)),
                                       onTap: () {
-                                        // Can handle quick navigation to details if desired
-                                        // But user said "search text also propagates", so maybe just typing?
-                                        // Assuming selecting here navigates to details or fills search?
-                                        // Let's just fill search and hide overlay for now, or open detials
-                                        // User: "show the results in an overlay modal... and that search text also propogates into my final next page"
-                                        // Implies this is just preview.
+                                        // Preview - just typing
                                       },
                                     );
                                   },
@@ -578,21 +514,63 @@ class _SearchScreenState extends State<SearchScreen>
       ),
       bottomSheet: Container(
         color: scaffoldColor,
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         width: double.infinity,
         child: ElevatedButton(
           onPressed: _navigateToResults,
           style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xff4af1f2),
+            backgroundColor: appColors.posColor,
             foregroundColor: Colors.black,
-            padding: const EdgeInsets.symmetric(vertical: 16),
+            elevation: 0,
+            padding: const EdgeInsets.symmetric(vertical: 18),
             shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           ),
           child: const Text("SEARCH",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 1.2)),
         ),
       ),
     );
+  }
+
+  void _openRolesSelector() {
+    final appColors = Theme.of(context).extension<AppColors>()!;
+    final surfaceColor = Theme.of(context).colorScheme.surface;
+    final currentValue = ref.read(searchFiltersProvider).selectedRoles;
+
+    TextEditingController c = TextEditingController(text: currentValue);
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            backgroundColor: surfaceColor,
+            title: const Text("Enter Roles / Work Rate",
+                style: TextStyle(color: Colors.white)),
+            content: TextField(
+              controller: c,
+              style: const TextStyle(color: Colors.white),
+              decoration: const InputDecoration(
+                  hintText: "e.g. High/High",
+                  hintStyle: TextStyle(color: Colors.grey)),
+            ),
+            actions: [
+              TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text("Cancel")),
+              TextButton(
+                  onPressed: () {
+                    ref
+                        .read(searchFiltersProvider.notifier)
+                        .setSelectedRoles(c.text.isEmpty ? null : c.text);
+                    Navigator.pop(context);
+                  },
+                  child: Text("Save",
+                      style: TextStyle(color: appColors.posColor))),
+            ],
+          );
+        });
   }
 }
