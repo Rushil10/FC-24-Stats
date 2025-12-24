@@ -23,7 +23,7 @@ class SkillsSelectionScreen extends ConsumerWidget {
           icon: const Icon(Icons.close, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text("PLAYER SKILLS",
+        title: const Text("GAME ATTRIBUTES",
             style: TextStyle(
                 color: Colors.white,
                 fontSize: 18,

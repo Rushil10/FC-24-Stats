@@ -6,7 +6,7 @@ class ClubDetails extends StatelessWidget {
   const ClubDetails({super.key, this.clubData});
 
   String convertWage(var val) {
-    if (val == 0) {
+    if (val == null || val == 0) {
       return "-";
     }
     var w = val.toString().length;
@@ -20,7 +20,7 @@ class ClubDetails extends StatelessWidget {
       v += "M";
       return v;
     }
-    return val.toString();
+    return '\u{20AC}${val.toString()}';
   }
 
   @override
@@ -45,7 +45,8 @@ class ClubDetails extends StatelessWidget {
                     fontWeight: FontWeight.w800,
                     color: Colors.black)),
           ),
-          clubData['club_logo_url'].length > 0
+          (clubData['club_logo_url'] != null &&
+                  clubData['club_logo_url'].toString().isNotEmpty)
               ? Center(
                   child: SizedBox(
                     width: 0.15 * width,
@@ -82,7 +83,8 @@ class ClubDetails extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
               child: Text(
-                clubData['club_name'].length > 0
+                (clubData['club_name'] != null &&
+                        clubData['club_name'].toString().isNotEmpty)
                     ? clubData['club_name']
                     : "Free Agent",
                 style:
@@ -94,7 +96,7 @@ class ClubDetails extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
               child: Text(
-                clubData['league_name'],
+                clubData['league_name']?.toString() ?? "N/A",
                 style: const TextStyle(fontSize: 15),
               ),
             ),
@@ -107,7 +109,7 @@ class ClubDetails extends StatelessWidget {
                 style: TextStyle(fontSize: 15),
               ),
               Text(
-                clubData['club_joined'],
+                clubData['club_joined']?.toString() ?? "N/A",
                 style: const TextStyle(fontSize: 15),
               ),
               const Text(

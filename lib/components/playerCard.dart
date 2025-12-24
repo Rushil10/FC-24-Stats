@@ -116,7 +116,10 @@ class _PlayerCardState extends ConsumerState<PlayerCard> {
                     constraints:
                         BoxConstraints(maxWidth: queryData.size.width / 2.1),
                     child: Text(
-                      widget.playerData['club_name'].length > 0
+                      (widget.playerData['club_name'] != null &&
+                              widget.playerData['club_name']
+                                  .toString()
+                                  .isNotEmpty)
                           ? widget.playerData['club_name']
                           : "Free Agent",
                       style: TextStyle(

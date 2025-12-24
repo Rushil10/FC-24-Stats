@@ -11,7 +11,8 @@ class PlayerDetailsRatingCard extends StatelessWidget {
   const PlayerDetailsRatingCard({super.key, this.playerData});
 
   String playerPositions() {
-    String pos = playerData['player_positions'];
+    String pos = playerData['player_positions']?.toString() ?? "";
+    if (pos.isEmpty) return "N/A";
     List li = pos.split(",");
     String p = "";
     for (int i = 0; i < li.length; i++) {
@@ -27,10 +28,6 @@ class PlayerDetailsRatingCard extends StatelessWidget {
     double remWidth = width - 24;
 
     final appColors = Theme.of(context).extension<AppColors>()!;
-    // Using hardcoded values from CustomColors for card width/fonts to maintain layout if they were layout constants
-    // If detailsPageWidth, posFontSize etc were purely visual constants, they should be in theme or strictly local.
-    // For now, I'll keep the layout constants as literals or defined locally, or if they were global, consider moving them to a 'LayoutConstants' class.
-    // Assuming detailsPageWidth = 0.09, posFontSize = 16, posDetFontWeight = w900 for now based on previous file content.
 
     return Container(
       margin: const EdgeInsets.all(11),
@@ -194,7 +191,7 @@ class PlayerDetailsRatingCard extends StatelessWidget {
           ),
           Center(
             child: Text(
-              playerData['long_name'],
+              playerData['long_name']?.toString() ?? "Unknown Player",
               style: const TextStyle(fontSize: 16),
             ),
           ),
@@ -206,7 +203,8 @@ class PlayerDetailsRatingCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                playerData['nation_flag_url'].length > 0
+                (playerData['nation_flag_url'] != null &&
+                        playerData['nation_flag_url'].toString().isNotEmpty)
                     ? SizedBox(
                         width: 0.045 * remWidth,
                         child: Image.network(
@@ -241,7 +239,7 @@ class PlayerDetailsRatingCard extends StatelessWidget {
                 ),
                 Container(
                   child: Text(
-                    playerData['nationality_name'],
+                    playerData['nationality_name']?.toString() ?? "N/A",
                     style: const TextStyle(fontSize: 14),
                   ),
                 ),
@@ -250,7 +248,7 @@ class PlayerDetailsRatingCard extends StatelessWidget {
                 ),
                 Container(
                   child: Text(
-                    playerData['dob'],
+                    playerData['dob']?.toString() ?? "N/A",
                     style: const TextStyle(fontSize: 14),
                   ),
                 ),

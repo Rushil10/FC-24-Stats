@@ -17,7 +17,7 @@ class GameAttributesSelectionScreen extends ConsumerWidget {
       backgroundColor: Colors.black,
       appBar: AppBar(
         title: const Text(
-          "GAME ATTRIBUTES",
+          "PHYSICAL & SKILLS",
           style: TextStyle(
             fontWeight: FontWeight.w900,
             fontSize: 20,

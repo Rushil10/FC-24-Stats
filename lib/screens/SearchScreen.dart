@@ -273,16 +273,16 @@ class _SearchScreenState extends ConsumerState<SearchScreen>
                       ),
                       FilterGridButton(
                         label: "Game Attributes",
-                        icon: Icons.settings_applications,
+                        icon: Icons.bar_chart,
                         value:
                             filters.isGameAttributesSelected ? "Active" : "Any",
-                        onTap: _openGameAttributesSelector,
+                        onTap: _openSkillsSelector,
                       ),
                       FilterGridButton(
-                        label: "Skills",
-                        icon: Icons.bar_chart,
+                        label: "Physical & Skills",
+                        icon: Icons.settings_applications,
                         value: filters.isSkillsSelected ? "Active" : "Any",
-                        onTap: _openSkillsSelector,
+                        onTap: _openGameAttributesSelector,
                       ),
                     ],
                   ),

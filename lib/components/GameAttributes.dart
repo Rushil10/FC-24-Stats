@@ -8,13 +8,16 @@ class GameAttributes extends StatelessWidget {
   const GameAttributes({super.key, this.gameData});
 
   String workRateAtt() {
-    var work = gameData['work_rate'];
+    var work = gameData['work_rate']?.toString();
+    if (work == null || !work.contains('/')) return "N/A";
     List<String> wr = work.split('/');
     return wr[0];
   }
 
   String workRateDef() {
-    var work = gameData['work_rate'];
+    var work = gameData['work_rate']?.toString();
+    if (work == null || !work.contains('/') || work.split('/').length < 2)
+      return "N/A";
     List<String> wr = work.split('/');
     return wr[1];
   }
@@ -31,7 +34,9 @@ class GameAttributes extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<String> playerTraits = gameData['player_traits'].split(',');
+    String traitsString = gameData['player_traits']?.toString() ?? "";
+    List<String> playerTraits =
+        traitsString.isNotEmpty ? traitsString.split(',') : [];
     final appColors = Theme.of(context).extension<AppColors>()!;
 
     return Container(

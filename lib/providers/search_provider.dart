@@ -246,19 +246,6 @@ class SearchFilters {
   }
 
   bool get isGameAttributesSelected {
-    return heightRange.start != 120 ||
-        heightRange.end != 220 ||
-        weightRange.start != 40 ||
-        weightRange.end != 110 ||
-        skillMovesRange.start != 1 ||
-        skillMovesRange.end != 5 ||
-        weakFootRange.start != 1 ||
-        weakFootRange.end != 5 ||
-        internationalReputationRange.start != 1 ||
-        internationalReputationRange.end != 5;
-  }
-
-  bool get isSkillsSelected {
     return paceRange.start != 0 ||
         paceRange.end != 99 ||
         shootingRange.start != 0 ||
@@ -341,6 +328,19 @@ class SearchFilters {
         gkSpeedRange.end != 99 ||
         gkPositioningRange.start != 0 ||
         gkPositioningRange.end != 99;
+  }
+
+  bool get isSkillsSelected {
+    return heightRange.start != 120 ||
+        heightRange.end != 220 ||
+        weightRange.start != 40 ||
+        weightRange.end != 110 ||
+        skillMovesRange.start != 1 ||
+        skillMovesRange.end != 5 ||
+        weakFootRange.start != 1 ||
+        weakFootRange.end != 5 ||
+        internationalReputationRange.start != 1 ||
+        internationalReputationRange.end != 5;
   }
 
   void reset() {}
