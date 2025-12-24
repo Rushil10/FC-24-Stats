@@ -7,6 +7,7 @@ import 'package:fc_stats_24/db/Squad.dart';
 import 'package:fc_stats_24/db/SquadsDatabase.dart';
 import 'package:fc_stats_24/screens/SquadPlayerSelectionScreen.dart';
 import 'package:fc_stats_24/theme.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:path_provider/path_provider.dart';
@@ -29,6 +30,8 @@ class _SquadBuilderScreenState extends State<SquadBuilderScreen> {
   bool _isLoading = false;
   bool _showStats = true;
   String _squadName = 'My Squad';
+  int? _squadId; // Track the squad ID after first save
+  bool _hasUnsavedChanges = false; // Track if auto-save has occurred
 
   @override
   void initState() {
@@ -42,6 +45,7 @@ class _SquadBuilderScreenState extends State<SquadBuilderScreen> {
     setState(() => _isLoading = true);
     try {
       final squad = widget.squad!;
+      _squadId = squad.id; // Track the squad ID
       _squadName = squad.name;
       _currentFormation = FormationData.getFormation(squad.formationId);
 
@@ -343,14 +347,17 @@ class _SquadBuilderScreenState extends State<SquadBuilderScreen> {
     try {
       final now = DateTime.now().toIso8601String();
 
-      if (widget.squad == null) {
-        // For new squads, create them automatically with default name
+      if (_squadId == null) {
+        // Create new squad only if we haven't created one yet
         final squad = Squad(
           name: _squadName,
           formationId: _currentFormation.id,
           createdAt: now,
         );
-        final squadId = await SquadsDatabase.instance.createSquad(squad);
+        _squadId = await SquadsDatabase.instance.createSquad(squad);
+        if (kDebugMode) {
+          print('Auto-save: Created new squad with ID: $_squadId');
+        }
 
         // Add current players
         for (var entry in _selectedPlayers.entries) {
@@ -359,7 +366,7 @@ class _SquadBuilderScreenState extends State<SquadBuilderScreen> {
           final position = _currentFormation.positions[positionIndex].label;
 
           final squadPlayer = SquadPlayer(
-            squadId: squadId,
+            squadId: _squadId!,
             playerId: player.id!,
             position: position,
             positionIndex: positionIndex,
@@ -368,18 +375,22 @@ class _SquadBuilderScreenState extends State<SquadBuilderScreen> {
           await SquadsDatabase.instance.addPlayerToSquad(squadPlayer);
         }
       } else {
-        // Update existing squad
+        // Update existing squad using _squadId
+        if (kDebugMode) {
+          print('Auto-save: Updating squad ID: $_squadId');
+        }
         final updatedSquad = Squad(
-          id: widget.squad!.id,
+          id: _squadId,
           name: _squadName,
           formationId: _currentFormation.id,
-          createdAt: widget.squad!.createdAt,
+          createdAt:
+              widget.squad?.createdAt ?? DateTime.now().toIso8601String(),
           updatedAt: now,
         );
         await SquadsDatabase.instance.updateSquad(updatedSquad);
 
         // Delete old players
-        await SquadsDatabase.instance.deleteAllSquadPlayers(widget.squad!.id!);
+        await SquadsDatabase.instance.deleteAllSquadPlayers(_squadId!);
 
         // Add current players
         for (var entry in _selectedPlayers.entries) {
@@ -388,7 +399,7 @@ class _SquadBuilderScreenState extends State<SquadBuilderScreen> {
           final position = _currentFormation.positions[positionIndex].label;
 
           final squadPlayer = SquadPlayer(
-            squadId: widget.squad!.id!,
+            squadId: _squadId!,
             playerId: player.id!,
             position: position,
             positionIndex: positionIndex,
@@ -397,8 +408,15 @@ class _SquadBuilderScreenState extends State<SquadBuilderScreen> {
           await SquadsDatabase.instance.addPlayerToSquad(squadPlayer);
         }
       }
+      if (kDebugMode) {
+        print('Auto-save: Success! Squad ID: $_squadId');
+      }
+      _hasUnsavedChanges = true; // Mark that changes have been saved
     } catch (e) {
-      // Silently fail for auto-save
+      // Log the error for debugging
+      if (kDebugMode) {
+        print('Auto-save error: $e');
+      }
     }
   }
 
@@ -462,17 +480,18 @@ class _SquadBuilderScreenState extends State<SquadBuilderScreen> {
       final now = DateTime.now().toIso8601String();
 
       int squadId;
-      if (widget.squad != null) {
+      if (_squadId != null) {
         // Update existing squad
         final updatedSquad = Squad(
-          id: widget.squad!.id,
+          id: _squadId,
           name: _squadName,
           formationId: _currentFormation.id,
-          createdAt: widget.squad!.createdAt,
+          createdAt:
+              widget.squad?.createdAt ?? DateTime.now().toIso8601String(),
           updatedAt: now,
         );
         await SquadsDatabase.instance.updateSquad(updatedSquad);
-        squadId = widget.squad!.id!;
+        squadId = _squadId!;
 
         // Delete old players
         await SquadsDatabase.instance.deleteAllSquadPlayers(squadId);
@@ -484,6 +503,7 @@ class _SquadBuilderScreenState extends State<SquadBuilderScreen> {
           createdAt: now,
         );
         squadId = await SquadsDatabase.instance.createSquad(squad);
+        _squadId = squadId; // Track the new squad ID
       }
 
       // Add players
@@ -601,230 +621,246 @@ class _SquadBuilderScreenState extends State<SquadBuilderScreen> {
     final scaffoldColor = Theme.of(context).scaffoldBackgroundColor;
     final stats = _calculateSquadStats();
 
-    return Scaffold(
-      backgroundColor: scaffoldColor,
-      extendBodyBehindAppBar: false,
-      appBar: AppBar(
-        title: Text(
-          _squadName,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (!didPop) {
+          // Pop with result indicating if changes were made
+          Navigator.of(context).pop(_hasUnsavedChanges);
+        }
+      },
+      child: Scaffold(
+        backgroundColor: scaffoldColor,
+        extendBodyBehindAppBar: false,
+        appBar: AppBar(
+          title: Text(
+            _squadName,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
           ),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.screenshot_outlined),
+              onPressed: _captureAndShareSquad,
+              tooltip: 'Share Squad',
+            ),
+            IconButton(
+              icon: const Icon(Icons.edit),
+              onPressed: _isLoading ? null : _showSaveDialog,
+              tooltip: 'Rename Squad',
+            ),
+          ],
         ),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.screenshot_outlined),
-            onPressed: _captureAndShareSquad,
-            tooltip: 'Share Squad',
-          ),
-          IconButton(
-            icon: const Icon(Icons.edit),
-            onPressed: _isLoading ? null : _showSaveDialog,
-            tooltip: 'Rename Squad',
-          ),
-        ],
-      ),
-      body: _isLoading
-          ? Center(child: CircularProgressIndicator(color: appColors.posColor))
-          : Column(
-              children: [
-                // Compact Professional Stats Panel
-                Container(
-                  margin: const EdgeInsets.fromLTRB(12, 4, 12, 8),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: appColors.posColor.withOpacity(0.3),
-                      width: 1.5,
+        body: _isLoading
+            ? Center(
+                child: CircularProgressIndicator(color: appColors.posColor))
+            : Column(
+                children: [
+                  // Compact Professional Stats Panel
+                  Container(
+                    margin: const EdgeInsets.fromLTRB(12, 4, 12, 8),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: appColors.posColor.withOpacity(0.3),
+                        width: 1.5,
+                      ),
+                      borderRadius: BorderRadius.circular(12),
+                      color: Colors.transparent,
                     ),
-                    borderRadius: BorderRadius.circular(12),
-                    color: Colors.transparent,
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        // Header - Always visible
-                        InkWell(
-                          onTap: () => setState(() => _showStats = !_showStats),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 8),
-                            decoration: BoxDecoration(
-                              color: appColors.surfaceColor.withOpacity(0.5),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  _currentFormation.name,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.bold,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // Header - Always visible
+                          InkWell(
+                            onTap: () =>
+                                setState(() => _showStats = !_showStats),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 8),
+                              decoration: BoxDecoration(
+                                color: appColors.surfaceColor.withOpacity(0.5),
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    _currentFormation.name,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
-                                ),
-                                Icon(
-                                  _showStats
-                                      ? Icons.keyboard_arrow_up
-                                      : Icons.keyboard_arrow_down,
-                                  color: appColors.posColor,
-                                  size: 18,
-                                ),
-                              ],
+                                  Icon(
+                                    _showStats
+                                        ? Icons.keyboard_arrow_up
+                                        : Icons.keyboard_arrow_down,
+                                    color: appColors.posColor,
+                                    size: 18,
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
+                          // Animated Stats Content
+                          AnimatedSize(
+                            duration: const Duration(milliseconds: 200),
+                            curve: Curves.easeInOut,
+                            child: _showStats
+                                ? Container(
+                                    padding: const EdgeInsets.all(10),
+                                    decoration: const BoxDecoration(
+                                      color: Colors.transparent,
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        // Left Column - Overall & Potential
+                                        Expanded(
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceEvenly,
+                                            children: [
+                                              _buildMiniStatCircle(
+                                                'OVR',
+                                                stats['avgOverall'].toString(),
+                                                appColors.ovrColor,
+                                              ),
+                                              _buildMiniStatCircle(
+                                                'POT',
+                                                stats['avgPotential']
+                                                    .toString(),
+                                                appColors.clubNameColor,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        // Vertical Divider
+                                        Container(
+                                          width: 1,
+                                          height: 50,
+                                          color: Colors.grey[800],
+                                          margin: const EdgeInsets.symmetric(
+                                              horizontal: 8),
+                                        ),
+                                        // Right Column - Value/Wage & Ages
+                                        Expanded(
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              // Row 1: Value & Wage
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceEvenly,
+                                                children: [
+                                                  _buildTinyStatItem(
+                                                    'VALUE',
+                                                    _formatCurrency(
+                                                        stats['totalValue']),
+                                                  ),
+                                                  _buildTinyStatItem(
+                                                    'WAGE',
+                                                    _formatCurrency(
+                                                        stats['totalWage']),
+                                                  ),
+                                                ],
+                                              ),
+                                              const SizedBox(height: 6),
+                                              // Row 2: Ages & Players
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceEvenly,
+                                                children: [
+                                                  _buildTinyStatItem(
+                                                    'AVG AGE',
+                                                    '${stats['avgAge']}',
+                                                  ),
+                                                  _buildTinyStatItem(
+                                                    'PLAYERS',
+                                                    '${stats['playerCount']}/11',
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                : const SizedBox.shrink(),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  // Football Field
+                  Expanded(
+                    child: RepaintBoundary(
+                      key: _fieldKey,
+                      child: Container(
+                        color: scaffoldColor,
+                        child: FootballField(
+                          formation: _currentFormation,
+                          selectedPlayers: _selectedPlayers,
+                          onPositionTap: _selectPlayer,
+                          onPlayerLongPress: _removePlayer,
                         ),
-                        // Animated Stats Content
-                        AnimatedSize(
-                          duration: const Duration(milliseconds: 200),
-                          curve: Curves.easeInOut,
-                          child: _showStats
-                              ? Container(
-                                  padding: const EdgeInsets.all(10),
-                                  decoration: const BoxDecoration(
-                                    color: Colors.transparent,
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      // Left Column - Overall & Potential
-                                      Expanded(
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceEvenly,
-                                          children: [
-                                            _buildMiniStatCircle(
-                                              'OVR',
-                                              stats['avgOverall'].toString(),
-                                              appColors.ovrColor,
-                                            ),
-                                            _buildMiniStatCircle(
-                                              'POT',
-                                              stats['avgPotential'].toString(),
-                                              appColors.clubNameColor,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      // Vertical Divider
-                                      Container(
-                                        width: 1,
-                                        height: 50,
-                                        color: Colors.grey[800],
-                                        margin: const EdgeInsets.symmetric(
-                                            horizontal: 8),
-                                      ),
-                                      // Right Column - Value/Wage & Ages
-                                      Expanded(
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            // Row 1: Value & Wage
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceEvenly,
-                                              children: [
-                                                _buildTinyStatItem(
-                                                  'VALUE',
-                                                  _formatCurrency(
-                                                      stats['totalValue']),
-                                                ),
-                                                _buildTinyStatItem(
-                                                  'WAGE',
-                                                  _formatCurrency(
-                                                      stats['totalWage']),
-                                                ),
-                                              ],
-                                            ),
-                                            const SizedBox(height: 6),
-                                            // Row 2: Ages & Players
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceEvenly,
-                                              children: [
-                                                _buildTinyStatItem(
-                                                  'AVG AGE',
-                                                  '${stats['avgAge']}',
-                                                ),
-                                                _buildTinyStatItem(
-                                                  'PLAYERS',
-                                                  '${stats['playerCount']}/11',
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                )
-                              : const SizedBox.shrink(),
+                      ),
+                    ),
+                  ),
+                  // Formation Button with SafeArea
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: appColors.surfaceColor,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.3),
+                          blurRadius: 10,
+                          offset: const Offset(0, -2),
                         ),
                       ],
                     ),
-                  ),
-                ),
-                // Football Field
-                Expanded(
-                  child: RepaintBoundary(
-                    key: _fieldKey,
-                    child: Container(
-                      color: scaffoldColor,
-                      child: FootballField(
-                        formation: _currentFormation,
-                        selectedPlayers: _selectedPlayers,
-                        onPositionTap: _selectPlayer,
-                        onPlayerLongPress: _removePlayer,
-                      ),
-                    ),
-                  ),
-                ),
-                // Formation Button with SafeArea
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: appColors.surfaceColor,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.3),
-                        blurRadius: 10,
-                        offset: const Offset(0, -2),
-                      ),
-                    ],
-                  ),
-                  child: SafeArea(
-                    top: false,
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton.icon(
-                        onPressed: _showFormationPicker,
-                        icon: const Icon(Icons.grid_view, color: Colors.black),
-                        label: Text(
-                          _currentFormation.name,
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
+                    child: SafeArea(
+                      top: false,
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+                          onPressed: _showFormationPicker,
+                          icon:
+                              const Icon(Icons.grid_view, color: Colors.black),
+                          label: Text(
+                            _currentFormation.name,
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
                           ),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: appColors.posColor,
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: appColors.posColor,
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
                           ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              ],
-            ),
-    );
+                ],
+              ),
+      ), // Close Scaffold
+    ); // Close PopScope
   }
 
   Widget _buildMiniStatCircle(String label, String value, Color color) {
