@@ -8,64 +8,121 @@ class TacticalFieldPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = lineColor.withOpacity(0.15)
+    // 1. Draw solid background first to ensure no gaps
+    final bgPaint = Paint()..color = const Color(0xff0d130d);
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(0, 0, size.width, size.height),
+        const Radius.circular(24),
+      ),
+      bgPaint,
+    );
+
+    // 2. Draw Grass Striping (6 Balanced Sections)
+    final double stripeHeight = size.height / 6;
+    final stripePaint = Paint()..style = PaintingStyle.fill;
+
+    for (int i = 0; i < 6; i++) {
+      if (i % 2 == 0) {
+        stripePaint.color = const Color(0xff161d16);
+        canvas.drawRect(
+          Rect.fromLTWH(0, i * stripeHeight, size.width, stripeHeight),
+          stripePaint,
+        );
+      }
+    }
+
+    // 3. Tactical Lines Paint (Fully Dynamic)
+    final linePaint = Paint()
+      ..color = lineColor.withOpacity(0.25)
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.5;
+      ..strokeWidth = 1.8;
+
+    final double centerX = size.width / 2;
+    final double centerY = size.height / 2;
 
     // Outer Boundary
-    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), paint);
+    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), linePaint);
 
     // Halfway Line
-    canvas.drawLine(
-        Offset(0, size.height / 2), Offset(size.width, size.height / 2), paint);
+    canvas.drawLine(Offset(0, centerY), Offset(size.width, centerY), linePaint);
 
-    // Center Circle
-    canvas.drawCircle(Offset(size.width / 2, size.height / 2), 50, paint);
-    canvas.drawCircle(Offset(size.width / 2, size.height / 2), 2,
-        paint..style = PaintingStyle.fill);
+    // Center Circle (Dynamic Radius)
+    final double centerCircleRadius = size.width * 0.18;
+    canvas.drawCircle(Offset(centerX, centerY), centerCircleRadius, linePaint);
+    canvas.drawCircle(
+        Offset(centerX, centerY), 2, linePaint..style = PaintingStyle.fill);
+    linePaint.style = PaintingStyle.stroke;
 
-    // Penalty Areas
-    // Top
+    // Penalty Areas (Responsive dimensions)
+    final double penAreaW = size.width * 0.75;
+    final double penAreaH = size.height * 0.16;
+    final double goalAreaW = size.width * 0.35;
+    final double goalAreaH = size.height * 0.05;
+
+    // Top (Away)
     canvas.drawRect(
-        Rect.fromLTWH(
-            size.width * 0.2, 0, size.width * 0.6, size.height * 0.15),
-        paint..style = PaintingStyle.stroke);
+        Rect.fromLTWH((size.width - penAreaW) / 2, 0, penAreaW, penAreaH),
+        linePaint);
     canvas.drawRect(
-        Rect.fromLTWH(
-            size.width * 0.35, 0, size.width * 0.3, size.height * 0.05),
-        paint);
+        Rect.fromLTWH((size.width - goalAreaW) / 2, 0, goalAreaW, goalAreaH),
+        linePaint);
 
-    // Bottom
+    // Bottom (Home)
     canvas.drawRect(
-        Rect.fromLTWH(size.width * 0.2, size.height * 0.85, size.width * 0.6,
-            size.height * 0.15),
-        paint);
+        Rect.fromLTWH((size.width - penAreaW) / 2, size.height - penAreaH,
+            penAreaW, penAreaH),
+        linePaint);
     canvas.drawRect(
-        Rect.fromLTWH(size.width * 0.35, size.height * 0.95, size.width * 0.3,
-            size.height * 0.05),
-        paint);
+        Rect.fromLTWH((size.width - goalAreaW) / 2, size.height - goalAreaH,
+            goalAreaW, goalAreaH),
+        linePaint);
 
-    // Arc
-    final arcPaint = Paint()
-      ..color = lineColor.withOpacity(0.15)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.5;
-
+    // Penalty Arcs (Responsive)
+    final double arcRadius = size.width * 0.12;
     canvas.drawArc(
-        Rect.fromCircle(
-            center: Offset(size.width / 2, size.height * 0.15), radius: 40),
+        Rect.fromCircle(center: Offset(centerX, penAreaH), radius: arcRadius),
         0,
-        3.14,
+        3.14159,
         false,
-        arcPaint);
+        linePaint);
     canvas.drawArc(
         Rect.fromCircle(
-            center: Offset(size.width / 2, size.height * 0.85), radius: 40),
-        3.14,
-        3.14,
+            center: Offset(centerX, size.height - penAreaH), radius: arcRadius),
+        3.14159,
+        3.14159,
         false,
-        arcPaint);
+        linePaint);
+
+    // Corner Arcs
+    final double cornerSize = size.width * 0.04;
+    canvas.drawArc(
+        Rect.fromLTWH(-cornerSize, -cornerSize, cornerSize * 2, cornerSize * 2),
+        0,
+        1.57,
+        false,
+        linePaint);
+    canvas.drawArc(
+        Rect.fromLTWH(size.width - cornerSize, -cornerSize, cornerSize * 2,
+            cornerSize * 2),
+        1.57,
+        1.57,
+        false,
+        linePaint);
+    canvas.drawArc(
+        Rect.fromLTWH(-cornerSize, size.height - cornerSize, cornerSize * 2,
+            cornerSize * 2),
+        4.71,
+        1.57,
+        false,
+        linePaint);
+    canvas.drawArc(
+        Rect.fromLTWH(size.width - cornerSize, size.height - cornerSize,
+            cornerSize * 2, cornerSize * 2),
+        3.14,
+        1.57,
+        false,
+        linePaint);
   }
 
   @override
@@ -98,7 +155,7 @@ class TacticalFieldSelector extends StatelessWidget {
     'LB': const Offset(0.2, 0.8),
     'CB': const Offset(0.5, 0.8),
     'RB': const Offset(0.8, 0.8),
-    'GK': const Offset(0.5, 0.93),
+    'GK': const Offset(0.5, 0.94),
   };
 
   @override
@@ -112,35 +169,15 @@ class TacticalFieldSelector extends StatelessWidget {
         border: Border.all(color: Colors.white.withOpacity(0.08)),
       ),
       child: AspectRatio(
-        aspectRatio: 0.62, // Taller field to take more vertical space
+        aspectRatio: 0.55, // Even taller (fuller screen) pitch
         child: LayoutBuilder(
           builder: (context, constraints) {
             return Stack(
               children: [
-                // Grass Texture / Gradient
+                // Field Background with Lines (Now handles striping too)
                 Positioned.fill(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(24),
-                      gradient: const LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          Color(0xff161d16),
-                          Color(0xff0a0d0a),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-
-                // Field Background with Lines
-                Positioned.fill(
-                  child: Opacity(
-                    opacity: 0.6,
-                    child: CustomPaint(
-                      painter: TacticalFieldPainter(lineColor: Colors.white),
-                    ),
+                  child: CustomPaint(
+                    painter: TacticalFieldPainter(lineColor: Colors.white),
                   ),
                 ),
 
