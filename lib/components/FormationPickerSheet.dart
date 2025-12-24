@@ -121,34 +121,40 @@ class FormationPickerSheet extends StatelessWidget {
                                   vertical: 8, horizontal: 4),
                               decoration: BoxDecoration(
                                 color: isSelected
-                                    ? appColors.posColor.withOpacity(0.2)
+                                    ? appColors.posColor.withOpacity(0.1)
                                     : Colors.transparent,
                                 borderRadius: const BorderRadius.only(
                                   bottomLeft: Radius.circular(12),
                                   bottomRight: Radius.circular(12),
                                 ),
                               ),
-                              child: Column(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text(
-                                    formation.name,
-                                    style: TextStyle(
-                                      color: isSelected
-                                          ? appColors.posColor
-                                          : Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 11,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
                                   if (isSelected)
-                                    Icon(
-                                      Icons.check_circle,
-                                      color: appColors.posColor,
-                                      size: 16,
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 4),
+                                      child: Icon(
+                                        Icons.check_circle,
+                                        color: appColors.posColor,
+                                        size: 14,
+                                      ),
                                     ),
+                                  Flexible(
+                                    child: Text(
+                                      formation.name,
+                                      style: TextStyle(
+                                        color: isSelected
+                                            ? appColors.posColor
+                                            : Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 11,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),
