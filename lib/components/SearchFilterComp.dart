@@ -37,11 +37,11 @@ class FilterGridButton extends StatelessWidget {
             width: 1.0,
           ),
         ),
-        padding: const EdgeInsets.symmetric(horizontal: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Row(
           children: [
             Container(
-              padding: const EdgeInsets.all(8),
+              padding: const EdgeInsets.all(6),
               decoration: BoxDecoration(
                 color: isSelected
                     ? appColors.posColor.withOpacity(0.15)
@@ -53,10 +53,10 @@ class FilterGridButton extends StatelessWidget {
                 color: isSelected
                     ? appColors.posColor
                     : Colors.white.withOpacity(0.6),
-                size: 16,
+                size: 14,
               ),
             ),
-            const SizedBox(width: 10),
+            const SizedBox(width: 8),
             Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -69,7 +69,7 @@ class FilterGridButton extends StatelessWidget {
                           ? appColors.posColor.withOpacity(0.9)
                           : Colors.white.withOpacity(0.85),
                       fontWeight: FontWeight.w900,
-                      fontSize: 12,
+                      fontSize: 11,
                       letterSpacing: 0.8,
                     ),
                   ),
@@ -80,7 +80,7 @@ class FilterGridButton extends StatelessWidget {
                       style: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.w700,
-                        fontSize: 15,
+                        fontSize: 14,
                       ),
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -120,60 +120,69 @@ class RangeFilterSection extends StatelessWidget {
     final surfaceColor = Theme.of(context).colorScheme.surface;
 
     return Container(
-      margin: EdgeInsets.symmetric(vertical: showBackground ? 8 : 4),
+      margin: const EdgeInsets.symmetric(vertical: 2),
       padding: showBackground
-          ? const EdgeInsets.fromLTRB(20, 16, 20, 8)
-          : const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+          ? const EdgeInsets.fromLTRB(14, 8, 8, 2)
+          : const EdgeInsets.symmetric(horizontal: 4, vertical: 0),
       decoration: showBackground
           ? BoxDecoration(
               color: surfaceColor,
-              borderRadius: BorderRadius.circular(24),
+              borderRadius: BorderRadius.circular(16),
               border: Border.all(color: Colors.white.withOpacity(0.05)),
             )
           : null,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Text(
+            title.toUpperCase(),
+            style: TextStyle(
+              color: Colors.white.withOpacity(0.5),
+              fontWeight: FontWeight.w700,
+              fontSize: 11,
+              letterSpacing: 0.8,
+            ),
+          ),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(
-                title.toUpperCase(),
-                style: TextStyle(
-                  color: Colors.white.withOpacity(0.7),
-                  fontWeight: FontWeight.w700,
-                  fontSize: 14,
-                  letterSpacing: 0.8,
+              SizedBox(
+                width: 72,
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    "${values.start.round()} - ${values.end.round()}",
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w400,
+                      fontSize: 14,
+                    ),
+                  ),
                 ),
               ),
-              Text(
-                "${values.start.round()} - ${values.end.round()}",
-                style: TextStyle(
-                  color: appColors.posColor,
-                  fontWeight: FontWeight.w900,
-                  fontSize: 14,
+              const SizedBox(width: 8),
+              Expanded(
+                child: SliderTheme(
+                  data: SliderThemeData(
+                    activeTrackColor: appColors.posColor.withOpacity(0.7),
+                    inactiveTrackColor: Colors.white.withOpacity(0.1),
+                    thumbColor: Colors.white,
+                    overlayColor: appColors.posColor.withOpacity(0.1),
+                    trackHeight: 1.5,
+                    rangeThumbShape:
+                        const RoundRangeSliderThumbShape(enabledThumbRadius: 6),
+                    rangeTrackShape: const RoundedRectRangeSliderTrackShape(),
+                  ),
+                  child: RangeSlider(
+                    values: values,
+                    min: min,
+                    max: max,
+                    onChanged: onChanged,
+                  ),
                 ),
               ),
             ],
-          ),
-          const SizedBox(height: 4),
-          SliderTheme(
-            data: SliderThemeData(
-              activeTrackColor: appColors.posColor.withOpacity(0.7),
-              inactiveTrackColor: Colors.white.withOpacity(0.1),
-              thumbColor: Colors.white,
-              overlayColor: appColors.posColor.withOpacity(0.1),
-              trackHeight: 2,
-              rangeThumbShape:
-                  const RoundRangeSliderThumbShape(enabledThumbRadius: 7),
-              rangeTrackShape: const RoundedRectRangeSliderTrackShape(),
-            ),
-            child: RangeSlider(
-              values: values,
-              min: min,
-              max: max,
-              onChanged: onChanged,
-            ),
           ),
         ],
       ),

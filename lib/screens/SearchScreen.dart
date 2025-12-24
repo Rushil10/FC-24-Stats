@@ -152,7 +152,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen>
       body: Stack(
         children: [
           Padding(
-            padding: const EdgeInsets.only(top: 80),
+            padding: const EdgeInsets.only(top: 75),
             child: SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Column(
@@ -178,14 +178,14 @@ class _SearchScreenState extends ConsumerState<SearchScreen>
                     max: 45,
                     onChanged: (v) => filtersNotifier.setAgeRange(v),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 8),
                   GridView.count(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     crossAxisCount: 2,
-                    crossAxisSpacing: 12,
-                    mainAxisSpacing: 12,
-                    childAspectRatio: 2.5,
+                    crossAxisSpacing: 6,
+                    mainAxisSpacing: 6,
+                    childAspectRatio: 3.1,
                     children: [
                       FilterGridButton(
                         label: "Position",
@@ -222,6 +222,21 @@ class _SearchScreenState extends ConsumerState<SearchScreen>
                         ),
                       ),
                       FilterGridButton(
+                        label: "Club",
+                        icon: Icons.home,
+                        value: filters.selectedClubs.isEmpty
+                            ? "Any"
+                            : filters.selectedClubs.length == 1
+                                ? filters.selectedClubs.first
+                                : "(${filters.selectedClubs.length}) Selected",
+                        onTap: () => _navigateToSelector(
+                          title: "Club",
+                          fetcher: PlayersDatabase.instance.getDistinctClubs(),
+                          initialSelected: filters.selectedClubs,
+                          onResult: (res) => filtersNotifier.setClubs(res),
+                        ),
+                      ),
+                      FilterGridButton(
                         label: "League",
                         icon: Icons.emoji_events,
                         value: filters.selectedLeagues.isEmpty
@@ -235,21 +250,6 @@ class _SearchScreenState extends ConsumerState<SearchScreen>
                               PlayersDatabase.instance.getDistinctLeagues(),
                           initialSelected: filters.selectedLeagues,
                           onResult: (res) => filtersNotifier.setLeagues(res),
-                        ),
-                      ),
-                      FilterGridButton(
-                        label: "Club",
-                        icon: Icons.home,
-                        value: filters.selectedClubs.isEmpty
-                            ? "Any"
-                            : filters.selectedClubs.length == 1
-                                ? filters.selectedClubs.first
-                                : "(${filters.selectedClubs.length}) Selected",
-                        onTap: () => _navigateToSelector(
-                          title: "Club",
-                          fetcher: PlayersDatabase.instance.getDistinctClubs(),
-                          initialSelected: filters.selectedClubs,
-                          onResult: (res) => filtersNotifier.setClubs(res),
                         ),
                       ),
                       FilterGridButton(
@@ -270,20 +270,20 @@ class _SearchScreenState extends ConsumerState<SearchScreen>
                         ),
                       ),
                       FilterGridButton(
-                        label: "Skills",
-                        icon: Icons.bar_chart,
-                        value: "Set Constraints",
-                        onTap: _openSkillsSelector,
-                      ),
-                      FilterGridButton(
                         label: "Game Attributes",
                         icon: Icons.settings_applications,
                         value: "Modify",
                         onTap: _openGameAttributesSelector,
                       ),
+                      FilterGridButton(
+                        label: "Skills",
+                        icon: Icons.bar_chart,
+                        value: "Set Constraints",
+                        onTap: _openSkillsSelector,
+                      ),
                     ],
                   ),
-                  const SizedBox(height: 100),
+                  const SizedBox(height: 80),
                 ],
               ),
             ),
@@ -294,7 +294,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen>
             right: 0,
             child: Container(
               color: scaffoldColor,
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
               child: TextField(
                 controller: _searchController,
                 focusNode: _searchFocusNode,
@@ -311,8 +311,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen>
                   prefixIcon: Icon(Icons.search, color: Colors.grey[600]),
                   filled: true,
                   fillColor: surfaceColor,
+                  contentPadding: const EdgeInsets.symmetric(vertical: 0),
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(10),
                     borderSide: BorderSide.none,
                   ),
                 ),
@@ -403,7 +404,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen>
       ),
       bottomSheet: Container(
         color: scaffoldColor,
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        padding: const EdgeInsets.fromLTRB(20, 8, 20, 10),
         width: double.infinity,
         child: ElevatedButton(
           onPressed: _navigateToResults,
@@ -411,7 +412,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen>
             backgroundColor: appColors.posColor,
             foregroundColor: Colors.black,
             elevation: 0,
-            padding: const EdgeInsets.symmetric(vertical: 18),
+            padding: const EdgeInsets.symmetric(vertical: 12),
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           ),
