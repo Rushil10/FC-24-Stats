@@ -110,7 +110,6 @@ class ThemeClass {
       primary: _clubNameColor, // Cyan as primary in dark mode
       secondary: _posColor, // Lime as secondary
       surface: _surfaceColor,
-      background: Colors.black,
     ),
     extensions: const <ThemeExtension<dynamic>>[
       AppColors(

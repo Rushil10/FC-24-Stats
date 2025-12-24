@@ -3,20 +3,23 @@ import 'package:fc_stats_24/theme.dart';
 import 'package:flutter/material.dart';
 
 class FootDetails extends StatelessWidget {
-  final foot;
-  final cardWidth;
-  const FootDetails({super.key, this.cardWidth, this.foot});
+  final String? foot;
+  final double cardWidth;
+
+  const FootDetails({
+    super.key,
+    required this.cardWidth,
+    required this.foot,
+  });
 
   Color bgColor(BuildContext context) {
-    // Both Left/Right seem to use yellow in original code
     final appColors = Theme.of(context).extension<AppColors>()!;
     return appColors.yellow;
   }
 
   @override
   Widget build(BuildContext context) {
-    MediaQueryData queryData;
-    queryData = MediaQuery.of(context);
+    MediaQueryData queryData = MediaQuery.of(context);
 
     return Container(
       width: queryData.size.width * cardWidth,
@@ -24,7 +27,7 @@ class FootDetails extends StatelessWidget {
       decoration: BoxDecoration(color: bgColor(context)),
       child: Center(
         child: Text(
-          foot != null && foot.toString().isNotEmpty ? foot[0].toString() : "-",
+          foot != null && foot!.isNotEmpty ? foot![0] : "-",
           style: const TextStyle(
               fontSize: AppLayout.ratingFont,
               color: Colors.black,

@@ -3,20 +3,25 @@ import 'package:fc_stats_24/theme.dart';
 import 'package:flutter/material.dart';
 
 class AgeRating extends StatelessWidget {
-  final age;
-  final cardWidth;
-  const AgeRating({super.key, this.age, this.cardWidth});
+  final num? age;
+  final double cardWidth;
+
+  const AgeRating({
+    super.key,
+    this.age,
+    required this.cardWidth,
+  });
 
   Color bgColor(BuildContext context) {
     final appColors = Theme.of(context).extension<AppColors>()!;
     if (age == null) return Colors.grey;
-    if (age >= 35) {
+    if (age! >= 35) {
       return appColors.red;
-    } else if (age >= 30) {
+    } else if (age! >= 30) {
       return appColors.yellow;
-    } else if (age >= 25) {
+    } else if (age! >= 25) {
       return appColors.lightGreen;
-    } else if (age >= 20) {
+    } else if (age! >= 20) {
       return appColors.green;
     } else {
       return appColors.darkGreen;
@@ -25,8 +30,7 @@ class AgeRating extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    MediaQueryData queryData;
-    queryData = MediaQuery.of(context);
+    MediaQueryData queryData = MediaQuery.of(context);
 
     return Container(
       width: queryData.size.width * cardWidth,
@@ -34,7 +38,7 @@ class AgeRating extends StatelessWidget {
       decoration: BoxDecoration(color: bgColor(context)),
       child: Center(
         child: Text(
-          age?.toString() ?? "-",
+          age?.toInt().toString() ?? "-",
           style: const TextStyle(
               fontSize: AppLayout.ratingFont,
               fontWeight: AppLayout.ratingFontWeight),

@@ -1,6 +1,7 @@
 import 'package:fc_stats_24/State/VideoAdState.dart';
 import 'package:fc_stats_24/ads/BannerAdSmall.dart';
 import 'package:fc_stats_24/components/playerCard.dart';
+import 'package:fc_stats_24/db/Player.dart';
 import 'package:fc_stats_24/db/players22.dart';
 import 'package:fc_stats_24/screens/FavouritesScreen.dart';
 import 'package:fc_stats_24/theme.dart';
@@ -11,12 +12,12 @@ class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
-  var loading = true;
-  var players = [];
+  bool loading = true;
+  List<Player> players = [];
 
   @override
   void initState() {
@@ -25,7 +26,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     getTop100PlayerData();
   }
 
-  Future getTop100PlayerData() async {
+  Future<void> getTop100PlayerData() async {
     setState(() {
       loading = true;
     });
@@ -153,7 +154,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               playerData: players[index],
                             );
                           })),
-                  BannerSmallAd(),
+                  const BannerSmallAd(),
                 ],
               )
             : Center(

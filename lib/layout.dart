@@ -13,6 +13,7 @@ class AppLayout {
   static const FontWeight ratingCardWeight = FontWeight.w500;
   static const FontWeight posFontWeight = FontWeight.w600;
   static const FontWeight posDetFontWeight = FontWeight.w900;
+  static const FontWeight clubNameFontWeight = FontWeight.w400;
 
   // Dimensions / Width Factors (multipliers of screen width)
   static const double mainPageWidth = 0.11;

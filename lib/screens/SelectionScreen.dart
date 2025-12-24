@@ -141,13 +141,13 @@ class _SelectionScreenState extends State<SelectionScreen> {
                                 horizontal: 16, vertical: 14),
                             decoration: BoxDecoration(
                               color: isSelected
-                                  ? appColors.posColor.withOpacity(0.06)
+                                  ? appColors.posColor.withValues(alpha: 0.06)
                                   : surfaceColor,
                               borderRadius: BorderRadius.circular(16),
                               border: Border.all(
                                 color: isSelected
-                                    ? appColors.posColor.withOpacity(0.4)
-                                    : Colors.white.withOpacity(0.03),
+                                    ? appColors.posColor.withValues(alpha: 0.4)
+                                    : Colors.white.withValues(alpha: 0.03),
                                 width: 1.0,
                               ),
                             ),
@@ -159,7 +159,7 @@ class _SelectionScreenState extends State<SelectionScreen> {
                                     style: TextStyle(
                                       color: isSelected
                                           ? Colors.white
-                                          : Colors.white.withOpacity(0.7),
+                                          : Colors.white.withValues(alpha: 0.7),
                                       fontWeight: isSelected
                                           ? FontWeight.w700
                                           : FontWeight.w400,
@@ -172,7 +172,8 @@ class _SelectionScreenState extends State<SelectionScreen> {
                                       color: appColors.posColor, size: 20)
                                 else
                                   Icon(Icons.circle_outlined,
-                                      color: Colors.white.withOpacity(0.1),
+                                      color:
+                                          Colors.white.withValues(alpha: 0.1),
                                       size: 20),
                               ],
                             ),
@@ -188,7 +189,7 @@ class _SelectionScreenState extends State<SelectionScreen> {
               color: scaffoldColor,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.3),
+                  color: Colors.black.withValues(alpha: 0.3),
                   blurRadius: 20,
                   offset: const Offset(0, -5),
                 )

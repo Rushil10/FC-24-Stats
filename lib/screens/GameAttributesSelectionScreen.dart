@@ -99,7 +99,7 @@ class GameAttributesSelectionScreen extends ConsumerWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  Colors.black.withOpacity(0),
+                  Colors.black.withValues(alpha: 0),
                   Colors.black,
                 ],
               ),
@@ -114,7 +114,7 @@ class GameAttributesSelectionScreen extends ConsumerWidget {
                 ),
                 minimumSize: const Size(double.infinity, 0),
                 elevation: 8,
-                shadowColor: appColors.posColor.withOpacity(0.4),
+                shadowColor: appColors.posColor.withValues(alpha: 0.4),
               ),
               child: const Text(
                 "DONE",

@@ -1,5 +1,6 @@
 import 'package:fc_stats_24/ads/ad_helper.dart';
 import 'package:fc_stats_24/components/playerCard.dart';
+import 'package:fc_stats_24/db/Player.dart';
 import 'package:fc_stats_24/db/players22.dart';
 import 'package:fc_stats_24/theme.dart';
 import 'package:fc_stats_24/ads/BannerAdSmall.dart';
@@ -10,18 +11,22 @@ import 'package:fc_stats_24/State/VideoAdState.dart';
 import 'package:fc_stats_24/config_ads.dart';
 
 class Favourites extends ConsumerStatefulWidget {
-  final type;
-  final title;
-  final count;
-  const Favourites({super.key, this.type, this.title, this.count});
+  final String type;
+  final String title;
+  final int count;
+  const Favourites(
+      {super.key,
+      required this.type,
+      required this.title,
+      required this.count});
 
   @override
-  _FavouritesState createState() => _FavouritesState();
+  ConsumerState<Favourites> createState() => _FavouritesState();
 }
 
 class _FavouritesState extends ConsumerState<Favourites> {
-  var loading = true;
-  var players = [];
+  bool loading = true;
+  List<Player> players = [];
   InterstitialAd? _interstitialAd;
 
   @override
@@ -36,7 +41,7 @@ class _FavouritesState extends ConsumerState<Favourites> {
     if (widget.type == "Free") {
       getAllFreePlayers();
     }
-    if (SHOW_ADS && widget.count % 5 == 0) {
+    if (showAds && widget.count % 5 == 0) {
       addInterstitialAd();
     }
   }
@@ -136,7 +141,7 @@ class _FavouritesState extends ConsumerState<Favourites> {
                               playerData: players[index],
                             );
                           })),
-                  if (SHOW_ADS) BannerSmallAd(),
+                  if (showAds) const BannerSmallAd(),
                 ],
               )
             : Center(

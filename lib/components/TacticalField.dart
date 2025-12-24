@@ -34,7 +34,7 @@ class TacticalFieldPainter extends CustomPainter {
 
     // 3. Tactical Lines Paint (Fully Dynamic)
     final linePaint = Paint()
-      ..color = lineColor.withOpacity(0.25)
+      ..color = lineColor.withValues(alpha: 0.25)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.8;
 
@@ -134,28 +134,29 @@ class TacticalFieldSelector extends StatelessWidget {
   final Function(String) onToggle;
   final List<String> availablePositions;
 
-  TacticalFieldSelector({
+  const TacticalFieldSelector({
+    super.key,
     required this.selectedPositions,
     required this.onToggle,
     required this.availablePositions,
   });
 
-  final Map<String, Offset> tacticalCoords = {
-    'ST': const Offset(0.5, 0.08),
-    'CF': const Offset(0.5, 0.18),
-    'LW': const Offset(0.18, 0.23),
-    'RW': const Offset(0.82, 0.23),
-    'CAM': const Offset(0.5, 0.35),
-    'LM': const Offset(0.15, 0.5),
-    'CM': const Offset(0.5, 0.5),
-    'RM': const Offset(0.85, 0.5),
-    'CDM': const Offset(0.5, 0.65),
-    'LWB': const Offset(0.1, 0.7),
-    'RWB': const Offset(0.9, 0.7),
-    'LB': const Offset(0.2, 0.8),
-    'CB': const Offset(0.5, 0.8),
-    'RB': const Offset(0.8, 0.8),
-    'GK': const Offset(0.5, 0.94),
+  static const Map<String, Offset> tacticalCoords = {
+    'ST': Offset(0.5, 0.08),
+    'CF': Offset(0.5, 0.18),
+    'LW': Offset(0.18, 0.23),
+    'RW': Offset(0.82, 0.23),
+    'CAM': Offset(0.5, 0.35),
+    'LM': Offset(0.15, 0.5),
+    'CM': Offset(0.5, 0.5),
+    'RM': Offset(0.85, 0.5),
+    'CDM': Offset(0.5, 0.65),
+    'LWB': Offset(0.1, 0.7),
+    'RWB': Offset(0.9, 0.7),
+    'LB': Offset(0.2, 0.8),
+    'CB': Offset(0.5, 0.8),
+    'RB': Offset(0.8, 0.8),
+    'GK': Offset(0.5, 0.94),
   };
 
   @override
@@ -166,7 +167,7 @@ class TacticalFieldSelector extends StatelessWidget {
       decoration: BoxDecoration(
         color: const Color(0xff0a0d0a),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.white.withOpacity(0.08)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
       ),
       child: AspectRatio(
         aspectRatio: 0.55, // Even taller (fuller screen) pitch
@@ -211,13 +212,13 @@ class TacticalFieldSelector extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: isSelected
                                   ? appColors.posColor
-                                  : Colors.white.withOpacity(0.1),
+                                  : Colors.white.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(8),
                               boxShadow: isSelected
                                   ? [
                                       BoxShadow(
-                                        color:
-                                            appColors.posColor.withOpacity(0.5),
+                                        color: appColors.posColor
+                                            .withValues(alpha: 0.5),
                                         blurRadius: 15,
                                         spreadRadius: 2,
                                       )
@@ -225,8 +226,8 @@ class TacticalFieldSelector extends StatelessWidget {
                                   : [],
                               border: Border.all(
                                 color: isSelected
-                                    ? Colors.black.withOpacity(0.1)
-                                    : Colors.white.withOpacity(0.15),
+                                    ? Colors.black.withValues(alpha: 0.1)
+                                    : Colors.white.withValues(alpha: 0.15),
                                 width: isSelected ? 1.5 : 1,
                               ),
                             ),
@@ -236,7 +237,7 @@ class TacticalFieldSelector extends StatelessWidget {
                               style: TextStyle(
                                 color: isSelected
                                     ? Colors.black
-                                    : Colors.white.withOpacity(0.9),
+                                    : Colors.white.withValues(alpha: 0.9),
                                 fontSize: 11,
                                 fontWeight: FontWeight.w900,
                                 letterSpacing: 0.5,
@@ -253,8 +254,8 @@ class TacticalFieldSelector extends StatelessWidget {
                                   shape: BoxShape.circle,
                                   boxShadow: [
                                     BoxShadow(
-                                      color:
-                                          appColors.posColor.withOpacity(0.8),
+                                      color: appColors.posColor
+                                          .withValues(alpha: 0.8),
                                       blurRadius: 4,
                                     )
                                   ]),
@@ -263,7 +264,7 @@ class TacticalFieldSelector extends StatelessWidget {
                       ),
                     ),
                   );
-                }).toList(),
+                }),
               ],
             );
           },

@@ -1,12 +1,13 @@
 import 'package:fc_stats_24/components/SkillCard.dart';
 import 'package:fc_stats_24/components/SkillHeader.dart';
+import 'package:fc_stats_24/db/Player.dart';
 import 'package:fc_stats_24/layout.dart';
 import 'package:fc_stats_24/theme.dart';
 import 'package:flutter/material.dart';
 
 class SkillsRating extends StatelessWidget {
-  final skills;
-  const SkillsRating({super.key, this.skills});
+  final Player skills;
+  const SkillsRating({super.key, required this.skills});
   @override
   Widget build(BuildContext context) {
     final appColors = Theme.of(context).extension<AppColors>()!;
@@ -31,12 +32,12 @@ class SkillsRating extends StatelessWidget {
             header: 'PACE',
           ),
           SkillCard(
-            rating: skills['movement_acceleration'],
+            rating: skills.movementAcceleration,
             cardWidth: AppLayout.ratingWidthDetails,
             skill: 'Acceleration',
           ),
           SkillCard(
-            rating: skills['movement_sprint_speed'],
+            rating: skills.movementSprintSpeed,
             cardWidth: AppLayout.ratingWidthDetails,
             skill: 'Sprint Speed',
           ),
@@ -44,32 +45,32 @@ class SkillsRating extends StatelessWidget {
             header: 'SHOOTING',
           ),
           SkillCard(
-            rating: skills['mentality_positioning'],
+            rating: skills.mentalityPositioning,
             cardWidth: AppLayout.ratingWidthDetails,
-            skill: 'Att. Posistioning',
+            skill: 'Att. Positioning',
           ),
           SkillCard(
-            rating: skills['attacking_finishing'],
+            rating: skills.attackingFinishing,
             cardWidth: AppLayout.ratingWidthDetails,
             skill: 'Finishing',
           ),
           SkillCard(
-            rating: skills['power_shot_power'],
+            rating: skills.powerShotPower,
             cardWidth: AppLayout.ratingWidthDetails,
             skill: 'Shot Power',
           ),
           SkillCard(
-            rating: skills['power_long_shots'],
+            rating: skills.powerLongShots,
             cardWidth: AppLayout.ratingWidthDetails,
             skill: 'Long Shots',
           ),
           SkillCard(
-            rating: skills['attacking_volleys'],
+            rating: skills.attackingVolleys,
             cardWidth: AppLayout.ratingWidthDetails,
             skill: 'Volleys',
           ),
           SkillCard(
-            rating: skills['mentality_penalties'],
+            rating: skills.mentalityPenalties,
             cardWidth: AppLayout.ratingWidthDetails,
             skill: 'Penalties',
           ),
@@ -77,32 +78,32 @@ class SkillsRating extends StatelessWidget {
             header: 'PASSING',
           ),
           SkillCard(
-            rating: skills['mentality_vision'],
+            rating: skills.mentalityVision,
             cardWidth: AppLayout.ratingWidthDetails,
             skill: 'Vision',
           ),
           SkillCard(
-            rating: skills['attacking_crossing'],
+            rating: skills.attackingCrossing,
             cardWidth: AppLayout.ratingWidthDetails,
             skill: 'Crossing',
           ),
           SkillCard(
-            rating: skills['skill_fk_accuracy'],
+            rating: skills.skillFkAccuracy,
             cardWidth: AppLayout.ratingWidthDetails,
             skill: 'Free Kick Accuracy',
           ),
           SkillCard(
-            rating: skills['attacking_short_passing'],
+            rating: skills.attackingShortPassing,
             cardWidth: AppLayout.ratingWidthDetails,
             skill: 'Short Passing',
           ),
           SkillCard(
-            rating: skills['skill_long_passing'],
+            rating: skills.skillLongPassing,
             cardWidth: AppLayout.ratingWidthDetails,
             skill: 'Long Passing',
           ),
           SkillCard(
-            rating: skills['skill_curve'],
+            rating: skills.skillCurve,
             cardWidth: AppLayout.ratingWidthDetails,
             skill: 'Curve',
           ),
@@ -110,32 +111,32 @@ class SkillsRating extends StatelessWidget {
             header: 'DRIBBLING',
           ),
           SkillCard(
-            rating: skills['movement_agility'],
+            rating: skills.movementAgility,
             cardWidth: AppLayout.ratingWidthDetails,
             skill: 'Agility',
           ),
           SkillCard(
-            rating: skills['movement_balance'],
+            rating: skills.movementBalance,
             cardWidth: AppLayout.ratingWidthDetails,
             skill: 'Balance',
           ),
           SkillCard(
-            rating: skills['movement_reactions'],
+            rating: skills.movementReactions,
             cardWidth: AppLayout.ratingWidthDetails,
             skill: 'Reactions',
           ),
           SkillCard(
-            rating: skills['skill_ball_control'],
+            rating: skills.skillBallControl,
             cardWidth: AppLayout.ratingWidthDetails,
             skill: 'Ball Control',
           ),
           SkillCard(
-            rating: skills['skill_dribbling'],
+            rating: skills.skillDribbling,
             cardWidth: AppLayout.ratingWidthDetails,
             skill: 'Dribbling',
           ),
           SkillCard(
-            rating: skills['mentality_composure'],
+            rating: skills.mentalityComposure,
             cardWidth: AppLayout.ratingWidthDetails,
             skill: 'Composure',
           ),
@@ -143,32 +144,32 @@ class SkillsRating extends StatelessWidget {
             header: 'DEFENDING',
           ),
           SkillCard(
-            rating: skills['mentality_interceptions'],
+            rating: skills.mentalityInterceptions,
             cardWidth: AppLayout.ratingWidthDetails,
             skill: 'Interceptions',
           ),
           SkillCard(
-            rating: skills['attacking_heading_accuracy'],
+            rating: skills.attackingHeadingAccuracy,
             cardWidth: AppLayout.ratingWidthDetails,
             skill: 'Heading Accuracy',
           ),
           SkillCard(
-            rating: skills['defending_marking_awareness'],
+            rating: skills.defendingMarkingAwareness,
             cardWidth: AppLayout.ratingWidthDetails,
             skill: 'Marking',
           ),
           SkillCard(
-            rating: skills['defending_standing_tackle'],
+            rating: skills.defendingStandingTackle,
             cardWidth: AppLayout.ratingWidthDetails,
             skill: 'Standing Tackle',
           ),
           SkillCard(
-            rating: skills['defending_sliding_tackle'],
+            rating: skills.defendingSlidingTackle,
             cardWidth: AppLayout.ratingWidthDetails,
             skill: 'Sliding Tackle',
           ),
           SkillCard(
-            rating: skills['power_jumping'],
+            rating: skills.powerJumping,
             cardWidth: AppLayout.ratingWidthDetails,
             skill: 'Jumping',
           ),
@@ -176,17 +177,17 @@ class SkillsRating extends StatelessWidget {
             header: 'PHYSICAL',
           ),
           SkillCard(
-            rating: skills['power_stamina'],
+            rating: skills.powerStamina,
             cardWidth: AppLayout.ratingWidthDetails,
             skill: 'Stamina',
           ),
           SkillCard(
-            rating: skills['power_strength'],
+            rating: skills.powerStrength,
             cardWidth: AppLayout.ratingWidthDetails,
             skill: 'Strength',
           ),
           SkillCard(
-            rating: skills['mentality_aggression'],
+            rating: skills.mentalityAggression,
             cardWidth: AppLayout.ratingWidthDetails,
             skill: 'Aggression',
           ),
@@ -194,40 +195,34 @@ class SkillsRating extends StatelessWidget {
             header: 'GOALKEEPING',
           ),
           SkillCard(
-            rating: skills['goalkeeping_diving'],
+            rating: skills.goalkeepingDiving,
             cardWidth: AppLayout.ratingWidthDetails,
             skill: 'Diving',
           ),
           SkillCard(
-            rating: skills['goalkeeping_handling'],
+            rating: skills.goalkeepingHandling,
             cardWidth: AppLayout.ratingWidthDetails,
             skill: 'Handling',
           ),
           SkillCard(
-            rating: skills['goalkeeping_kicking'],
+            rating: skills.goalkeepingKicking,
             cardWidth: AppLayout.ratingWidthDetails,
             skill: 'Kicking',
           ),
           SkillCard(
-            rating: skills['goalkeeping_reflexes'],
+            rating: skills.goalkeepingReflexes,
             cardWidth: AppLayout.ratingWidthDetails,
             skill: 'Reflexes',
           ),
-          skills['goalkeeping_reflexes'].runtimeType == int
-              ? SkillCard(
-                  rating: skills['goalkeeping_reflexes'],
-                  cardWidth: AppLayout.ratingWidthDetails,
-                  skill: 'Speed',
-                )
-              : SkillCard(
-                  rating: int.parse(skills['goalkeeping_reflexes']),
-                  cardWidth: AppLayout.ratingWidthDetails,
-                  skill: 'Speed',
-                ),
           SkillCard(
-            rating: skills['goalkeeping_positioning'],
+            rating: skills.goalkeepingSpeed,
             cardWidth: AppLayout.ratingWidthDetails,
-            skill: 'Posistioning',
+            skill: 'Speed',
+          ),
+          SkillCard(
+            rating: skills.goalkeepingPositioning,
+            cardWidth: AppLayout.ratingWidthDetails,
+            skill: 'Positioning',
           ),
         ]));
   }

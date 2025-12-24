@@ -1,0 +1,123 @@
+﻿Analyzing fc_stats_24...                                        
+
+   info - The file name 'VideoAdState.dart' isn't a lower_case_with_underscores identifier - lib\State\VideoAdState.dart:1:1 - file_names
+   info - The file name 'BannerAdSmall.dart' isn't a lower_case_with_underscores identifier - lib\ads\BannerAdSmall.dart:1:1 - file_names
+   info - Invalid use of a private type in a public API - lib\ads\BannerAdSmall.dart:9:3 - library_private_types_in_public_api
+   info - The file name 'MediumNativeAd.dart' isn't a lower_case_with_underscores identifier - lib\ads\MediumNativeAd.dart:1:1 - file_names
+   info - Invalid use of a private type in a public API - lib\ads\MediumNativeAd.dart:10:3 - library_private_types_in_public_api
+   info - The file name 'AgeRating.dart' isn't a lower_case_with_underscores identifier - lib\components\AgeRating.dart:1:1 - file_names
+   info - An uninitialized field should have an explicit type annotation - lib\components\AgeRating.dart:6:9 - prefer_typing_uninitialized_variables
+   info - An uninitialized field should have an explicit type annotation - lib\components\AgeRating.dart:7:9 - prefer_typing_uninitialized_variables
+   info - The file name 'AttributeRating.dart' isn't a lower_case_with_underscores identifier - lib\components\AttributeRating.dart:1:1 - file_names
+   info - An uninitialized field should have an explicit type annotation - lib\components\AttributeRating.dart:6:9 - prefer_typing_uninitialized_variables
+   info - An uninitialized field should have an explicit type annotation - lib\components\AttributeRating.dart:7:9 - prefer_typing_uninitialized_variables
+   info - An uninitialized field should have an explicit type annotation - lib\components\AttributeRating.dart:8:9 - prefer_typing_uninitialized_variables
+   info - The file name 'ClubDetails.dart' isn't a lower_case_with_underscores identifier - lib\components\ClubDetails.dart:1:1 - file_names
+   info - The file name 'FootDetails.dart' isn't a lower_case_with_underscores identifier - lib\components\FootDetails.dart:1:1 - file_names
+   info - An uninitialized field should have an explicit type annotation - lib\components\FootDetails.dart:6:9 - prefer_typing_uninitialized_variables
+   info - An uninitialized field should have an explicit type annotation - lib\components\FootDetails.dart:7:9 - prefer_typing_uninitialized_variables
+   info - The file name 'GameAttributes.dart' isn't a lower_case_with_underscores identifier - lib\components\GameAttributes.dart:1:1 - file_names
+   info - The file name 'OverallRating.dart' isn't a lower_case_with_underscores identifier - lib\components\OverallRating.dart:1:1 - file_names
+   info - An uninitialized field should have an explicit type annotation - lib\components\OverallRating.dart:6:9 - prefer_typing_uninitialized_variables
+   info - An uninitialized field should have an explicit type annotation - lib\components\OverallRating.dart:7:9 - prefer_typing_uninitialized_variables
+   info - The file name 'PlayerDetailsRatingCard.dart' isn't a lower_case_with_underscores identifier - lib\components\PlayerDetailsRatingCard.dart:1:1 - file_names
+   info - Unnecessary instance of 'Container' - lib\components\PlayerDetailsRatingCard.dart:90:23 - avoid_unnecessary_containers
+   info - The file name 'PotentialRating.dart' isn't a lower_case_with_underscores identifier - lib\components\PotentialRating.dart:1:1 - file_names
+   info - An uninitialized field should have an explicit type annotation - lib\components\PotentialRating.dart:6:9 - prefer_typing_uninitialized_variables
+   info - An uninitialized field should have an explicit type annotation - lib\components\PotentialRating.dart:7:9 - prefer_typing_uninitialized_variables
+   info - The file name 'SearchFilterComp.dart' isn't a lower_case_with_underscores identifier - lib\components\SearchFilterComp.dart:1:1 - file_names
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\components\SearchFilterComp.dart:31:47 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\components\SearchFilterComp.dart:35:38 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\components\SearchFilterComp.dart:36:32 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\components\SearchFilterComp.dart:47:42 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\components\SearchFilterComp.dart:55:36 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\components\SearchFilterComp.dart:69:48 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\components\SearchFilterComp.dart:70:42 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\components\SearchFilterComp.dart:131:54 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\components\SearchFilterComp.dart:140:35 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\components\SearchFilterComp.dart:168:58 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\components\SearchFilterComp.dart:169:54 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\components\SearchFilterComp.dart:171:54 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\components\SearchFilterComp.dart:211:29 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\components\SearchFilterComp.dart:214:37 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\components\SearchFilterComp.dart:225:35 - deprecated_member_use
+   info - The file name 'SkillCard.dart' isn't a lower_case_with_underscores identifier - lib\components\SkillCard.dart:1:1 - file_names
+   info - An uninitialized field should have an explicit type annotation - lib\components\SkillCard.dart:6:9 - prefer_typing_uninitialized_variables
+   info - An uninitialized field should have an explicit type annotation - lib\components\SkillCard.dart:7:9 - prefer_typing_uninitialized_variables
+   info - An uninitialized field should have an explicit type annotation - lib\components\SkillCard.dart:8:9 - prefer_typing_uninitialized_variables
+   info - The file name 'SkillHeader.dart' isn't a lower_case_with_underscores identifier - lib\components\SkillHeader.dart:1:1 - file_names
+   info - An uninitialized field should have an explicit type annotation - lib\components\SkillHeader.dart:5:9 - prefer_typing_uninitialized_variables
+   info - The file name 'SkillsRating.dart' isn't a lower_case_with_underscores identifier - lib\components\SkillsRating.dart:1:1 - file_names
+   info - The file name 'TacticalField.dart' isn't a lower_case_with_underscores identifier - lib\components\TacticalField.dart:1:1 - file_names
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\components\TacticalField.dart:37:27 - deprecated_member_use
+   info - Constructors for public widgets should have a named 'key' parameter - lib\components\TacticalField.dart:137:3 - use_key_in_widget_constructors
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\components\TacticalField.dart:169:48 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\components\TacticalField.dart:214:50 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\components\TacticalField.dart:220:64 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\components\TacticalField.dart:228:52 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\components\TacticalField.dart:229:52 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\components\TacticalField.dart:239:52 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\components\TacticalField.dart:257:62 - deprecated_member_use
+   info - Unnecessary use of 'toList' in a spread - lib\components\TacticalField.dart:266:20 - unnecessary_to_list_in_spreads
+   info - The file name 'playerCard.dart' isn't a lower_case_with_underscores identifier - lib\components\playerCard.dart:1:1 - file_names
+   info - Unnecessary instance of 'Container' - lib\components\playerCard.dart:52:13 - avoid_unnecessary_containers
+   info - The constant name 'SHOW_ADS' isn't a lowerCamelCase identifier - lib\config_ads.dart:1:12 - constant_identifier_names
+   info - The file name 'Player.dart' isn't a lower_case_with_underscores identifier - lib\db\Player.dart:1:1 - file_names
+   info - The file name 'configureDB.dart' isn't a lower_case_with_underscores identifier - lib\db\configureDB.dart:1:1 - file_names
+   info - The imported package 'path' isn't a dependency of the importing package - lib\db\configureDB.dart:6:8 - depend_on_referenced_packages
+   info - Use 'const' with the constructor to improve performance - lib\db\configureDB.dart:42:9 - prefer_const_constructors
+warning - The stack trace variable 'stackTrace' isn't used and can be removed - lib\db\configureDB.dart:70:15 - unused_catch_stack
+warning - The value of the local variable 'processedCount' isn't used - lib\db\configureDB.dart:116:9 - unused_local_variable
+warning - The value of the local variable 'errorCount' isn't used - lib\db\configureDB.dart:117:9 - unused_local_variable
+   info - Use 'const' for final variables initialized to a constant value - lib\db\configureDB.dart:118:5 - prefer_const_declarations
+warning - The value of the local variable 'percentage' isn't used - lib\db\configureDB.dart:150:17 - unused_local_variable
+warning - The value of the local variable 'finalCount' isn't used - lib\db\configureDB.dart:176:11 - unused_local_variable
+warning - The stack trace variable 'stackTrace' isn't used and can be removed - lib\db\configureDB.dart:177:15 - unused_catch_stack
+   info - The imported package 'path' isn't a dependency of the importing package - lib\db\players22.dart:2:8 - depend_on_referenced_packages
+   info - Empty catch block - lib\db\players22.dart:27:21 - empty_catches
+warning - The stack trace variable 'stackTrace' isn't used and can be removed - lib\db\players22.dart:37:17 - unused_catch_stack
+warning - The stack trace variable 'stackTrace' isn't used and can be removed - lib\db\players22.dart:63:17 - unused_catch_stack
+   info - Empty catch block - lib\db\players22.dart:70:29 - empty_catches
+warning - The value of the local variable 'created' isn't used - lib\db\players22.dart:82:9 - unused_local_variable
+warning - The value of the local variable 'li' isn't used - lib\db\players22.dart:93:15 - unused_local_variable
+   info - Use 'const' with the constructor to improve performance - lib\db\players22.dart:99:9 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance - lib\db\players22.dart:108:9 - prefer_const_constructors
+warning - The stack trace variable 'stackTrace' isn't used and can be removed - lib\db\players22.dart:115:17 - unused_catch_stack
+warning - The stack trace variable 'stackTrace' isn't used and can be removed - lib\db\players22.dart:298:17 - unused_catch_stack
+warning - The value of the local variable 'id' isn't used - lib\db\players22.dart:306:13 - unused_local_variable
+warning - The stack trace variable 'stackTrace' isn't used and can be removed - lib\db\players22.dart:307:17 - unused_catch_stack
+   info - The file name 'BottomTabs.dart' isn't a lower_case_with_underscores identifier - lib\screens\BottomTabs.dart:1:1 - file_names
+   info - Invalid use of a private type in a public API - lib\screens\BottomTabs.dart:10:3 - library_private_types_in_public_api
+   info - The file name 'FavouritesScreen.dart' isn't a lower_case_with_underscores identifier - lib\screens\FavouritesScreen.dart:1:1 - file_names
+   info - Invalid use of a private type in a public API - lib\screens\FavouritesScreen.dart:24:3 - library_private_types_in_public_api
+   info - Use 'const' with the constructor to improve performance - lib\screens\FavouritesScreen.dart:144:33 - prefer_const_constructors
+   info - The file name 'GameAttributesSelectionScreen.dart' isn't a lower_case_with_underscores identifier - lib\screens\GameAttributesSelectionScreen.dart:1:1 - file_names
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\GameAttributesSelectionScreen.dart:102:32 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\GameAttributesSelectionScreen.dart:117:49 - deprecated_member_use
+   info - The file name 'HomeScreen.dart' isn't a lower_case_with_underscores identifier - lib\screens\HomeScreen.dart:1:1 - file_names
+   info - Invalid use of a private type in a public API - lib\screens\HomeScreen.dart:15:3 - library_private_types_in_public_api
+   info - Use 'const' with the constructor to improve performance - lib\screens\HomeScreen.dart:157:19 - prefer_const_constructors
+   info - The file name 'PlayerDetails.dart' isn't a lower_case_with_underscores identifier - lib\screens\PlayerDetails.dart:1:1 - file_names
+   info - Invalid use of a private type in a public API - lib\screens\PlayerDetails.dart:23:3 - library_private_types_in_public_api
+   info - Use 'const' with the constructor to improve performance - lib\screens\PlayerDetails.dart:139:23 - prefer_const_constructors
+   info - The file name 'PositionSelectionScreen.dart' isn't a lower_case_with_underscores identifier - lib\screens\PositionSelectionScreen.dart:1:1 - file_names
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\PositionSelectionScreen.dart:85:39 - deprecated_member_use
+   info - The file name 'SearchResultsScreen.dart' isn't a lower_case_with_underscores identifier - lib\screens\SearchResultsScreen.dart:1:1 - file_names
+   info - The file name 'SearchScreen.dart' isn't a lower_case_with_underscores identifier - lib\screens\SearchScreen.dart:1:1 - file_names
+   info - Invalid use of a private type in a public API - lib\screens\SearchScreen.dart:21:3 - library_private_types_in_public_api
+   info - Use 'const' literals as arguments to constructors of '@immutable' classes - lib\screens\SearchScreen.dart:338:30 - prefer_const_literals_to_create_immutables
+   info - The file name 'SelectionScreen.dart' isn't a lower_case_with_underscores identifier - lib\screens\SelectionScreen.dart:1:1 - file_names
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\SelectionScreen.dart:144:56 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\SelectionScreen.dart:149:58 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\SelectionScreen.dart:150:52 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\SelectionScreen.dart:162:58 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\SelectionScreen.dart:175:59 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\SelectionScreen.dart:191:39 - deprecated_member_use
+   info - The file name 'SetUpLocalDb.dart' isn't a lower_case_with_underscores identifier - lib\screens\SetUpLocalDb.dart:1:1 - file_names
+   info - Invalid use of a private type in a public API - lib\screens\SetUpLocalDb.dart:12:3 - library_private_types_in_public_api
+warning - The stack trace variable 'stackTrace' isn't used and can be removed - lib\screens\SetUpLocalDb.dart:79:17 - unused_catch_stack
+   info - Use 'const' with the constructor to improve performance - lib\screens\SetUpLocalDb.dart:196:21 - prefer_const_constructors
+   info - The file name 'SkillsSelectionScreen.dart' isn't a lower_case_with_underscores identifier - lib\screens\SkillsSelectionScreen.dart:1:1 - file_names
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\SkillsSelectionScreen.dart:412:39 - deprecated_member_use
+   info - 'background' is deprecated and shouldn't be used. Use surface instead. This feature was deprecated after v3.18.0-0.1.pre - lib\theme.dart:113:7 - deprecated_member_use
+

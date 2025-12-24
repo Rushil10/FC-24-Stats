@@ -6,7 +6,7 @@ class BannerSmallAd extends StatefulWidget {
   const BannerSmallAd({super.key});
 
   @override
-  _BannerSmallAdState createState() => _BannerSmallAdState();
+  State<BannerSmallAd> createState() => _BannerSmallAdState();
 }
 
 class _BannerSmallAdState extends State<BannerSmallAd> {

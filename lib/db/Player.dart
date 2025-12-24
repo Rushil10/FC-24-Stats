@@ -1,4 +1,5 @@
 class Player {
+  final int? id;
   final num? sofifaId;
   final String? playerUrl;
   final String? shortName;
@@ -76,15 +77,15 @@ class Player {
   final num? goalkeepingKicking;
   final num? goalkeepingPositioning;
   final num? goalkeepingReflexes;
-  final String? goalkeepingSpeed;
+  final num? goalkeepingSpeed;
   final String? ls;
   final String? st;
   final String? rs;
-  final num? lw;
-  final num? lf;
-  final num? cf;
-  final num? rf;
-  final num? rw;
+  final String? lw;
+  final String? lf;
+  final String? cf;
+  final String? rf;
+  final String? rw;
   final String? playerFaceUrl;
   final String? clubLogoUrl;
   final String? clubFlagUrl;
@@ -92,6 +93,7 @@ class Player {
   final String? nationFlagUrl;
 
   Player({
+    this.id,
     this.sofifaId,
     this.playerUrl,
     this.shortName,
@@ -186,7 +188,8 @@ class Player {
   });
 
   Player.fromJson(Map<String, dynamic> json)
-      : sofifaId = json['sofifa_id'] as num?,
+      : id = json['id'] as int?,
+        sofifaId = json['sofifa_id'] as num?,
         playerUrl = json['player_url'] as String?,
         shortName = json['short_name'] as String?,
         longName = json['long_name'] as String?,
@@ -200,7 +203,10 @@ class Player {
         heightCm = json['height_cm'] as num?,
         weightKg = json['weight_kg'] as num?,
         clubTeamId = json['club_team_id'] as num?,
-        clubName = json['club_name'] as String?,
+        clubName = (json['club_name'] != null &&
+                json['club_name'].toString().isNotEmpty)
+            ? json['club_name'] as String?
+            : "Free Agent",
         leagueName = json['league_name'] as String?,
         leagueLevel = json['league_level'] as num?,
         clubPosition = json['club_position'] as String?,
@@ -219,7 +225,7 @@ class Player {
         internationalReputation = json['international_reputation'] as num?,
         workRate = json['work_rate'] as String?,
         bodyType = json['body_type'] as String?,
-        realFace = json['real_face'] as String?,
+        realFace = json['real_face']?.toString(),
         releaseClauseEur = json['release_clause_eur'] as num?,
         playerTags = json['player_tags'] as String?,
         playerTraits = json['player_traits'] as String?,
@@ -263,15 +269,15 @@ class Player {
         goalkeepingKicking = json['goalkeeping_kicking'] as num?,
         goalkeepingPositioning = json['goalkeeping_positioning'] as num?,
         goalkeepingReflexes = json['goalkeeping_reflexes'] as num?,
-        goalkeepingSpeed = json['goalkeeping_speed'] as String?,
+        goalkeepingSpeed = json['goalkeeping_speed'] as num?,
         ls = json['ls'] as String?,
         st = json['st'] as String?,
         rs = json['rs'] as String?,
-        lw = json['lw'] as num?,
-        lf = json['lf'] as num?,
-        cf = json['cf'] as num?,
-        rf = json['rf'] as num?,
-        rw = json['rw'] as num?,
+        lw = json['lw'] as String?,
+        lf = json['lf'] as String?,
+        cf = json['cf'] as String?,
+        rf = json['rf'] as String?,
+        rw = json['rw'] as String?,
         playerFaceUrl = json['player_face_url'] as String?,
         clubLogoUrl = json['club_logo_url'] as String?,
         clubFlagUrl = json['club_flag_url'] as String?,
@@ -279,6 +285,7 @@ class Player {
         nationFlagUrl = json['nation_flag_url'] as String?;
 
   Map<String, dynamic> toJson() => {
+        'id': id,
         'sofifa_id': sofifaId,
         'player_url': playerUrl,
         'short_name': shortName,
@@ -371,4 +378,30 @@ class Player {
         'nation_logo_url': nationLogoUrl,
         'nation_flag_url': nationFlagUrl
       };
+
+  List<String> get positionsList {
+    if (playerPositions == null || playerPositions!.isEmpty) return [];
+    return playerPositions!.split(',').map((e) => e.trim()).toList();
+  }
+
+  String get formattedPositions {
+    return positionsList.join(' ');
+  }
+
+  List<String> get traitsList {
+    if (playerTraits == null || playerTraits!.isEmpty) return [];
+    return playerTraits!.split(',').map((e) => e.trim()).toList();
+  }
+
+  String get shootingWorkRate {
+    if (workRate == null || !workRate!.contains('/')) return "N/A";
+    return workRate!.split('/')[0].trim();
+  }
+
+  String get defensiveWorkRate {
+    if (workRate == null || !workRate!.contains('/')) return "N/A";
+    var parts = workRate!.split('/');
+    if (parts.length < 2) return "N/A";
+    return parts[1].trim();
+  }
 }

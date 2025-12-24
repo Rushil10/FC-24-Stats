@@ -2,25 +2,14 @@ import 'package:fc_stats_24/components/AgeRating.dart';
 import 'package:fc_stats_24/components/FootDetails.dart';
 import 'package:fc_stats_24/components/OverallRating.dart';
 import 'package:fc_stats_24/components/PotentialRating.dart';
+import 'package:fc_stats_24/db/Player.dart';
 import 'package:fc_stats_24/layout.dart';
 import 'package:fc_stats_24/theme.dart';
 import 'package:flutter/material.dart';
 
 class PlayerDetailsRatingCard extends StatelessWidget {
-  final playerData;
-  const PlayerDetailsRatingCard({super.key, this.playerData});
-
-  String playerPositions() {
-    String pos = playerData['player_positions']?.toString() ?? "";
-    if (pos.isEmpty) return "N/A";
-    List li = pos.split(",");
-    String p = "";
-    for (int i = 0; i < li.length; i++) {
-      p += li[i];
-      p += " ";
-    }
-    return p;
-  }
+  final Player playerData;
+  const PlayerDetailsRatingCard({super.key, required this.playerData});
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +37,6 @@ class PlayerDetailsRatingCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.fromLTRB(0, 9, 0, 9),
             child: Row(
-              //crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(
                   width: remWidth * 0.32,
@@ -66,7 +54,7 @@ class PlayerDetailsRatingCard extends StatelessWidget {
                                   fontWeight: FontWeight.w500, fontSize: 15),
                             ),
                             OverallRating(
-                              overall: playerData['overall'],
+                              overall: playerData.overall,
                               cardWidth: AppLayout.detailsPageWidth,
                             ),
                           ],
@@ -84,7 +72,7 @@ class PlayerDetailsRatingCard extends StatelessWidget {
                                   fontWeight: FontWeight.w500, fontSize: 15),
                             ),
                             AgeRating(
-                              age: playerData['age'],
+                              age: playerData.age,
                               cardWidth: AppLayout.detailsPageWidth,
                             )
                           ],
@@ -94,39 +82,28 @@ class PlayerDetailsRatingCard extends StatelessWidget {
                   ),
                 ),
                 SizedBox(
-                  //decoration: BoxDecoration(color: Colors.green),
                   width: remWidth * 0.35,
                   height: remWidth * 0.38,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Container(
-                        child: Text(
-                          playerPositions(),
-                          style: TextStyle(
-                              color: appColors.posColor,
-                              fontWeight: AppLayout.posDetFontWeight,
-                              fontSize: AppLayout.posFontSize),
-                        ),
+                      Text(
+                        playerData.formattedPositions,
+                        style: TextStyle(
+                            color: appColors.posColor,
+                            fontWeight: AppLayout.posDetFontWeight,
+                            fontSize: AppLayout.posFontSize),
                       ),
                       SizedBox(
                         height: remWidth * 0.32,
                         width: remWidth * 0.32,
                         child: Image.network(
-                          playerData['player_face_url'],
+                          playerData.playerFaceUrl ?? "",
                           loadingBuilder: (BuildContext context, Widget child,
                               ImageChunkEvent? loadingProgress) {
                             if (loadingProgress == null) {
-                              // Image loaded successfully
                               return child;
-                            } else if (loadingProgress.cumulativeBytesLoaded ==
-                                loadingProgress.expectedTotalBytes) {
-                              // Image failed to load
-                              return Image.asset(
-                                  'assets/images/player_icon.webp',
-                                  fit: BoxFit.fitWidth);
                             } else {
-                              // Image still loading
                               return Image.asset(
                                   'assets/images/player_icon.webp',
                                   fit: BoxFit.fitWidth);
@@ -134,7 +111,6 @@ class PlayerDetailsRatingCard extends StatelessWidget {
                           },
                           errorBuilder: (BuildContext context, Object error,
                               StackTrace? stackTrace) {
-                            // Handle image loading error
                             return Image.asset('assets/images/player_icon.webp',
                                 fit: BoxFit.fitWidth);
                           },
@@ -159,7 +135,7 @@ class PlayerDetailsRatingCard extends StatelessWidget {
                                   fontWeight: FontWeight.w500, fontSize: 15),
                             ),
                             PotentialRating(
-                              potential: playerData['potential'],
+                              potential: playerData.potential,
                               cardWidth: AppLayout.detailsPageWidth,
                             ),
                           ],
@@ -177,7 +153,7 @@ class PlayerDetailsRatingCard extends StatelessWidget {
                                   fontWeight: FontWeight.w500, fontSize: 15),
                             ),
                             FootDetails(
-                              foot: playerData['preferred_foot'],
+                              foot: playerData.preferredFoot,
                               cardWidth: AppLayout.detailsPageWidth,
                             )
                           ],
@@ -191,7 +167,7 @@ class PlayerDetailsRatingCard extends StatelessWidget {
           ),
           Center(
             child: Text(
-              playerData['long_name']?.toString() ?? "Unknown Player",
+              playerData.longName ?? "Unknown Player",
               style: const TextStyle(fontSize: 16),
             ),
           ),
@@ -203,72 +179,46 @@ class PlayerDetailsRatingCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                (playerData['nation_flag_url'] != null &&
-                        playerData['nation_flag_url'].toString().isNotEmpty)
-                    ? SizedBox(
-                        width: 0.045 * remWidth,
-                        child: Image.network(
-                          playerData['nation_flag_url'],
-                          loadingBuilder: (BuildContext context, Widget child,
-                              ImageChunkEvent? loadingProgress) {
-                            if (loadingProgress == null) {
-                              // Image loaded successfully
-                              return child;
-                            } else if (loadingProgress.cumulativeBytesLoaded ==
-                                loadingProgress.expectedTotalBytes) {
-                              // Image failed to load
-                              return Image.asset('assets/images/icon.png',
-                                  fit: BoxFit.fitWidth);
-                            } else {
-                              // Image still loading
-                              return Image.asset('assets/images/icon.png',
-                                  fit: BoxFit.fitWidth);
-                            }
-                          },
-                          errorBuilder: (BuildContext context, Object error,
-                              StackTrace? stackTrace) {
-                            // Handle image loading error
-                            return Image.asset('assets/images/icon.png',
-                                fit: BoxFit.fitWidth);
-                          },
-                        ),
-                      )
-                    : Container(width: 0.045 * remWidth),
-                Container(
-                  child: const Text(' '),
+                if (playerData.nationFlagUrl != null &&
+                    playerData.nationFlagUrl!.isNotEmpty)
+                  SizedBox(
+                    width: 0.045 * remWidth,
+                    child: Image.network(
+                      playerData.nationFlagUrl!,
+                      loadingBuilder: (BuildContext context, Widget child,
+                          ImageChunkEvent? loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return Image.asset('assets/images/icon.png',
+                            fit: BoxFit.fitWidth);
+                      },
+                      errorBuilder: (BuildContext context, Object error,
+                          StackTrace? stackTrace) {
+                        return Image.asset('assets/images/icon.png',
+                            fit: BoxFit.fitWidth);
+                      },
+                    ),
+                  )
+                else
+                  Container(width: 0.045 * remWidth),
+                const Text(' '),
+                Text(
+                  playerData.nationalityName ?? "N/A",
+                  style: const TextStyle(fontSize: 14),
                 ),
-                Container(
-                  child: Text(
-                    playerData['nationality_name']?.toString() ?? "N/A",
-                    style: const TextStyle(fontSize: 14),
-                  ),
+                const Text(' - '),
+                Text(
+                  playerData.dob ?? "N/A",
+                  style: const TextStyle(fontSize: 14),
                 ),
-                Container(
-                  child: const Text(' - '),
+                const Text(' - '),
+                Text(
+                  '${playerData.heightCm ?? "-"} cm',
+                  style: const TextStyle(fontSize: 14),
                 ),
-                Container(
-                  child: Text(
-                    playerData['dob']?.toString() ?? "N/A",
-                    style: const TextStyle(fontSize: 14),
-                  ),
-                ),
-                Container(
-                  child: const Text(' - '),
-                ),
-                Container(
-                  child: Text(
-                    '${playerData['height_cm']} cm',
-                    style: const TextStyle(fontSize: 14),
-                  ),
-                ),
-                Container(
-                  child: const Text(' - '),
-                ),
-                Container(
-                  child: Text(
-                    '${playerData['weight_kg']} kg',
-                    style: const TextStyle(fontSize: 14),
-                  ),
+                const Text(' - '),
+                Text(
+                  '${playerData.weightKg ?? "-"} kg',
+                  style: const TextStyle(fontSize: 14),
                 )
               ],
             ),
@@ -276,47 +226,49 @@ class PlayerDetailsRatingCard extends StatelessWidget {
           Container(
             height: 5,
           ),
-          Container(
-            child: Row(
-              children: [
-                SizedBox(
-                  width: 0.5 * remWidth,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text(
-                        'REAL FACE: ',
-                        style: TextStyle(fontSize: 15),
-                      ),
-                      Text(
-                        'Yes',
-                        style: TextStyle(
-                            color: appColors.lightGreen, fontSize: 15),
-                      )
-                    ],
-                  ),
+          Row(
+            children: [
+              SizedBox(
+                width: 0.5 * remWidth,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'REAL FACE: ',
+                      style: TextStyle(fontSize: 15),
+                    ),
+                    Text(
+                      playerData.realFace == '1' ||
+                              playerData.realFace == 'true'
+                          ? 'Yes'
+                          : 'No',
+                      style:
+                          TextStyle(color: appColors.lightGreen, fontSize: 15),
+                    )
+                  ],
                 ),
-                SizedBox(
-                  width: 0.5 * remWidth,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text(
-                        'Jersey: ',
-                        style: TextStyle(fontSize: 15),
-                      ),
-                      Text(
-                        playerData['club_jersey_number'] == 0
-                            ? 'None'
-                            : playerData['club_jersey_number'].toString(),
-                        style: TextStyle(
-                            color: appColors.lightGreen, fontSize: 15),
-                      )
-                    ],
-                  ),
-                )
-              ],
-            ),
+              ),
+              SizedBox(
+                width: 0.5 * remWidth,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'Jersey: ',
+                      style: TextStyle(fontSize: 15),
+                    ),
+                    Text(
+                      playerData.clubJerseyNumber == null ||
+                              playerData.clubJerseyNumber == 0
+                          ? 'None'
+                          : playerData.clubJerseyNumber.toString(),
+                      style:
+                          TextStyle(color: appColors.lightGreen, fontSize: 15),
+                    )
+                  ],
+                ),
+              )
+            ],
           )
         ],
       ),

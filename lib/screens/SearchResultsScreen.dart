@@ -1,4 +1,5 @@
 import 'package:fc_stats_24/components/playerCard.dart';
+import 'package:fc_stats_24/db/Player.dart';
 import 'package:fc_stats_24/db/players22.dart';
 import 'package:fc_stats_24/theme.dart';
 import 'package:fc_stats_24/providers/search_provider.dart';
@@ -20,7 +21,7 @@ class SearchResultsScreen extends StatefulWidget {
 
 class _SearchResultsScreenState extends State<SearchResultsScreen> {
   bool loading = true;
-  List<Map> players = [];
+  List<Player> players = [];
 
   @override
   void initState() {
@@ -33,7 +34,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
       loading = true;
     });
 
-    final results = await PlayersDatabase.instance.filterPlayers(
+    final List<Player> results = await PlayersDatabase.instance.filterPlayers(
       query: widget.query,
       minOverall: widget.filters.overallRange.start,
       maxOverall: widget.filters.overallRange.end,

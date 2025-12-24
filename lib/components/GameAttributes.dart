@@ -1,28 +1,14 @@
 import 'package:fc_stats_24/components/AttributeRating.dart';
+import 'package:fc_stats_24/db/Player.dart';
 import 'package:fc_stats_24/layout.dart';
 import 'package:fc_stats_24/theme.dart';
 import 'package:flutter/material.dart';
 
 class GameAttributes extends StatelessWidget {
-  final gameData;
-  const GameAttributes({super.key, this.gameData});
+  final Player gameData;
+  const GameAttributes({super.key, required this.gameData});
 
-  String workRateAtt() {
-    var work = gameData['work_rate']?.toString();
-    if (work == null || !work.contains('/')) return "N/A";
-    List<String> wr = work.split('/');
-    return wr[0];
-  }
-
-  String workRateDef() {
-    var work = gameData['work_rate']?.toString();
-    if (work == null || !work.contains('/') || work.split('/').length < 2)
-      return "N/A";
-    List<String> wr = work.split('/');
-    return wr[1];
-  }
-
-  Color workRateColor(var rate, AppColors appColors) {
+  Color workRateColor(String rate, AppColors appColors) {
     if (rate == "High") {
       return appColors.darkGreen;
     } else if (rate == "Medium") {
@@ -34,9 +20,7 @@ class GameAttributes extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String traitsString = gameData['player_traits']?.toString() ?? "";
-    List<String> playerTraits =
-        traitsString.isNotEmpty ? traitsString.split(',') : [];
+    List<String> playerTraits = gameData.traitsList;
     final appColors = Theme.of(context).extension<AppColors>()!;
 
     return Container(
@@ -49,7 +33,7 @@ class GameAttributes extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(0, 7, 0, 7),
             alignment: Alignment.center,
             decoration: BoxDecoration(color: appColors.posColor),
-            child: const Text('CLUB DETAILS',
+            child: const Text('GAME ATTRIBUTES',
                 style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w800,
@@ -68,7 +52,7 @@ class GameAttributes extends StatelessWidget {
                         const Text('Skill Moves'),
                         Row(
                           children: [
-                            Text(gameData['skill_moves'].toString()),
+                            Text(gameData.skillMoves?.toString() ?? "0"),
                             const Text(' '),
                             Icon(
                               Icons.star,
@@ -88,7 +72,7 @@ class GameAttributes extends StatelessWidget {
                         const Text('Weak Foot'),
                         Row(
                           children: [
-                            Text(gameData['weak_foot'].toString()),
+                            Text(gameData.weakFoot?.toString() ?? "0"),
                             const Text(' '),
                             Icon(
                               Icons.star,
@@ -108,8 +92,8 @@ class GameAttributes extends StatelessWidget {
                         const Text('Reputation'),
                         Row(
                           children: [
-                            Text(gameData['international_reputation']
-                                .toString()),
+                            Text(gameData.internationalReputation?.toString() ??
+                                "0"),
                             const Text(' '),
                             Icon(
                               Icons.star,
@@ -133,9 +117,10 @@ class GameAttributes extends StatelessWidget {
                       children: [
                         const Text('Work Rates (Att)'),
                         Text(
-                          workRateAtt(),
+                          gameData.shootingWorkRate,
                           style: TextStyle(
-                              color: workRateColor(workRateAtt(), appColors)),
+                              color: workRateColor(
+                                  gameData.shootingWorkRate, appColors)),
                         )
                       ],
                     ),
@@ -147,9 +132,10 @@ class GameAttributes extends StatelessWidget {
                       children: [
                         const Text('Work Rates (Def)'),
                         Text(
-                          workRateDef(),
+                          gameData.defensiveWorkRate,
                           style: TextStyle(
-                              color: workRateColor(workRateDef(), appColors)),
+                              color: workRateColor(
+                                  gameData.defensiveWorkRate, appColors)),
                         )
                       ],
                     )
@@ -164,7 +150,7 @@ class GameAttributes extends StatelessWidget {
                     AttributeRating(
                       heading: 'PAC',
                       cardWidth: AppLayout.ratingWidthDetails,
-                      attribute: gameData['pace'],
+                      attribute: gameData.pace,
                     ),
                     Container(
                       width: 15,
@@ -172,7 +158,7 @@ class GameAttributes extends StatelessWidget {
                     AttributeRating(
                       heading: 'SHO',
                       cardWidth: AppLayout.ratingWidthDetails,
-                      attribute: gameData['shooting'],
+                      attribute: gameData.shooting,
                     ),
                     Container(
                       width: 15,
@@ -180,7 +166,7 @@ class GameAttributes extends StatelessWidget {
                     AttributeRating(
                       heading: 'PAS',
                       cardWidth: AppLayout.ratingWidthDetails,
-                      attribute: gameData['passing'],
+                      attribute: gameData.passing,
                     ),
                   ],
                 ),
@@ -193,7 +179,7 @@ class GameAttributes extends StatelessWidget {
                     AttributeRating(
                       heading: 'DRI',
                       cardWidth: AppLayout.ratingWidthDetails,
-                      attribute: gameData['dribbling'],
+                      attribute: gameData.dribbling,
                     ),
                     Container(
                       width: 15,
@@ -201,7 +187,7 @@ class GameAttributes extends StatelessWidget {
                     AttributeRating(
                       heading: 'PHY',
                       cardWidth: AppLayout.ratingWidthDetails,
-                      attribute: gameData['physic'],
+                      attribute: gameData.physic,
                     ),
                     Container(
                       width: 15,
@@ -209,7 +195,7 @@ class GameAttributes extends StatelessWidget {
                     AttributeRating(
                       heading: 'DEF',
                       cardWidth: AppLayout.ratingWidthDetails,
-                      attribute: gameData['defending'],
+                      attribute: gameData.defending,
                     ),
                   ],
                 ),
@@ -227,16 +213,19 @@ class GameAttributes extends StatelessWidget {
                           fontWeight: FontWeight.w800,
                           color: Colors.black)),
                 ),
-                ListView.builder(
-                    shrinkWrap: true,
-                    scrollDirection: Axis.vertical,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: playerTraits.length,
-                    itemBuilder: (context, index) {
-                      return Center(
-                        child: Text(playerTraits[index]),
-                      );
-                    })
+                if (playerTraits.isNotEmpty)
+                  ListView.builder(
+                      shrinkWrap: true,
+                      scrollDirection: Axis.vertical,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: playerTraits.length,
+                      itemBuilder: (context, index) {
+                        return Center(
+                          child: Text(playerTraits[index]),
+                        );
+                      })
+                else
+                  const Center(child: Text('No traits available')),
               ],
             ),
           )

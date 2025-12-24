@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:fc_stats_24/components/SearchFilterComp.dart';
+import 'package:fc_stats_24/db/Player.dart';
 import 'package:fc_stats_24/db/players22.dart';
 import 'package:fc_stats_24/screens/PositionSelectionScreen.dart';
 import 'package:fc_stats_24/screens/SearchResultsScreen.dart';
@@ -17,7 +18,7 @@ class SearchScreen extends ConsumerStatefulWidget {
   const SearchScreen({super.key});
 
   @override
-  _SearchScreenState createState() => _SearchScreenState();
+  ConsumerState<SearchScreen> createState() => _SearchScreenState();
 }
 
 class _SearchScreenState extends ConsumerState<SearchScreen>
@@ -30,7 +31,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen>
   Timer? _debounce;
 
   // Overlay Results
-  List<Map> _overlayResults = [];
+  List<Player> _overlayResults = [];
   bool _isLoadingOverlay = false;
   bool _showOverlay = false;
 
@@ -202,12 +203,13 @@ class _SearchScreenState extends ConsumerState<SearchScreen>
                         icon: Icons.directions_walk,
                         value: filters.preferredFoot ?? "Any",
                         onTap: () {
-                          if (filters.preferredFoot == null)
+                          if (filters.preferredFoot == null) {
                             filtersNotifier.setPreferredFoot("Left");
-                          else if (filters.preferredFoot == "Left")
+                          } else if (filters.preferredFoot == "Left") {
                             filtersNotifier.setPreferredFoot("Right");
-                          else
+                          } else {
                             filtersNotifier.setPreferredFoot(null);
+                          }
                         },
                       ),
                       FilterGridButton(
@@ -333,8 +335,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen>
                 decoration: BoxDecoration(
                   color: surfaceColor,
                   borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    const BoxShadow(
+                  boxShadow: const [
+                    BoxShadow(
                         color: Colors.black54, blurRadius: 10, spreadRadius: 2)
                   ],
                   border: Border.all(color: Colors.grey[800]!),
@@ -378,17 +380,17 @@ class _SearchScreenState extends ConsumerState<SearchScreen>
                                       leading: CircleAvatar(
                                         backgroundColor: Colors.transparent,
                                         child: Image.network(
-                                            p['player_face_url'] ?? '',
+                                            p.playerFaceUrl ?? '',
                                             errorBuilder: (c, o, s) =>
                                                 const Icon(Icons.person,
                                                     color: Colors.grey)),
                                       ),
-                                      title: Text(p['short_name'] ?? 'Unknown',
+                                      title: Text(p.shortName ?? 'Unknown',
                                           style: const TextStyle(
                                               color: Colors.white,
                                               fontSize: 16)),
                                       subtitle: Text(
-                                          "${p['overall']} | ${p['player_positions']}",
+                                          "${p.overall} | ${p.formattedPositions}",
                                           style: TextStyle(
                                               color: appColors.posColor,
                                               fontSize: 14)),

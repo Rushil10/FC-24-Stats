@@ -3,20 +3,25 @@ import 'package:fc_stats_24/theme.dart';
 import 'package:flutter/material.dart';
 
 class OverallRating extends StatelessWidget {
-  final overall;
-  final cardWidth;
-  const OverallRating({super.key, this.overall, this.cardWidth});
+  final num? overall;
+  final double cardWidth;
+
+  const OverallRating({
+    super.key,
+    this.overall,
+    required this.cardWidth,
+  });
 
   Color bgColor(BuildContext context) {
     final appColors = Theme.of(context).extension<AppColors>()!;
     if (overall == null) return Colors.grey;
-    if (overall >= 90) {
+    if (overall! >= 90) {
       return appColors.darkGreen;
-    } else if (overall >= 80) {
+    } else if (overall! >= 80) {
       return appColors.green;
-    } else if (overall >= 70) {
+    } else if (overall! >= 70) {
       return appColors.lightGreen;
-    } else if (overall >= 50) {
+    } else if (overall! >= 50) {
       return appColors.yellow;
     } else {
       return appColors.red;
@@ -25,8 +30,7 @@ class OverallRating extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    MediaQueryData queryData;
-    queryData = MediaQuery.of(context);
+    MediaQueryData queryData = MediaQuery.of(context);
 
     return Container(
       width: queryData.size.width * cardWidth,
@@ -34,7 +38,7 @@ class OverallRating extends StatelessWidget {
       decoration: BoxDecoration(color: bgColor(context)),
       child: Center(
         child: Text(
-          overall?.toString() ?? "-",
+          overall?.toInt().toString() ?? "-",
           style: const TextStyle(
               fontSize: AppLayout.ratingFont,
               fontWeight: AppLayout.ratingFontWeight),

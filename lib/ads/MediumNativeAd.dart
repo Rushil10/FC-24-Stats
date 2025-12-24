@@ -7,7 +7,7 @@ class MediumNativeAd extends StatefulWidget {
   const MediumNativeAd({super.key});
 
   @override
-  _MediumNativeAdState createState() => _MediumNativeAdState();
+  State<MediumNativeAd> createState() => _MediumNativeAdState();
 }
 
 class _MediumNativeAdState extends State<MediumNativeAd> {

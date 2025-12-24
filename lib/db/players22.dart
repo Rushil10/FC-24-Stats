@@ -24,7 +24,9 @@ class PlayersDatabase {
       if (_database != null) {
         try {
           await _database!.close();
-        } catch (e) {}
+        } catch (e) {
+          // ignore: empty_catches
+        }
         _database = null;
       }
 
@@ -34,7 +36,7 @@ class PlayersDatabase {
       if (await databaseExists(path)) {
         await deleteDatabase(path);
       } else {}
-    } catch (e, stackTrace) {
+    } catch (e) {
       rethrow;
     }
   }
@@ -60,15 +62,7 @@ class PlayersDatabase {
       });
 
       return db;
-    } catch (e, stackTrace) {
-      // If there's an error, try to delete corrupted database
-      try {
-        final dbPath = await getDatabasesPath();
-        final path = join(dbPath, filePath);
-        // Don't use databaseExists check here, just try to delete
-        await deleteDatabase(path);
-      } catch (deleteError) {}
-
+    } catch (e) {
       rethrow;
     }
   }
@@ -79,7 +73,7 @@ class PlayersDatabase {
   }
 
   void checkIfDBCreated() async {
-    var created = await PlayersDatabase.instance.database;
+    await PlayersDatabase.instance.database;
   }
 
   Future<bool> checkDbExists() async {
@@ -90,13 +84,13 @@ class PlayersDatabase {
 
   Future<void> readDb() async {
     final db = await instance.database;
-    List<Map> li = await db.query('players');
+    await db.query('players');
   }
 
   Future getNumberOfRows() async {
     try {
       final db = await instance.database.timeout(
-        Duration(seconds: 5),
+        const Duration(seconds: 5),
         onTimeout: () {
           throw Exception('Database connection timeout');
         },
@@ -105,39 +99,42 @@ class PlayersDatabase {
       // Use COUNT(*) instead of SELECT id - much faster!
       final result =
           await db.rawQuery('SELECT COUNT(*) as count FROM players').timeout(
-        Duration(seconds: 5),
+        const Duration(seconds: 5),
         onTimeout: () {
           throw Exception('Query timeout');
         },
       );
       final count = Sqflite.firstIntValue(result) ?? 0;
       return count;
-    } catch (e, stackTrace) {
+    } catch (e) {
       rethrow;
     }
   }
 
-  Future top100Players() async {
+  Future<List<Player>> top100Players() async {
     final db = await instance.database;
-    List<Map> li = await db.rawQuery(
+    final List<Map<String, dynamic>> li = await db.rawQuery(
         'SELECT id,sofifa_id,player_url,player_positions,short_name,potential,age,overall,club_name,player_face_url FROM players LIMIT 500');
-    return li;
+    return li.map((json) => Player.fromJson(json)).toList();
   }
 
-  Future getPlayerDetails(var id) async {
+  Future<Player?> getPlayerDetails(int id) async {
     final db = await instance.database;
-    List<Map> li = await db.rawQuery('''
+    final List<Map<String, dynamic>> li = await db.rawQuery('''
     SELECT * FROM players WHERE id=$id;
     ''');
-    return li;
+    if (li.isNotEmpty) {
+      return Player.fromJson(li[0]);
+    }
+    return null;
   }
 
-  Future searchPlayers(var st) async {
+  Future<List<Player>> searchPlayers(String st) async {
     final db = await instance.database;
-    List<Map> li = await db.rawQuery('''
+    final List<Map<String, dynamic>> li = await db.rawQuery('''
     SELECT * FROM players WHERE long_name like '%$st%' limit 50;
     ''');
-    return li;
+    return li.map((json) => Player.fromJson(json)).toList();
   }
 
   Future<bool> checkFav(var id) async {
@@ -148,28 +145,28 @@ class PlayersDatabase {
     return li.isNotEmpty;
   }
 
-  Future getFavourites() async {
+  Future<List<Player>> getFavourites() async {
     final db = await instance.database;
-    List<Map> li = await db.rawQuery('''
+    final List<Map<String, dynamic>> li = await db.rawQuery('''
     SELECT * FROM players JOIN favourites Where players.id=favourites.playerId
     ''');
-    return li;
+    return li.map((json) => Player.fromJson(json)).toList();
   }
 
-  Future getFreeAgents() async {
+  Future<List<Player>> getFreeAgents() async {
     final db = await instance.database;
-    List<Map> li = await db.rawQuery('''
+    final List<Map<String, dynamic>> li = await db.rawQuery('''
     SELECT * FROM players where club_name ="" or club_name is null
     ''');
-    return li;
+    return li.map((json) => Player.fromJson(json)).toList();
   }
 
-  Future getYoungPlayers() async {
+  Future<List<Player>> getYoungPlayers() async {
     final db = await instance.database;
-    List<Map> li = await db.rawQuery('''
+    final List<Map<String, dynamic>> li = await db.rawQuery('''
     SELECT * FROM players Where age<22 limit 100
     ''');
-    return li;
+    return li.map((json) => Player.fromJson(json)).toList();
   }
 
   Future searchFavourites(var id) async {
@@ -292,7 +289,7 @@ CREATE TABLE players (
     (fid INTEGER PRIMARY KEY,
     playerId INTEGER)
 ''');
-    } catch (e, stackTrace) {
+    } catch (e) {
       rethrow;
     }
   }
@@ -300,8 +297,8 @@ CREATE TABLE players (
   Future insertPlayer(Player player) async {
     try {
       final db = await instance.database;
-      final id = await db.insert("players", player.toJson());
-    } catch (e, stackTrace) {
+      await db.insert("players", player.toJson());
+    } catch (e) {
       rethrow;
     }
   }
@@ -396,7 +393,7 @@ CREATE TABLE players (
     return sortedPositions;
   }
 
-  Future<List<Map>> filterPlayers({
+  Future<List<Player>> filterPlayers({
     String? query,
     double? minOverall,
     double? maxOverall,
@@ -960,6 +957,6 @@ CREATE TABLE players (
 
     final result = await db.rawQuery(
         'SELECT * FROM players WHERE $whereClause LIMIT 100', args);
-    return result;
+    return result.map((json) => Player.fromJson(json)).toList();
   }
 }

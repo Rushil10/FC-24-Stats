@@ -7,7 +7,7 @@ class BottomTabs extends StatefulWidget {
   const BottomTabs({super.key});
 
   @override
-  _BottomTabsState createState() => _BottomTabsState();
+  State<BottomTabs> createState() => _BottomTabsState();
 }
 
 class _BottomTabsState extends State<BottomTabs> {

@@ -9,23 +9,40 @@ class SetUpLocalDb extends StatefulWidget {
   const SetUpLocalDb({super.key});
 
   @override
-  _SetUpLocalDbState createState() => _SetUpLocalDbState();
+  State<SetUpLocalDb> createState() => _SetUpLocalDbState();
 }
 
-class _SetUpLocalDbState extends State<SetUpLocalDb> {
+class _SetUpLocalDbState extends State<SetUpLocalDb>
+    with SingleTickerProviderStateMixin {
   bool loading = true;
   double completed = 0;
   static const storage = FlutterSecureStorage();
+  late AnimationController _animController;
+  late Animation<double> _pulseAnimation;
 
   @override
   void initState() {
     super.initState();
+    _animController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1500),
+    )..repeat(reverse: true);
+
+    _pulseAnimation = Tween<double>(begin: 1.0, end: 1.2).animate(
+      CurvedAnimation(parent: _animController, curve: Curves.easeInOut),
+    );
+
     checkSetUp();
+  }
+
+  @override
+  void dispose() {
+    _animController.dispose();
+    super.dispose();
   }
 
   void checkSetUp() async {
     try {
-      // Add timeout to prevent hanging if secure storage is messed up
       var setUp = await storage.read(key: 'db').timeout(
         const Duration(seconds: 3),
         onTimeout: () {
@@ -44,7 +61,6 @@ class _SetUpLocalDbState extends State<SetUpLocalDb> {
           setState(() {
             loading = false;
           });
-          // Start the smart database setup
           startSmartSetup();
         }
       }
@@ -60,7 +76,6 @@ class _SetUpLocalDbState extends State<SetUpLocalDb> {
 
   void startSmartSetup() async {
     try {
-      // Use the new smart setup function that handles everything
       await setupDatabaseIfNeeded((progress) {
         changeCompleted(progress);
       });
@@ -76,8 +91,7 @@ class _SetUpLocalDbState extends State<SetUpLocalDb> {
             MaterialPageRoute(builder: (context) => const BottomTabs()),
             (Route<dynamic> route) => false);
       }
-    } catch (e, stackTrace) {
-      // Show error to user
+    } catch (e) {
       if (mounted) {
         setState(() {
           loading = false;
@@ -97,7 +111,7 @@ class _SetUpLocalDbState extends State<SetUpLocalDb> {
   void changeCompleted(int currentRow) async {
     if (mounted) {
       const totalRows = 18349;
-      final progress = currentRow / totalRows;
+      final progress = (currentRow / totalRows).clamp(0.0, 1.0);
 
       setState(() {
         completed = progress;
@@ -108,7 +122,6 @@ class _SetUpLocalDbState extends State<SetUpLocalDb> {
   String percent() {
     double p = completed * 100;
     int k = p.round();
-    // Show at least 1% if there's any progress
     if (completed > 0 && k == 0) return '1';
     return k.toString();
   }
@@ -126,83 +139,134 @@ class _SetUpLocalDbState extends State<SetUpLocalDb> {
             ),
           ),
           child: !loading
-              ? Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Expanded(
-                        child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                            margin: const EdgeInsets.all(15),
+              ? Container(
+                  color: Colors.black.withValues(
+                      alpha: 0.6), // Darken background for better contrast
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Expanded(
+                          child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          ScaleTransition(
+                            scale: _pulseAnimation,
+                            child: Icon(
+                              Icons.sports_soccer_rounded,
+                              size: 80,
+                              color: appColors.posColor,
+                            ),
+                          ),
+                          const SizedBox(height: 30),
+                          Container(
+                              margin: const EdgeInsets.all(15),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    'Player Stats 24',
+                                    style: TextStyle(
+                                      color: appColors.posColor,
+                                      fontSize: 35,
+                                      fontWeight: FontWeight.bold,
+                                      shadows: [
+                                        BoxShadow(
+                                          color: Colors.black
+                                              .withValues(alpha: 0.5),
+                                          blurRadius: 10,
+                                          offset: const Offset(0, 4),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Text(
+                                    'Optimizing Player Database',
+                                    style: TextStyle(
+                                      color: appColors.posColor
+                                          .withValues(alpha: 0.8),
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                ],
+                              )),
+                          const SizedBox(height: 40),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 30),
                             child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Text(
-                                  'Player Stats 24',
-                                  style: TextStyle(
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: LinearProgressIndicator(
+                                    value: completed,
+                                    minHeight: 12,
                                     color: appColors.posColor,
-                                    fontSize: 35,
-                                    fontWeight: FontWeight.bold,
+                                    backgroundColor:
+                                        Colors.white.withValues(alpha: 0.1),
                                   ),
                                 ),
-                                Container(
-                                  height: 5,
-                                ),
-                                Text(
-                                  'Storing Over 20000 Players',
-                                  style: TextStyle(
-                                    color: appColors.posColor,
-                                    fontSize: 18,
-                                  ),
+                                const SizedBox(height: 15),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      completed < 1
+                                          ? 'Setting Up Statistics...'
+                                          : 'Ready to Play!',
+                                      style: const TextStyle(
+                                          fontSize: 14, color: Colors.white70),
+                                    ),
+                                    Text(
+                                      '${percent()}%',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        color: appColors.posColor,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ],
-                            )),
-                        Container(
-                            margin: const EdgeInsets.all(15),
-                            child: LinearProgressIndicator(
-                              value: completed,
-                              minHeight: 12.5,
-                              color: appColors.posColor,
-                            )),
-                        completed < 1
-                            ? const Text(
-                                'Setting Up Players Database',
-                                style: TextStyle(fontSize: 16),
-                              )
-                            : const Text(
-                                'Database Setup Completed',
-                                style: TextStyle(fontSize: 16),
-                              ),
-                        Container(
-                          height: 9,
-                        ),
-                        Text('${percent()} % Completed',
-                            style: const TextStyle(fontSize: 16)),
-                        Container(
-                          height: 25,
-                        ),
-                        Text(
-                          'App will Work Offline as well',
-                          style: TextStyle(
-                            color: appColors.posColor,
-                            fontSize: 18,
+                            ),
                           ),
-                        ),
-                      ],
-                    )),
-                    BannerSmallAd(),
-                  ],
+                          const SizedBox(height: 60),
+                          Text(
+                            'Works Offline',
+                            style: TextStyle(
+                              color: appColors.posColor.withValues(alpha: 0.6),
+                              fontSize: 14,
+                              letterSpacing: 1.2,
+                              fontWeight: FontWeight.w300,
+                            ),
+                          ),
+                        ],
+                      )),
+                      const BannerSmallAd(),
+                      const SizedBox(height: 10),
+                    ],
+                  ),
                 )
               : Center(
-                  child: SizedBox(
-                    width: 45,
-                    height: 45,
-                    child: CircularProgressIndicator(
-                      color: appColors.posColor,
-                    ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        width: 45,
+                        height: 45,
+                        child: CircularProgressIndicator(
+                          color: appColors.posColor,
+                          strokeWidth: 3,
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      const Text(
+                        "Initializing...",
+                        style: TextStyle(color: Colors.white70),
+                      )
+                    ],
                   ),
                 )),
     );

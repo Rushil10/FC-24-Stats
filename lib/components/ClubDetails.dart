@@ -1,32 +1,33 @@
+import 'package:fc_stats_24/db/Player.dart';
 import 'package:fc_stats_24/theme.dart';
 import 'package:flutter/material.dart';
 
 class ClubDetails extends StatelessWidget {
-  final clubData;
-  const ClubDetails({super.key, this.clubData});
+  final Player clubData;
+  const ClubDetails({super.key, required this.clubData});
 
-  String convertWage(var val) {
+  String convertWage(num? val) {
     if (val == null || val == 0) {
       return "-";
     }
-    var w = val.toString().length;
-    if (w >= 4 && w <= 7) {
-      String v = '\u{20AC}${val.toString().substring(0, w - 3)}';
+    var valStr = val.toInt().toString();
+    var w = valStr.length;
+    if (w >= 4 && w <= 6) {
+      String v = '\u{20AC}${valStr.substring(0, w - 3)}';
       v += "K";
       return v;
     }
-    if (w > 7) {
-      String v = '\u{20AC}${val.toString().substring(0, w - 6)}';
+    if (w > 6) {
+      String v = '\u{20AC}${valStr.substring(0, w - 6)}';
       v += "M";
       return v;
     }
-    return '\u{20AC}${val.toString()}';
+    return '\u{20AC}$valStr';
   }
 
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-    double remWidth = width - 24;
     final appColors = Theme.of(context).extension<AppColors>()!;
 
     return Container(
@@ -45,48 +46,32 @@ class ClubDetails extends StatelessWidget {
                     fontWeight: FontWeight.w800,
                     color: Colors.black)),
           ),
-          (clubData['club_logo_url'] != null &&
-                  clubData['club_logo_url'].toString().isNotEmpty)
-              ? Center(
-                  child: SizedBox(
-                    width: 0.15 * width,
-                    height: 0.15 * width,
-                    child: Image.network(
-                      clubData['club_logo_url'],
-                      loadingBuilder: (BuildContext context, Widget child,
-                          ImageChunkEvent? loadingProgress) {
-                        if (loadingProgress == null) {
-                          // Image loaded successfully
-                          return child;
-                        } else if (loadingProgress.cumulativeBytesLoaded ==
-                            loadingProgress.expectedTotalBytes) {
-                          // Image failed to load
-                          return Image.asset('assets/images/icon.png',
-                              fit: BoxFit.fitWidth);
-                        } else {
-                          // Image still loading
-                          return Image.asset('assets/images/icon.png',
-                              fit: BoxFit.fitWidth);
-                        }
-                      },
-                      errorBuilder: (BuildContext context, Object error,
-                          StackTrace? stackTrace) {
-                        // Handle image loading error
-                        return Image.asset('assets/images/icon.png',
-                            fit: BoxFit.fitWidth);
-                      },
-                    ),
-                  ),
-                )
-              : Container(),
+          if (clubData.clubLogoUrl != null && clubData.clubLogoUrl!.isNotEmpty)
+            Center(
+              child: SizedBox(
+                width: 0.15 * width,
+                height: 0.15 * width,
+                child: Image.network(
+                  clubData.clubLogoUrl!,
+                  loadingBuilder: (BuildContext context, Widget child,
+                      ImageChunkEvent? loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return Image.asset('assets/images/icon.png',
+                        fit: BoxFit.fitWidth);
+                  },
+                  errorBuilder: (BuildContext context, Object error,
+                      StackTrace? stackTrace) {
+                    return Image.asset('assets/images/icon.png',
+                        fit: BoxFit.fitWidth);
+                  },
+                ),
+              ),
+            ),
           Center(
             child: Container(
               padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
               child: Text(
-                (clubData['club_name'] != null &&
-                        clubData['club_name'].toString().isNotEmpty)
-                    ? clubData['club_name']
-                    : "Free Agent",
+                clubData.clubName ?? "Free Agent",
                 style:
                     const TextStyle(fontWeight: FontWeight.w700, fontSize: 18),
               ),
@@ -96,7 +81,7 @@ class ClubDetails extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
               child: Text(
-                clubData['league_name']?.toString() ?? "N/A",
+                clubData.leagueName ?? "N/A",
                 style: const TextStyle(fontSize: 15),
               ),
             ),
@@ -109,7 +94,7 @@ class ClubDetails extends StatelessWidget {
                 style: TextStyle(fontSize: 15),
               ),
               Text(
-                clubData['club_joined']?.toString() ?? "N/A",
+                clubData.clubJoined ?? "N/A",
                 style: const TextStyle(fontSize: 15),
               ),
               const Text(
@@ -121,7 +106,7 @@ class ClubDetails extends StatelessWidget {
                 style: TextStyle(fontSize: 15),
               ),
               Text(
-                clubData['club_contract_valid_until'].toString(),
+                clubData.clubContractValidUntil?.toString() ?? "N/A",
                 style: const TextStyle(fontSize: 15),
               )
             ],
@@ -142,7 +127,7 @@ class ClubDetails extends StatelessWidget {
                     height: 1,
                   ),
                   Text(
-                    convertWage(clubData['wage_eur']),
+                    convertWage(clubData.wageEur),
                     style: const TextStyle(fontSize: 15),
                   )
                 ],
@@ -160,7 +145,7 @@ class ClubDetails extends StatelessWidget {
                     height: 1,
                   ),
                   Text(
-                    convertWage(clubData['value_eur']),
+                    convertWage(clubData.valueEur),
                     style: const TextStyle(fontSize: 15),
                   )
                 ],
@@ -178,7 +163,7 @@ class ClubDetails extends StatelessWidget {
                     height: 1,
                   ),
                   Text(
-                    convertWage(clubData['release_clause_eur']),
+                    convertWage(clubData.releaseClauseEur),
                     style: const TextStyle(fontSize: 15),
                   )
                 ],

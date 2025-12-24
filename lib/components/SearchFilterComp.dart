@@ -27,13 +27,14 @@ class FilterGridButton extends StatelessWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         decoration: BoxDecoration(
-          color:
-              isSelected ? appColors.posColor.withOpacity(0.08) : surfaceColor,
+          color: isSelected
+              ? appColors.posColor.withValues(alpha: 0.08)
+              : surfaceColor,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: isSelected
-                ? appColors.posColor.withOpacity(0.5)
-                : Colors.white.withOpacity(0.08),
+                ? appColors.posColor.withValues(alpha: 0.5)
+                : Colors.white.withValues(alpha: 0.08),
             width: 1.0,
           ),
         ),
@@ -44,7 +45,7 @@ class FilterGridButton extends StatelessWidget {
               padding: const EdgeInsets.all(6),
               decoration: BoxDecoration(
                 color: isSelected
-                    ? appColors.posColor.withOpacity(0.15)
+                    ? appColors.posColor.withValues(alpha: 0.15)
                     : Colors.grey[850],
                 shape: BoxShape.circle,
               ),
@@ -52,7 +53,7 @@ class FilterGridButton extends StatelessWidget {
                 icon,
                 color: isSelected
                     ? appColors.posColor
-                    : Colors.white.withOpacity(0.6),
+                    : Colors.white.withValues(alpha: 0.6),
                 size: 14,
               ),
             ),
@@ -66,8 +67,8 @@ class FilterGridButton extends StatelessWidget {
                     label.toUpperCase(),
                     style: TextStyle(
                       color: isSelected
-                          ? appColors.posColor.withOpacity(0.9)
-                          : Colors.white.withOpacity(0.85),
+                          ? appColors.posColor.withValues(alpha: 0.9)
+                          : Colors.white.withValues(alpha: 0.85),
                       fontWeight: FontWeight.w900,
                       fontSize: 11,
                       letterSpacing: 0.8,
@@ -128,7 +129,7 @@ class RangeFilterSection extends StatelessWidget {
           ? BoxDecoration(
               color: surfaceColor,
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: Colors.white.withOpacity(0.05)),
+              border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
             )
           : null,
       child: Column(
@@ -137,7 +138,7 @@ class RangeFilterSection extends StatelessWidget {
           Text(
             title.toUpperCase(),
             style: TextStyle(
-              color: Colors.white.withOpacity(0.5),
+              color: Colors.white.withValues(alpha: 0.5),
               fontWeight: FontWeight.w700,
               fontSize: 11,
               letterSpacing: 0.8,
@@ -165,10 +166,10 @@ class RangeFilterSection extends StatelessWidget {
               Expanded(
                 child: SliderTheme(
                   data: SliderThemeData(
-                    activeTrackColor: appColors.posColor.withOpacity(0.7),
-                    inactiveTrackColor: Colors.white.withOpacity(0.1),
+                    activeTrackColor: appColors.posColor.withValues(alpha: 0.7),
+                    inactiveTrackColor: Colors.white.withValues(alpha: 0.1),
                     thumbColor: Colors.white,
-                    overlayColor: appColors.posColor.withOpacity(0.1),
+                    overlayColor: appColors.posColor.withValues(alpha: 0.1),
                     trackHeight: 1.5,
                     rangeThumbShape:
                         const RoundRangeSliderThumbShape(enabledThumbRadius: 6),
@@ -208,10 +209,10 @@ class SkillGroup extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 24),
       decoration: BoxDecoration(
-        color: surfaceColor.withOpacity(0.1),
+        color: surfaceColor.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
-          color: appColors.posColor.withOpacity(0.3),
+          color: appColors.posColor.withValues(alpha: 0.3),
           width: 1,
         ),
       ),
@@ -222,7 +223,7 @@ class SkillGroup extends StatelessWidget {
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.03),
+              color: Colors.white.withValues(alpha: 0.03),
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(23),
                 topRight: Radius.circular(23),

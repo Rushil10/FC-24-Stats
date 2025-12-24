@@ -8,24 +8,24 @@ import 'package:fc_stats_24/ads/MediumNativeAd.dart';
 import 'package:fc_stats_24/components/GameAttributes.dart';
 import 'package:fc_stats_24/components/PlayerDetailsRatingCard.dart';
 import 'package:fc_stats_24/components/SkillsRating.dart';
+import 'package:fc_stats_24/db/Player.dart';
 import 'package:fc_stats_24/db/players22.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class PlayerDetails extends ConsumerStatefulWidget {
-  final player;
-  final count;
-  const PlayerDetails({super.key, this.player, this.count});
+  final Player player;
+  final int count;
+  const PlayerDetails({super.key, required this.player, required this.count});
 
   @override
-  _PlayerDetailsState createState() => _PlayerDetailsState();
+  ConsumerState<PlayerDetails> createState() => _PlayerDetailsState();
 }
 
 class _PlayerDetailsState extends ConsumerState<PlayerDetails> {
-  @override
-  var loading = true;
-  var playerDetails = {};
+  bool loading = true;
+  Player? playerDetails;
   InterstitialAd? _interstitialAd;
   bool fav = false;
 
@@ -33,7 +33,7 @@ class _PlayerDetailsState extends ConsumerState<PlayerDetails> {
   void initState() {
     super.initState();
     ref.read(videoAdProvider);
-    if (SHOW_ADS && widget.count % 5 == 0) {
+    if (showAds && widget.count % 5 == 0) {
       addInterstitialAd();
     }
     getPlayerData();
@@ -62,26 +62,30 @@ class _PlayerDetailsState extends ConsumerState<PlayerDetails> {
   }
 
   void getPlayerData() async {
+    if (widget.player.id == null) return;
+
     setState(() {
       loading = true;
     });
     var det =
-        await PlayersDatabase.instance.getPlayerDetails(widget.player['id']);
+        await PlayersDatabase.instance.getPlayerDetails(widget.player.id!);
     setState(() {
-      playerDetails = det[0];
+      playerDetails = det;
       loading = false;
     });
   }
 
   void checkIfFav() async {
-    bool f = await PlayersDatabase.instance.checkFav(widget.player['id']);
+    if (widget.player.id == null) return;
+    bool f = await PlayersDatabase.instance.checkFav(widget.player.id!);
     setState(() {
       fav = f;
     });
   }
 
   void addToFavourites() async {
-    await PlayersDatabase.instance.searchFavourites(widget.player['id']);
+    if (widget.player.id == null) return;
+    await PlayersDatabase.instance.searchFavourites(widget.player.id!);
     setState(() {
       fav = !fav;
     });
@@ -91,7 +95,7 @@ class _PlayerDetailsState extends ConsumerState<PlayerDetails> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.player['short_name']),
+        title: Text(widget.player.shortName ?? "Player Details"),
         actions: <Widget>[
           IconButton(
             icon: Icon(
@@ -108,30 +112,31 @@ class _PlayerDetailsState extends ConsumerState<PlayerDetails> {
       body: Column(children: [
         Expanded(
             child: SingleChildScrollView(
-                child: !loading
+                child: !loading && playerDetails != null
                     ? Column(
                         children: [
                           PlayerDetailsRatingCard(
-                            playerData: playerDetails,
+                            playerData: playerDetails!,
                           ),
                           ClubDetails(
-                            clubData: playerDetails,
+                            clubData: playerDetails!,
                           ),
-                          if (SHOW_ADS) const MediumNativeAd(),
+                          if (showAds) const MediumNativeAd(),
                           GameAttributes(
-                            gameData: playerDetails,
+                            gameData: playerDetails!,
                           ),
                           SkillsRating(
-                            skills: playerDetails,
+                            skills: playerDetails!,
                           )
                         ],
                       )
-                    : Center(
-                        child: Container(
-                          child: const Text('Loading'),
+                    : const Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(20.0),
+                          child: Text('Loading Details...'),
                         ),
                       ))),
-        if (SHOW_ADS) BannerSmallAd(),
+        if (showAds) const BannerSmallAd(),
       ]),
     );
   }

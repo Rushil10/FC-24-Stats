@@ -2,8 +2,8 @@ import 'package:fc_stats_24/theme.dart';
 import 'package:flutter/material.dart';
 
 class SkillHeader extends StatelessWidget {
-  final header;
-  const SkillHeader({super.key, this.header});
+  final String header;
+  const SkillHeader({super.key, required this.header});
 
   @override
   Widget build(BuildContext context) {

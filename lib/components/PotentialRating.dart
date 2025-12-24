@@ -3,20 +3,25 @@ import 'package:fc_stats_24/theme.dart';
 import 'package:flutter/material.dart';
 
 class PotentialRating extends StatelessWidget {
-  final potential;
-  final cardWidth;
-  const PotentialRating({super.key, this.potential, this.cardWidth});
+  final num? potential;
+  final double cardWidth;
+
+  const PotentialRating({
+    super.key,
+    this.potential,
+    required this.cardWidth,
+  });
 
   Color bgColor(BuildContext context) {
     final appColors = Theme.of(context).extension<AppColors>()!;
     if (potential == null) return Colors.grey;
-    if (potential >= 90) {
+    if (potential! >= 90) {
       return appColors.darkGreen;
-    } else if (potential >= 80) {
+    } else if (potential! >= 80) {
       return appColors.green;
-    } else if (potential >= 70) {
+    } else if (potential! >= 70) {
       return appColors.lightGreen;
-    } else if (potential >= 50) {
+    } else if (potential! >= 50) {
       return appColors.yellow;
     } else {
       return appColors.red;
@@ -25,8 +30,7 @@ class PotentialRating extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    MediaQueryData queryData;
-    queryData = MediaQuery.of(context);
+    MediaQueryData queryData = MediaQuery.of(context);
 
     return Container(
       width: queryData.size.width * cardWidth,
@@ -34,7 +38,7 @@ class PotentialRating extends StatelessWidget {
       decoration: BoxDecoration(color: bgColor(context)),
       child: Center(
         child: Text(
-          potential?.toString() ?? "-",
+          potential?.toInt().toString() ?? "-",
           style: const TextStyle(
               fontSize: AppLayout.ratingFont,
               fontWeight: AppLayout.ratingFontWeight),

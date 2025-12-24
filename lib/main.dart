@@ -10,7 +10,7 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
       overlays: [SystemUiOverlay.bottom, SystemUiOverlay.top]);
-  if (SHOW_ADS) {
+  if (showAds) {
     MobileAds.instance.initialize();
   }
   runApp(const ProviderScope(child: MyApp()));
