@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:fc_stats_24/components/SearchFilterComp.dart';
+import 'package:fc_stats_24/components/TacticalField.dart';
 import 'package:fc_stats_24/db/players22.dart';
 import 'package:fc_stats_24/screens/SearchResultsScreen.dart';
 import 'package:fc_stats_24/screens/SelectionScreen.dart';
@@ -28,12 +29,6 @@ class _SearchScreenState extends ConsumerState<SearchScreen>
   List<Map> _overlayResults = [];
   bool _isLoadingOverlay = false;
   bool _showOverlay = false;
-
-  Future<List<String>>? _positionsFuture;
-  Future<List<String>> _getPositions() {
-    _positionsFuture ??= PlayersDatabase.instance.getDistinctPositions();
-    return _positionsFuture!;
-  }
 
   void _onSearchChanged(String query) {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
@@ -112,130 +107,12 @@ class _SearchScreenState extends ConsumerState<SearchScreen>
     );
   }
 
-  void _openPositionSelector() async {
-    final appColors = Theme.of(context).extension<AppColors>()!;
-    final surfaceColor = Theme.of(context).colorScheme.surface;
-
-    final positions = await _getPositions();
-    if (!mounted) return;
-
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: surfaceColor,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+  void _openPositionSelector() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const PositionSelectionScreen(),
       ),
-      builder: (context) {
-        return Consumer(builder: (context, ref, child) {
-          final currentPositions =
-              ref.watch(searchFiltersProvider).selectedPositions;
-          return Container(
-            padding: const EdgeInsets.fromLTRB(20, 24, 20, 24),
-            height: MediaQuery.of(context).size.height * 0.7,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text("Field Positions",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 22,
-                                fontWeight: FontWeight.w900)),
-                        Text("${currentPositions.length} Selected",
-                            style: TextStyle(
-                                color: appColors.posColor.withOpacity(0.8),
-                                fontSize: 13,
-                                fontWeight: FontWeight.bold)),
-                      ],
-                    ),
-                    IconButton(
-                      onPressed: () => Navigator.pop(context),
-                      icon: const Icon(Icons.close, color: Colors.white),
-                    )
-                  ],
-                ),
-                const SizedBox(height: 24),
-                Expanded(
-                  child: GridView.builder(
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      childAspectRatio: 2.2,
-                      crossAxisSpacing: 12,
-                      mainAxisSpacing: 12,
-                    ),
-                    itemCount: positions.length,
-                    itemBuilder: (context, index) {
-                      final pos = positions[index];
-                      final isSelected = currentPositions.contains(pos);
-                      return InkWell(
-                        onTap: () {
-                          ref
-                              .read(searchFiltersProvider.notifier)
-                              .togglePosition(pos);
-                        },
-                        borderRadius: BorderRadius.circular(12),
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 200),
-                          decoration: BoxDecoration(
-                            color: isSelected
-                                ? appColors.posColor.withOpacity(0.1)
-                                : Colors.white.withOpacity(0.05),
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: isSelected
-                                  ? appColors.posColor
-                                  : Colors.transparent,
-                              width: 1.5,
-                            ),
-                          ),
-                          alignment: Alignment.center,
-                          child: Text(
-                            pos,
-                            style: TextStyle(
-                              color: isSelected
-                                  ? Colors.white
-                                  : Colors.white.withOpacity(0.6),
-                              fontWeight: isSelected
-                                  ? FontWeight.w900
-                                  : FontWeight.w600,
-                              fontSize: 15,
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-                const SizedBox(height: 20),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () => Navigator.pop(context),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: appColors.posColor,
-                      foregroundColor: Colors.black,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16)),
-                      elevation: 0,
-                    ),
-                    child: const Text("DONE",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w900, letterSpacing: 1.1)),
-                  ),
-                ),
-              ],
-            ),
-          );
-        });
-      },
     );
   }
 
@@ -572,5 +449,115 @@ class _SearchScreenState extends ConsumerState<SearchScreen>
             ],
           );
         });
+  }
+}
+
+class PositionSelectionScreen extends ConsumerWidget {
+  const PositionSelectionScreen({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final appColors = Theme.of(context).extension<AppColors>()!;
+    final scaffoldColor = Theme.of(context).scaffoldBackgroundColor;
+    final currentPositions = ref.watch(searchFiltersProvider).selectedPositions;
+
+    const positions = [
+      'GK',
+      'CB',
+      'LB',
+      'LWB',
+      'RB',
+      'RWB',
+      'CDM',
+      'CM',
+      'LM',
+      'RM',
+      'CAM',
+      'LW',
+      'RW',
+      'CF',
+      'ST'
+    ];
+
+    return Scaffold(
+      backgroundColor: scaffoldColor,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.close, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: const Text("FIELD POSITIONS",
+            style: TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+                fontWeight: FontWeight.w900,
+                letterSpacing: 1.2)),
+        centerTitle: true,
+      ),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text("${currentPositions.length} POSITIONS SELECTED",
+                    style: TextStyle(
+                        color: appColors.posColor,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 1.0)),
+              ],
+            ),
+          ),
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: TacticalFieldSelector(
+                selectedPositions: currentPositions,
+                availablePositions: positions,
+                onToggle: (pos) {
+                  ref.read(searchFiltersProvider.notifier).togglePosition(pos);
+                },
+              ),
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              color: scaffoldColor,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.3),
+                  blurRadius: 20,
+                  offset: const Offset(0, -5),
+                )
+              ],
+            ),
+            child: SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () => Navigator.pop(context),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: appColors.posColor,
+                  foregroundColor: Colors.black,
+                  padding: const EdgeInsets.symmetric(vertical: 18),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16)),
+                  elevation: 0,
+                ),
+                child: const Text("DONE",
+                    style: TextStyle(
+                        fontWeight: FontWeight.w900,
+                        fontSize: 16,
+                        letterSpacing: 1.2)),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
