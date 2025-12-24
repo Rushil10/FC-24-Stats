@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:fc_stats_24/components/PlayerListView.dart';
+import 'package:fc_stats_24/components/SortOptionsSheet.dart';
 import 'package:fc_stats_24/db/Player.dart';
 import 'package:fc_stats_24/db/players22.dart';
 import 'package:fc_stats_24/providers/favorites_provider.dart';
@@ -179,100 +181,23 @@ class _SquadPlayerSelectionScreenState
     });
   }
 
-  void _showSortOptions() {
-    final appColors = Theme.of(context).extension<AppColors>()!;
-
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.black,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
-      ),
-      builder: (context) {
-        return Container(
-          padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 40,
-                height: 4,
-                margin: const EdgeInsets.only(bottom: 20),
-                decoration: BoxDecoration(
-                  color: Colors.grey[800],
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-              const Text(
-                'SORT BY',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: 2,
-                ),
-              ),
-              const SizedBox(height: 24),
-              Flexible(
-                child: GridView.count(
-                  shrinkWrap: true,
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 12,
-                  crossAxisSpacing: 12,
-                  childAspectRatio: 2.5,
-                  children: _sortMap.keys.map((option) {
-                    final isSelected = _sortOption == option;
-                    return InkWell(
-                      onTap: () {
-                        Navigator.pop(context);
-                        setState(() {
-                          _sortOption = option;
-                        });
-                        if (_searchController.text.isNotEmpty) {
-                          _onSearchChanged(_searchController.text);
-                        } else {
-                          _loadBestPlayers();
-                        }
-                      },
-                      borderRadius: BorderRadius.circular(12),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: isSelected
-                              ? appColors.posColor.withOpacity(0.1)
-                              : Colors.grey[900],
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                            color: isSelected
-                                ? appColors.posColor
-                                : Colors.transparent,
-                            width: 1.5,
-                          ),
-                        ),
-                        child: Center(
-                          child: Text(
-                            option,
-                            style: TextStyle(
-                              color: isSelected
-                                  ? appColors.posColor
-                                  : Colors.white,
-                              fontWeight: isSelected
-                                  ? FontWeight.bold
-                                  : FontWeight.normal,
-                              fontSize: 14,
-                            ),
-                          ),
-                        ),
-                      ),
-                    );
-                  }).toList(),
-                ),
-              ),
-              const SizedBox(height: 20),
-            ],
-          ),
-        );
-      },
+  void _showSortOptions() async {
+    final selectedOption = await SortOptionsSheet.show(
+      context,
+      currentSort: _sortOption,
+      sortOptions: _sortMap,
     );
+
+    if (selectedOption != null) {
+      setState(() {
+        _sortOption = selectedOption;
+      });
+      if (_searchController.text.isNotEmpty) {
+        _onSearchChanged(_searchController.text);
+      } else {
+        _loadBestPlayers();
+      }
+    }
   }
 
   @override
@@ -565,95 +490,29 @@ class _SquadPlayerSelectionScreenState
   }
 
   Widget _buildFilteredList() {
-    final appColors = Theme.of(context).extension<AppColors>()!;
-
-    if (_isLoadingFiltered) {
-      return Center(
-        child: CircularProgressIndicator(color: appColors.posColor),
-      );
-    }
-
-    if (_filteredResults.isEmpty) {
-      return const Center(
-        child: Text(
-          'No players found matching filters',
-          style: TextStyle(color: Colors.grey, fontSize: 16),
-        ),
-      );
-    }
-
-    return ListView.builder(
-      padding: const EdgeInsets.all(16),
-      itemCount: _filteredResults.length,
-      itemBuilder: (context, index) {
-        final player = _filteredResults[index];
-        return PlayerCard(
-          playerData: player,
-          onTap: () => Navigator.pop(context, player),
-        );
-      },
+    return PlayerListView(
+      players: _filteredResults,
+      isLoading: _isLoadingFiltered,
+      emptyMessage: 'No players found matching filters',
+      onPlayerTap: (player) => Navigator.pop(context, player),
     );
   }
 
   Widget _buildSearchResults() {
-    final appColors = Theme.of(context).extension<AppColors>()!;
-
-    if (_isLoadingSearch) {
-      return Center(
-        child: CircularProgressIndicator(color: appColors.posColor),
-      );
-    }
-
-    if (_searchResults.isEmpty) {
-      return const Center(
-        child: Text(
-          'No players found',
-          style: TextStyle(color: Colors.grey, fontSize: 16),
-        ),
-      );
-    }
-
-    return ListView.builder(
-      padding: const EdgeInsets.all(16),
-      itemCount: _searchResults.length,
-      itemBuilder: (context, index) {
-        final player = _searchResults[index];
-        return PlayerCard(
-          playerData: player,
-          onTap: () => Navigator.pop(context, player),
-        );
-      },
+    return PlayerListView(
+      players: _searchResults,
+      isLoading: _isLoadingSearch,
+      emptyMessage: 'No players found',
+      onPlayerTap: (player) => Navigator.pop(context, player),
     );
   }
 
   Widget _buildBestPlayersList() {
-    final appColors = Theme.of(context).extension<AppColors>()!;
-
-    if (_isLoadingBest) {
-      return Center(
-        child: CircularProgressIndicator(color: appColors.posColor),
-      );
-    }
-
-    if (_bestPlayers.isEmpty) {
-      return const Center(
-        child: Text(
-          'No players available',
-          style: TextStyle(color: Colors.grey, fontSize: 16),
-        ),
-      );
-    }
-
-    return ListView.builder(
-      padding: const EdgeInsets.all(16),
-      itemCount: _bestPlayers.length,
-      itemBuilder: (context, index) {
-        final player = _bestPlayers[index];
-        return PlayerCard(
-          playerData: player,
-          onTap: () => Navigator.pop(context, player),
-        );
-      },
+    return PlayerListView(
+      players: _bestPlayers,
+      isLoading: _isLoadingBest,
+      emptyMessage: 'No players available',
+      onPlayerTap: (player) => Navigator.pop(context, player),
     );
   }
 

@@ -1,8 +1,10 @@
+import 'package:fc_stats_24/components/StatWidgets.dart';
 import 'package:fc_stats_24/db/Squad.dart';
 import 'package:fc_stats_24/db/SquadsDatabase.dart';
 import 'package:fc_stats_24/db/FormationData.dart';
 import 'package:fc_stats_24/screens/SquadBuilderScreen.dart';
 import 'package:fc_stats_24/theme.dart';
+import 'package:fc_stats_24/utils/SquadHelpers.dart';
 import 'package:flutter/material.dart';
 
 class SquadsScreen extends StatefulWidget {
@@ -52,45 +54,11 @@ class _SquadsScreenState extends State<SquadsScreen> {
   Future<Map<String, dynamic>> _calculateSquadStats(int squadId) async {
     final players =
         await SquadsDatabase.instance.getSquadPlayersWithDetails(squadId);
-
-    if (players.isEmpty) {
-      return {
-        'avgOverall': 0,
-        'avgPotential': 0,
-        'totalValue': 0.0,
-        'totalWage': 0.0,
-      };
-    }
-
-    double totalOverall = 0;
-    double totalPotential = 0;
-    double totalValue = 0;
-    double totalWage = 0;
-
-    for (var player in players.values) {
-      totalOverall += (player.overall ?? 0).toDouble();
-      totalPotential += (player.potential ?? 0).toDouble();
-      totalValue += (player.valueEur ?? 0).toDouble();
-      totalWage += (player.wageEur ?? 0).toDouble();
-    }
-
-    final count = players.length;
-
-    return {
-      'avgOverall': (totalOverall / count).round(),
-      'avgPotential': (totalPotential / count).round(),
-      'totalValue': totalValue,
-      'totalWage': totalWage,
-    };
+    return SquadHelpers.calculateSquadStats(players);
   }
 
   String _formatCurrency(double value) {
-    if (value >= 1000000) {
-      return '€${(value / 1000000).toStringAsFixed(1)}M';
-    } else if (value >= 1000) {
-      return '€${(value / 1000).toStringAsFixed(0)}K';
-    }
-    return '€${value.toStringAsFixed(0)}';
+    return SquadHelpers.formatCurrency(value);
   }
 
   Future<void> _deleteSquad(int squadId) async {
@@ -310,49 +278,11 @@ class _SquadsScreenState extends State<SquadsScreen> {
   }
 
   Widget _buildStatCircle(String value, Color color) {
-    return Container(
-      width: 55,
-      height: 55,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(color: color, width: 2.5),
-      ),
-      child: Center(
-        child: Text(
-          value,
-          style: TextStyle(
-            color: color,
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
-    );
+    return StatCircle(value: value, color: color);
   }
 
   Widget _buildStatValue(String value, String label) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Text(
-          value,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          label,
-          style: const TextStyle(
-            color: Colors.grey,
-            fontSize: 10,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ],
-    );
+    return StatValue(value: value, label: label);
   }
 
   String _formatDate(String dateStr) {
