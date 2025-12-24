@@ -142,21 +142,21 @@ class TacticalFieldSelector extends StatelessWidget {
   });
 
   static const Map<String, Offset> tacticalCoords = {
-    'ST': Offset(0.5, 0.08),
-    'CF': Offset(0.5, 0.18),
-    'LW': Offset(0.18, 0.23),
-    'RW': Offset(0.82, 0.23),
+    'ST': Offset(0.5, 0.10),
+    'CF': Offset(0.5, 0.20),
+    'LW': Offset(0.15, 0.22),
+    'RW': Offset(0.85, 0.22),
     'CAM': Offset(0.5, 0.35),
-    'LM': Offset(0.15, 0.5),
-    'CM': Offset(0.5, 0.5),
-    'RM': Offset(0.85, 0.5),
+    'LM': Offset(0.12, 0.50),
+    'CM': Offset(0.5, 0.50),
+    'RM': Offset(0.88, 0.50),
     'CDM': Offset(0.5, 0.65),
-    'LWB': Offset(0.1, 0.7),
-    'RWB': Offset(0.9, 0.7),
-    'LB': Offset(0.2, 0.8),
-    'CB': Offset(0.5, 0.8),
-    'RB': Offset(0.8, 0.8),
-    'GK': Offset(0.5, 0.94),
+    'LWB': Offset(0.10, 0.72),
+    'RWB': Offset(0.90, 0.72),
+    'LB': Offset(0.18, 0.80),
+    'CB': Offset(0.5, 0.82),
+    'RB': Offset(0.82, 0.80),
+    'GK': Offset(0.5, 0.92),
   };
 
   @override
@@ -192,9 +192,9 @@ class TacticalFieldSelector extends StatelessWidget {
 
                   if (!isActuallyAvailable) return const SizedBox.shrink();
 
-                  // Increased marker size
-                  const double markerWidth = 52.0;
-                  const double markerHeight = 34.0;
+                  // Reduced marker size by 15% (Original: 52x34 -> New: 44x29)
+                  const double markerWidth = 44.0;
+                  const double markerHeight = 29.0;
 
                   return Positioned(
                     left: offset.dx * constraints.maxWidth - (markerWidth / 2),
@@ -237,10 +237,10 @@ class TacticalFieldSelector extends StatelessWidget {
                               style: TextStyle(
                                 color: isSelected
                                     ? Colors.black
-                                    : Colors.white.withValues(alpha: 0.9),
-                                fontSize: 11,
+                                    : Colors.white.withValues(alpha: 0.95),
+                                fontSize: 10,
                                 fontWeight: FontWeight.w900,
-                                letterSpacing: 0.5,
+                                letterSpacing: 0.2,
                               ),
                             ),
                           ),

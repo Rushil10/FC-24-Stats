@@ -912,8 +912,9 @@ class FootballField extends StatelessWidget {
                   AnimatedPositioned(
                     duration: const Duration(milliseconds: 500),
                     curve: Curves.easeInOut,
-                    left: formation.positions[i].position.dx * width - 28,
-                    top: formation.positions[i].position.dy * height - 28,
+                    // Center the 48px circle at the exact coordinate
+                    left: formation.positions[i].position.dx * width - 24,
+                    top: formation.positions[i].position.dy * height - 24,
                     child: PlayerPosition(
                       player: selectedPlayers[i],
                       position: formation.positions[i].label,
@@ -1006,144 +1007,152 @@ class PlayerPosition extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       onLongPress: onLongPress,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Stack(
-            clipBehavior: Clip.none,
-            children: [
-              Container(
-                width: 56,
-                height: 56,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: player != null
-                      ? appColors.posColor.withOpacity(0.9)
-                      : Colors.white.withOpacity(0.2),
-                  border: Border.all(
-                    color: Colors.white,
-                    width: 2,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.3),
-                      blurRadius: 8,
-                      spreadRadius: 2,
+      child: SizedBox(
+        width: 48, // Fixed width matching the circle
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: player != null
+                        ? appColors.posColor.withOpacity(0.9)
+                        : Colors.white.withOpacity(0.2),
+                    border: Border.all(
+                      color: Colors.white,
+                      width: 2,
                     ),
-                  ],
-                ),
-                child: player != null
-                    ? ClipOval(
-                        child: Image.network(
-                          player!.playerFaceUrl ?? '',
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return Center(
-                              child: Text(
-                                player!.shortName
-                                        ?.substring(0, 1)
-                                        .toUpperCase() ??
-                                    '?',
-                                style: const TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.3),
+                        blurRadius: 8,
+                        spreadRadius: 2,
+                      ),
+                    ],
+                  ),
+                  child: player != null
+                      ? ClipOval(
+                          child: Image.network(
+                            player!.playerFaceUrl ?? '',
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Center(
+                                child: Text(
+                                  player!.shortName
+                                          ?.substring(0, 1)
+                                          .toUpperCase() ??
+                                      '?',
+                                  style: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
-                              ),
-                            );
-                          },
+                              );
+                            },
+                          ),
+                        )
+                      : const Icon(
+                          Icons.add,
+                          color: Colors.white,
+                          size: 24,
                         ),
-                      )
-                    : const Icon(
-                        Icons.add,
-                        color: Colors.white,
-                        size: 24,
+                ),
+                // OVR badge - top left
+                if (player != null)
+                  Positioned(
+                    top: -2,
+                    left: -2,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 4, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: appColors.ovrColor, // Purple
+                        borderRadius: BorderRadius.circular(4),
+                        border: Border.all(color: Colors.white, width: 1),
                       ),
-              ),
-              // OVR badge - top left
-              if (player != null)
-                Positioned(
-                  top: -2,
-                  left: -2,
-                  child: Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                    decoration: BoxDecoration(
-                      color: appColors.ovrColor, // Purple
-                      borderRadius: BorderRadius.circular(4),
-                      border: Border.all(color: Colors.white, width: 1),
-                    ),
-                    child: Text(
-                      '${player!.overall ?? 0}',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 9,
-                        fontWeight: FontWeight.bold,
+                      child: Text(
+                        '${player!.overall ?? 0}',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 9,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),
-                ),
-              // POT badge - top right
-              if (player != null)
-                Positioned(
-                  top: -2,
-                  right: -2,
-                  child: Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                    decoration: BoxDecoration(
-                      color: appColors.clubNameColor,
-                      borderRadius: BorderRadius.circular(4),
-                      border: Border.all(color: Colors.black, width: 1),
-                    ),
-                    child: Text(
-                      '${player!.potential ?? 0}',
-                      style: const TextStyle(
-                        color: Colors.black,
-                        fontSize: 9,
-                        fontWeight: FontWeight.bold,
+                // POT badge - top right
+                if (player != null)
+                  Positioned(
+                    top: -2,
+                    right: -2,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 4, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: appColors.clubNameColor,
+                        borderRadius: BorderRadius.circular(4),
+                        border: Border.all(color: Colors.black, width: 1),
+                      ),
+                      child: Text(
+                        '${player!.potential ?? 0}',
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 9,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),
-                ),
-            ],
-          ),
-          const SizedBox(height: 4),
-          if (player != null)
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-              decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.7),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Text(
-                player!.shortName ?? 'Unknown',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 11,
-                  fontWeight: FontWeight.bold,
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            )
-          else
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-              decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.7),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Text(
-                position,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 11,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+              ],
             ),
-        ],
+            const SizedBox(height: 4),
+            if (player != null)
+              Container(
+                width: 48,
+                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.7),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  player!.shortName ?? 'Unknown',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 9,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
+                ),
+              )
+            else
+              Container(
+                width: 48,
+                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.7),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  position,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 9,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
