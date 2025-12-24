@@ -163,7 +163,7 @@ class _SelectionScreenState extends State<SelectionScreen> {
                                       fontWeight: isSelected
                                           ? FontWeight.w700
                                           : FontWeight.w400,
-                                      fontSize: 15,
+                                      fontSize: 16,
                                     ),
                                   ),
                                 ),
@@ -181,6 +181,38 @@ class _SelectionScreenState extends State<SelectionScreen> {
                       );
                     },
                   ),
+          ),
+          Container(
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              color: scaffoldColor,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.3),
+                  blurRadius: 20,
+                  offset: const Offset(0, -5),
+                )
+              ],
+            ),
+            child: SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () => Navigator.pop(context),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: appColors.posColor,
+                  foregroundColor: Colors.black,
+                  padding: const EdgeInsets.symmetric(vertical: 18),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16)),
+                  elevation: 0,
+                ),
+                child: const Text("DONE",
+                    style: TextStyle(
+                        fontWeight: FontWeight.w900,
+                        fontSize: 16,
+                        letterSpacing: 1.2)),
+              ),
+            ),
           ),
         ],
       ),

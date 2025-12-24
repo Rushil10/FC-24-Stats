@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'package:fc_stats_24/components/SearchFilterComp.dart';
-import 'package:fc_stats_24/components/TacticalField.dart';
 import 'package:fc_stats_24/db/players22.dart';
+import 'package:fc_stats_24/screens/PositionSelectionScreen.dart';
 import 'package:fc_stats_24/screens/SearchResultsScreen.dart';
 import 'package:fc_stats_24/screens/SelectionScreen.dart';
+import 'package:fc_stats_24/screens/SkillsSelectionScreen.dart';
+import 'package:fc_stats_24/screens/GameAttributesSelectionScreen.dart';
 import 'package:fc_stats_24/theme.dart';
 import 'package:fc_stats_24/providers/search_provider.dart';
 import 'package:flutter/material.dart';
@@ -70,19 +72,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen>
       MaterialPageRoute(
         builder: (context) => SearchResultsScreen(
           query: _searchController.text,
-          minOverall: filters.overallRange.start,
-          maxOverall: filters.overallRange.end,
-          minPotential: filters.potentialRange.start,
-          maxPotential: filters.potentialRange.end,
-          minAge: filters.ageRange.start,
-          maxAge: filters.ageRange.end,
-          selectedPositions: filters.selectedPositions,
-          preferredFoot: filters.preferredFoot,
-          leagues: filters.selectedLeagues,
-          nationalities: filters.selectedNationalities,
-          clubs: filters.selectedClubs,
-          playStyles: filters.selectedPlayStyles,
-          roles: filters.selectedRoles,
+          filters: filters,
         ),
       ),
     );
@@ -112,6 +102,24 @@ class _SearchScreenState extends ConsumerState<SearchScreen>
       context,
       MaterialPageRoute(
         builder: (context) => const PositionSelectionScreen(),
+      ),
+    );
+  }
+
+  void _openSkillsSelector() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const SkillsSelectionScreen(),
+      ),
+    );
+  }
+
+  void _openGameAttributesSelector() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const GameAttributesSelectionScreen(),
       ),
     );
   }
@@ -201,6 +209,19 @@ class _SearchScreenState extends ConsumerState<SearchScreen>
                         },
                       ),
                       FilterGridButton(
+                        label: "Play Styles",
+                        icon: Icons.star,
+                        value: filters.selectedPlayStyles.isEmpty
+                            ? "Any"
+                            : "(${filters.selectedPlayStyles.length}) Selected",
+                        onTap: () => _navigateToSelector(
+                          title: "Play Styles",
+                          fetcher: PlayersDatabase.instance.getDistinctTraits(),
+                          initialSelected: filters.selectedPlayStyles,
+                          onResult: (res) => filtersNotifier.setPlayStyles(res),
+                        ),
+                      ),
+                      FilterGridButton(
                         label: "League",
                         icon: Icons.emoji_events,
                         value: filters.selectedLeagues.isEmpty
@@ -214,6 +235,21 @@ class _SearchScreenState extends ConsumerState<SearchScreen>
                               PlayersDatabase.instance.getDistinctLeagues(),
                           initialSelected: filters.selectedLeagues,
                           onResult: (res) => filtersNotifier.setLeagues(res),
+                        ),
+                      ),
+                      FilterGridButton(
+                        label: "Club",
+                        icon: Icons.home,
+                        value: filters.selectedClubs.isEmpty
+                            ? "Any"
+                            : filters.selectedClubs.length == 1
+                                ? filters.selectedClubs.first
+                                : "(${filters.selectedClubs.length}) Selected",
+                        onTap: () => _navigateToSelector(
+                          title: "Club",
+                          fetcher: PlayersDatabase.instance.getDistinctClubs(),
+                          initialSelected: filters.selectedClubs,
+                          onResult: (res) => filtersNotifier.setClubs(res),
                         ),
                       ),
                       FilterGridButton(
@@ -234,42 +270,16 @@ class _SearchScreenState extends ConsumerState<SearchScreen>
                         ),
                       ),
                       FilterGridButton(
-                        label: "Club",
-                        icon: Icons.home,
-                        value: filters.selectedClubs.isEmpty
-                            ? "Any"
-                            : filters.selectedClubs.length == 1
-                                ? filters.selectedClubs.first
-                                : "(${filters.selectedClubs.length}) Selected",
-                        onTap: () => _navigateToSelector(
-                          title: "Club",
-                          fetcher: PlayersDatabase.instance.getDistinctClubs(),
-                          initialSelected: filters.selectedClubs,
-                          onResult: (res) => filtersNotifier.setClubs(res),
-                        ),
+                        label: "Skills",
+                        icon: Icons.bar_chart,
+                        value: "Set Constraints",
+                        onTap: _openSkillsSelector,
                       ),
                       FilterGridButton(
-                        label: "Play Styles",
-                        icon: Icons.star,
-                        value: filters.selectedPlayStyles.isEmpty
-                            ? "Any"
-                            : "(${filters.selectedPlayStyles.length}) Selected",
-                        onTap: () => _navigateToSelector(
-                          title: "Play Styles",
-                          fetcher: PlayersDatabase.instance.getDistinctTraits(),
-                          initialSelected: filters.selectedPlayStyles,
-                          onResult: (res) => filtersNotifier.setPlayStyles(res),
-                        ),
-                      ),
-                      FilterGridButton(
-                        label: "Roles",
-                        icon: Icons.work,
-                        value: filters.selectedRoles ?? "Any",
-                        onTap: () {
-                          // Roles (Work rate) can still be a simple text or a dialog for now
-                          // User specifically asked for full screen for League, Club, Nationality, Play Style
-                          _openRolesSelector();
-                        },
+                        label: "Game Attributes",
+                        icon: Icons.settings_applications,
+                        value: "Modify",
+                        onTap: _openGameAttributesSelector,
                       ),
                     ],
                   ),
@@ -371,11 +381,13 @@ class _SearchScreenState extends ConsumerState<SearchScreen>
                                       ),
                                       title: Text(p['short_name'] ?? 'Unknown',
                                           style: const TextStyle(
-                                              color: Colors.white)),
+                                              color: Colors.white,
+                                              fontSize: 16)),
                                       subtitle: Text(
                                           "${p['overall']} | ${p['player_positions']}",
                                           style: TextStyle(
-                                              color: appColors.posColor)),
+                                              color: appColors.posColor,
+                                              fontSize: 14)),
                                       onTap: () {
                                         // Preview - just typing
                                       },
@@ -409,154 +421,6 @@ class _SearchScreenState extends ConsumerState<SearchScreen>
                   fontWeight: FontWeight.w900,
                   letterSpacing: 1.2)),
         ),
-      ),
-    );
-  }
-
-  void _openRolesSelector() {
-    final appColors = Theme.of(context).extension<AppColors>()!;
-    final surfaceColor = Theme.of(context).colorScheme.surface;
-    final currentValue = ref.read(searchFiltersProvider).selectedRoles;
-
-    TextEditingController c = TextEditingController(text: currentValue);
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            backgroundColor: surfaceColor,
-            title: const Text("Enter Roles / Work Rate",
-                style: TextStyle(color: Colors.white)),
-            content: TextField(
-              controller: c,
-              style: const TextStyle(color: Colors.white),
-              decoration: const InputDecoration(
-                  hintText: "e.g. High/High",
-                  hintStyle: TextStyle(color: Colors.grey)),
-            ),
-            actions: [
-              TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: const Text("Cancel")),
-              TextButton(
-                  onPressed: () {
-                    ref
-                        .read(searchFiltersProvider.notifier)
-                        .setSelectedRoles(c.text.isEmpty ? null : c.text);
-                    Navigator.pop(context);
-                  },
-                  child: Text("Save",
-                      style: TextStyle(color: appColors.posColor))),
-            ],
-          );
-        });
-  }
-}
-
-class PositionSelectionScreen extends ConsumerWidget {
-  const PositionSelectionScreen({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final appColors = Theme.of(context).extension<AppColors>()!;
-    final scaffoldColor = Theme.of(context).scaffoldBackgroundColor;
-    final currentPositions = ref.watch(searchFiltersProvider).selectedPositions;
-
-    const positions = [
-      'GK',
-      'CB',
-      'LB',
-      'LWB',
-      'RB',
-      'RWB',
-      'CDM',
-      'CM',
-      'LM',
-      'RM',
-      'CAM',
-      'LW',
-      'RW',
-      'CF',
-      'ST'
-    ];
-
-    return Scaffold(
-      backgroundColor: scaffoldColor,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.close, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: const Text("FIELD POSITIONS",
-            style: TextStyle(
-                color: Colors.white,
-                fontSize: 18,
-                fontWeight: FontWeight.w900,
-                letterSpacing: 1.2)),
-        centerTitle: true,
-      ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text("${currentPositions.length} POSITIONS SELECTED",
-                    style: TextStyle(
-                        color: appColors.posColor,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: 1.0)),
-              ],
-            ),
-          ),
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: TacticalFieldSelector(
-                selectedPositions: currentPositions,
-                availablePositions: positions,
-                onToggle: (pos) {
-                  ref.read(searchFiltersProvider.notifier).togglePosition(pos);
-                },
-              ),
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              color: scaffoldColor,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.3),
-                  blurRadius: 20,
-                  offset: const Offset(0, -5),
-                )
-              ],
-            ),
-            child: SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () => Navigator.pop(context),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: appColors.posColor,
-                  foregroundColor: Colors.black,
-                  padding: const EdgeInsets.symmetric(vertical: 18),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16)),
-                  elevation: 0,
-                ),
-                child: const Text("DONE",
-                    style: TextStyle(
-                        fontWeight: FontWeight.w900,
-                        fontSize: 16,
-                        letterSpacing: 1.2)),
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }

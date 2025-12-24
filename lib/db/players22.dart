@@ -410,7 +410,98 @@ CREATE TABLE players (
     List<String>? nationalities,
     List<String>? clubs,
     List<String>? playStyles,
-    String? roles,
+    double? minHeight,
+    double? maxHeight,
+    double? minWeight,
+    double? maxWeight,
+    double? minSkillMoves,
+    double? maxSkillMoves,
+    double? minWeakFoot,
+    double? maxWeakFoot,
+    double? minReputation,
+    double? maxReputation,
+    double? minPace,
+    double? maxPace,
+    double? minShooting,
+    double? maxShooting,
+    double? minPassing,
+    double? maxPassing,
+    double? minDribbling,
+    double? maxDribbling,
+    double? minDefending,
+    double? maxDefending,
+    double? minPhysic,
+    double? maxPhysic,
+    double? minAcceleration,
+    double? maxAcceleration,
+    double? minSprintSpeed,
+    double? maxSprintSpeed,
+    double? minPositioning,
+    double? maxPositioning,
+    double? minFinishing,
+    double? maxFinishing,
+    double? minShotPower,
+    double? maxShotPower,
+    double? minLongShots,
+    double? maxLongShots,
+    double? minVolleys,
+    double? maxVolleys,
+    double? minPenalties,
+    double? maxPenalties,
+    double? minVision,
+    double? maxVision,
+    double? minCrossing,
+    double? maxCrossing,
+    double? minFkAccuracy,
+    double? maxFkAccuracy,
+    double? minShortPassing,
+    double? maxShortPassing,
+    double? minLongPassing,
+    double? maxLongPassing,
+    double? minCurve,
+    double? maxCurve,
+    double? minAgility,
+    double? maxAgility,
+    double? minBalance,
+    double? maxBalance,
+    double? minReactions,
+    double? maxReactions,
+    double? minBallControl,
+    double? maxBallControl,
+    double? minDribblingSkill,
+    double? maxDribblingSkill,
+    double? minComposure,
+    double? maxComposure,
+    double? minInterceptions,
+    double? maxInterceptions,
+    double? minHeadingAccuracy,
+    double? maxHeadingAccuracy,
+    double? minMarking,
+    double? maxMarking,
+    double? minStandingTackle,
+    double? maxStandingTackle,
+    double? minSlidingTackle,
+    double? maxSlidingTackle,
+    double? minJumping,
+    double? maxJumping,
+    double? minStamina,
+    double? maxStamina,
+    double? minStrength,
+    double? maxStrength,
+    double? minAggression,
+    double? maxAggression,
+    double? minGkDiving,
+    double? maxGkDiving,
+    double? minGkHandling,
+    double? maxGkHandling,
+    double? minGkKicking,
+    double? maxGkKicking,
+    double? minGkReflexes,
+    double? maxGkReflexes,
+    double? minGkSpeed,
+    double? maxGkSpeed,
+    double? minGkPositioning,
+    double? maxGkPositioning,
   }) async {
     final db = await instance.database;
     String whereClause = '1=1';
@@ -445,6 +536,391 @@ CREATE TABLE players (
       whereClause += " AND age <= ?";
       args.add(maxAge);
     }
+
+    if (minHeight != null) {
+      whereClause += " AND height_cm >= ?";
+      args.add(minHeight);
+    }
+    if (maxHeight != null) {
+      whereClause += " AND height_cm <= ?";
+      args.add(maxHeight);
+    }
+    if (minWeight != null) {
+      whereClause += " AND weight_kg >= ?";
+      args.add(minWeight);
+    }
+    if (maxWeight != null) {
+      whereClause += " AND weight_kg <= ?";
+      args.add(maxWeight);
+    }
+    if (minSkillMoves != null) {
+      whereClause += " AND skill_moves >= ?";
+      args.add(minSkillMoves);
+    }
+    if (maxSkillMoves != null) {
+      whereClause += " AND skill_moves <= ?";
+      args.add(maxSkillMoves);
+    }
+    if (minWeakFoot != null) {
+      whereClause += " AND weak_foot >= ?";
+      args.add(minWeakFoot);
+    }
+    if (maxWeakFoot != null) {
+      whereClause += " AND weak_foot <= ?";
+      args.add(maxWeakFoot);
+    }
+    if (minReputation != null) {
+      whereClause += " AND international_reputation >= ?";
+      args.add(minReputation);
+    }
+    if (maxReputation != null) {
+      whereClause += " AND international_reputation <= ?";
+      args.add(maxReputation);
+    }
+
+    if (minPace != null) {
+      whereClause += " AND pace >= ?";
+      args.add(minPace);
+    }
+    if (maxPace != null) {
+      whereClause += " AND pace <= ?";
+      args.add(maxPace);
+    }
+    if (minShooting != null) {
+      whereClause += " AND shooting >= ?";
+      args.add(minShooting);
+    }
+    if (maxShooting != null) {
+      whereClause += " AND shooting <= ?";
+      args.add(maxShooting);
+    }
+    if (minPassing != null) {
+      whereClause += " AND passing >= ?";
+      args.add(minPassing);
+    }
+    if (maxPassing != null) {
+      whereClause += " AND passing <= ?";
+      args.add(maxPassing);
+    }
+    if (minDribbling != null) {
+      whereClause += " AND dribbling >= ?";
+      args.add(minDribbling);
+    }
+    if (maxDribbling != null) {
+      whereClause += " AND dribbling <= ?";
+      args.add(maxDribbling);
+    }
+    if (minDefending != null) {
+      whereClause += " AND defending >= ?";
+      args.add(minDefending);
+    }
+    if (maxDefending != null) {
+      whereClause += " AND defending <= ?";
+      args.add(maxDefending);
+    }
+    if (minPhysic != null) {
+      whereClause += " AND physic >= ?";
+      args.add(minPhysic);
+    }
+    if (maxPhysic != null) {
+      whereClause += " AND physic <= ?";
+      args.add(maxPhysic);
+    }
+
+    // Sub-attributes PAC
+    if (minAcceleration != null) {
+      whereClause += " AND movement_acceleration >= ?";
+      args.add(minAcceleration);
+    }
+    if (maxAcceleration != null) {
+      whereClause += " AND movement_acceleration <= ?";
+      args.add(maxAcceleration);
+    }
+    if (minSprintSpeed != null) {
+      whereClause += " AND movement_sprint_speed >= ?";
+      args.add(minSprintSpeed);
+    }
+    if (maxSprintSpeed != null) {
+      whereClause += " AND movement_sprint_speed <= ?";
+      args.add(maxSprintSpeed);
+    }
+
+    // SHO
+    if (minPositioning != null) {
+      whereClause += " AND mentality_positioning >= ?";
+      args.add(minPositioning);
+    }
+    if (maxPositioning != null) {
+      whereClause += " AND mentality_positioning <= ?";
+      args.add(maxPositioning);
+    }
+    if (minFinishing != null) {
+      whereClause += " AND attacking_finishing >= ?";
+      args.add(minFinishing);
+    }
+    if (maxFinishing != null) {
+      whereClause += " AND attacking_finishing <= ?";
+      args.add(maxFinishing);
+    }
+    if (minShotPower != null) {
+      whereClause += " AND power_shot_power >= ?";
+      args.add(minShotPower);
+    }
+    if (maxShotPower != null) {
+      whereClause += " AND power_shot_power <= ?";
+      args.add(maxShotPower);
+    }
+    if (minLongShots != null) {
+      whereClause += " AND power_long_shots >= ?";
+      args.add(minLongShots);
+    }
+    if (maxLongShots != null) {
+      whereClause += " AND power_long_shots <= ?";
+      args.add(maxLongShots);
+    }
+    if (minVolleys != null) {
+      whereClause += " AND attacking_volleys >= ?";
+      args.add(minVolleys);
+    }
+    if (maxVolleys != null) {
+      whereClause += " AND attacking_volleys <= ?";
+      args.add(maxVolleys);
+    }
+    if (minPenalties != null) {
+      whereClause += " AND mentality_penalties >= ?";
+      args.add(minPenalties);
+    }
+    if (maxPenalties != null) {
+      whereClause += " AND mentality_penalties <= ?";
+      args.add(maxPenalties);
+    }
+
+    // PAS
+    if (minVision != null) {
+      whereClause += " AND mentality_vision >= ?";
+      args.add(minVision);
+    }
+    if (maxVision != null) {
+      whereClause += " AND mentality_vision <= ?";
+      args.add(maxVision);
+    }
+    if (minCrossing != null) {
+      whereClause += " AND attacking_crossing >= ?";
+      args.add(minCrossing);
+    }
+    if (maxCrossing != null) {
+      whereClause += " AND attacking_crossing <= ?";
+      args.add(maxCrossing);
+    }
+    if (minFkAccuracy != null) {
+      whereClause += " AND skill_fk_accuracy >= ?";
+      args.add(minFkAccuracy);
+    }
+    if (maxFkAccuracy != null) {
+      whereClause += " AND skill_fk_accuracy <= ?";
+      args.add(maxFkAccuracy);
+    }
+    if (minShortPassing != null) {
+      whereClause += " AND attacking_short_passing >= ?";
+      args.add(minShortPassing);
+    }
+    if (maxShortPassing != null) {
+      whereClause += " AND attacking_short_passing <= ?";
+      args.add(maxShortPassing);
+    }
+    if (minLongPassing != null) {
+      whereClause += " AND skill_long_passing >= ?";
+      args.add(minLongPassing);
+    }
+    if (maxLongPassing != null) {
+      whereClause += " AND skill_long_passing <= ?";
+      args.add(maxLongPassing);
+    }
+    if (minCurve != null) {
+      whereClause += " AND skill_curve >= ?";
+      args.add(minCurve);
+    }
+    if (maxCurve != null) {
+      whereClause += " AND skill_curve <= ?";
+      args.add(maxCurve);
+    }
+
+    // DRI
+    if (minAgility != null) {
+      whereClause += " AND movement_agility >= ?";
+      args.add(minAgility);
+    }
+    if (maxAgility != null) {
+      whereClause += " AND movement_agility <= ?";
+      args.add(maxAgility);
+    }
+    if (minBalance != null) {
+      whereClause += " AND movement_balance >= ?";
+      args.add(minBalance);
+    }
+    if (maxBalance != null) {
+      whereClause += " AND movement_balance <= ?";
+      args.add(maxBalance);
+    }
+    if (minReactions != null) {
+      whereClause += " AND movement_reactions >= ?";
+      args.add(minReactions);
+    }
+    if (maxReactions != null) {
+      whereClause += " AND movement_reactions <= ?";
+      args.add(maxReactions);
+    }
+    if (minBallControl != null) {
+      whereClause += " AND skill_ball_control >= ?";
+      args.add(minBallControl);
+    }
+    if (maxBallControl != null) {
+      whereClause += " AND skill_ball_control <= ?";
+      args.add(maxBallControl);
+    }
+    if (minDribblingSkill != null) {
+      whereClause += " AND skill_dribbling >= ?";
+      args.add(minDribblingSkill);
+    }
+    if (maxDribblingSkill != null) {
+      whereClause += " AND skill_dribbling <= ?";
+      args.add(maxDribblingSkill);
+    }
+    if (minComposure != null) {
+      whereClause += " AND mentality_composure >= ?";
+      args.add(minComposure);
+    }
+    if (maxComposure != null) {
+      whereClause += " AND mentality_composure <= ?";
+      args.add(maxComposure);
+    }
+
+    // DEF
+    if (minInterceptions != null) {
+      whereClause += " AND mentality_interceptions >= ?";
+      args.add(minInterceptions);
+    }
+    if (maxInterceptions != null) {
+      whereClause += " AND mentality_interceptions <= ?";
+      args.add(maxInterceptions);
+    }
+    if (minHeadingAccuracy != null) {
+      whereClause += " AND attacking_heading_accuracy >= ?";
+      args.add(minHeadingAccuracy);
+    }
+    if (maxHeadingAccuracy != null) {
+      whereClause += " AND attacking_heading_accuracy <= ?";
+      args.add(maxHeadingAccuracy);
+    }
+    if (minMarking != null) {
+      whereClause += " AND defending_marking_awareness >= ?";
+      args.add(minMarking);
+    }
+    if (maxMarking != null) {
+      whereClause += " AND defending_marking_awareness <= ?";
+      args.add(maxMarking);
+    }
+    if (minStandingTackle != null) {
+      whereClause += " AND defending_standing_tackle >= ?";
+      args.add(minStandingTackle);
+    }
+    if (maxStandingTackle != null) {
+      whereClause += " AND defending_standing_tackle <= ?";
+      args.add(maxStandingTackle);
+    }
+    if (minSlidingTackle != null) {
+      whereClause += " AND defending_sliding_tackle >= ?";
+      args.add(minSlidingTackle);
+    }
+    if (maxSlidingTackle != null) {
+      whereClause += " AND defending_sliding_tackle <= ?";
+      args.add(maxSlidingTackle);
+    }
+    if (minJumping != null) {
+      whereClause += " AND power_jumping >= ?";
+      args.add(minJumping);
+    }
+    if (maxJumping != null) {
+      whereClause += " AND power_jumping <= ?";
+      args.add(maxJumping);
+    }
+
+    // PHY
+    if (minStamina != null) {
+      whereClause += " AND power_stamina >= ?";
+      args.add(minStamina);
+    }
+    if (maxStamina != null) {
+      whereClause += " AND power_stamina <= ?";
+      args.add(maxStamina);
+    }
+    if (minStrength != null) {
+      whereClause += " AND power_strength >= ?";
+      args.add(minStrength);
+    }
+    if (maxStrength != null) {
+      whereClause += " AND power_strength <= ?";
+      args.add(maxStrength);
+    }
+    if (minAggression != null) {
+      whereClause += " AND mentality_aggression >= ?";
+      args.add(minAggression);
+    }
+    if (maxAggression != null) {
+      whereClause += " AND mentality_aggression <= ?";
+      args.add(maxAggression);
+    }
+
+    // GK
+    if (minGkDiving != null) {
+      whereClause += " AND goalkeeping_diving >= ?";
+      args.add(minGkDiving);
+    }
+    if (maxGkDiving != null) {
+      whereClause += " AND goalkeeping_diving <= ?";
+      args.add(maxGkDiving);
+    }
+    if (minGkHandling != null) {
+      whereClause += " AND goalkeeping_handling >= ?";
+      args.add(minGkHandling);
+    }
+    if (maxGkHandling != null) {
+      whereClause += " AND goalkeeping_handling <= ?";
+      args.add(maxGkHandling);
+    }
+    if (minGkKicking != null) {
+      whereClause += " AND goalkeeping_kicking >= ?";
+      args.add(minGkKicking);
+    }
+    if (maxGkKicking != null) {
+      whereClause += " AND goalkeeping_kicking <= ?";
+      args.add(maxGkKicking);
+    }
+    if (minGkReflexes != null) {
+      whereClause += " AND goalkeeping_reflexes >= ?";
+      args.add(minGkReflexes);
+    }
+    if (maxGkReflexes != null) {
+      whereClause += " AND goalkeeping_reflexes <= ?";
+      args.add(maxGkReflexes);
+    }
+    if (minGkSpeed != null) {
+      whereClause += " AND goalkeeping_speed >= ?";
+      args.add(minGkSpeed);
+    }
+    if (maxGkSpeed != null) {
+      whereClause += " AND goalkeeping_speed <= ?";
+      args.add(maxGkSpeed);
+    }
+    if (minGkPositioning != null) {
+      whereClause += " AND goalkeeping_positioning >= ?";
+      args.add(minGkPositioning);
+    }
+    if (maxGkPositioning != null) {
+      whereClause += " AND goalkeeping_positioning <= ?";
+      args.add(maxGkPositioning);
+    }
+
     if (preferredFoot != null) {
       whereClause += " AND preferred_foot = ?";
       args.add(preferredFoot);
@@ -473,12 +949,6 @@ CREATE TABLE players (
         whereClause += " AND player_traits LIKE ?";
         args.add('%$trait%');
       }
-    }
-
-    if (roles != null && roles.isNotEmpty) {
-      whereClause += " AND (work_rate LIKE ? OR player_tags LIKE ?)";
-      args.add('%$roles%');
-      args.add('%$roles%');
     }
 
     if (positions != null && positions.isNotEmpty) {
