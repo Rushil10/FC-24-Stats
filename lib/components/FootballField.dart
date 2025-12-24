@@ -25,6 +25,13 @@ class FootballField extends StatelessWidget {
         final width = constraints.maxWidth;
         final height = constraints.maxHeight;
 
+        // Calculate player size based on screen dimensions
+        // Use the smaller dimension to ensure it fits well
+        final smallerDimension = width < height ? width : height;
+        // Scale between 40-48px based on screen size
+        final playerSize = (smallerDimension * 0.12).clamp(40.0, 48.0);
+        final halfSize = playerSize / 2;
+
         return Container(
           width: width,
           height: height,
@@ -46,12 +53,13 @@ class FootballField extends StatelessWidget {
                   AnimatedPositioned(
                     duration: const Duration(milliseconds: 500),
                     curve: Curves.easeInOut,
-                    // Center the 48px circle at the exact coordinate
-                    left: formation.positions[i].position.dx * width - 24,
-                    top: formation.positions[i].position.dy * height - 24,
+                    // Center the circle at the exact coordinate
+                    left: formation.positions[i].position.dx * width - halfSize,
+                    top: formation.positions[i].position.dy * height - halfSize,
                     child: PlayerPosition(
                       player: selectedPlayers[i],
                       position: formation.positions[i].label,
+                      size: playerSize,
                       onTap: () => onPositionTap(i),
                       onLongPress: selectedPlayers.containsKey(i)
                           ? () => onPlayerLongPress(i)

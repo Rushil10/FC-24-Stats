@@ -7,6 +7,7 @@ class PlayerPosition extends StatelessWidget {
   final String position;
   final VoidCallback onTap;
   final VoidCallback? onLongPress;
+  final double size;
 
   const PlayerPosition({
     super.key,
@@ -14,6 +15,7 @@ class PlayerPosition extends StatelessWidget {
     required this.position,
     required this.onTap,
     this.onLongPress,
+    this.size = 48.0,
   });
 
   @override
@@ -24,7 +26,7 @@ class PlayerPosition extends StatelessWidget {
       onTap: onTap,
       onLongPress: onLongPress,
       child: SizedBox(
-        width: 48, // Fixed width matching the circle
+        width: size,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -33,8 +35,8 @@ class PlayerPosition extends StatelessWidget {
               clipBehavior: Clip.none,
               children: [
                 Container(
-                  width: 48,
-                  height: 48,
+                  width: size,
+                  height: size,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: player != null
@@ -74,17 +76,17 @@ class PlayerPosition extends StatelessWidget {
                             },
                           ),
                         )
-                      : const Icon(
+                      : Icon(
                           Icons.add,
                           color: Colors.white,
-                          size: 24,
+                          size: size * 0.5,
                         ),
                 ),
                 // OVR badge - top left
                 if (player != null)
                   Positioned(
-                    top: -2,
-                    left: -2,
+                    top: -6,
+                    left: -6,
                     child: Container(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 4, vertical: 2),
@@ -106,8 +108,8 @@ class PlayerPosition extends StatelessWidget {
                 // POT badge - top right
                 if (player != null)
                   Positioned(
-                    top: -2,
-                    right: -2,
+                    top: -6,
+                    right: -6,
                     child: Container(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 4, vertical: 2),
@@ -131,7 +133,7 @@ class PlayerPosition extends StatelessWidget {
             const SizedBox(height: 4),
             if (player != null)
               Container(
-                width: 48,
+                width: size,
                 padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
                 decoration: BoxDecoration(
                   color: Colors.black.withOpacity(0.7),
@@ -151,7 +153,7 @@ class PlayerPosition extends StatelessWidget {
               )
             else
               Container(
-                width: 48,
+                width: size,
                 padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
                 decoration: BoxDecoration(
                   color: Colors.black.withOpacity(0.7),
