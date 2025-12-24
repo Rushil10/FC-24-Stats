@@ -912,8 +912,8 @@ class FootballField extends StatelessWidget {
                   AnimatedPositioned(
                     duration: const Duration(milliseconds: 500),
                     curve: Curves.easeInOut,
-                    left: formation.positions[i].position.dx * width - 35,
-                    top: formation.positions[i].position.dy * height - 35,
+                    left: formation.positions[i].position.dx * width - 28,
+                    top: formation.positions[i].position.dy * height - 28,
                     child: PlayerPosition(
                       player: selectedPlayers[i],
                       position: formation.positions[i].label,
@@ -1013,8 +1013,8 @@ class PlayerPosition extends StatelessWidget {
             clipBehavior: Clip.none,
             children: [
               Container(
-                width: 70,
-                height: 70,
+                width: 56,
+                height: 56,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: player != null
@@ -1057,7 +1057,7 @@ class PlayerPosition extends StatelessWidget {
                     : const Icon(
                         Icons.add,
                         color: Colors.white,
-                        size: 30,
+                        size: 24,
                       ),
               ),
               // OVR badge - top left

@@ -499,6 +499,7 @@ CREATE TABLE players (
     double? maxGkSpeed,
     double? minGkPositioning,
     double? maxGkPositioning,
+    String? orderBy,
   }) async {
     final db = await instance.database;
     String whereClause = '1=1';
@@ -955,8 +956,13 @@ CREATE TABLE players (
       args.addAll(positions.map((p) => '%$p%'));
     }
 
-    final result = await db.rawQuery(
-        'SELECT * FROM players WHERE $whereClause LIMIT 100', args);
+    String sql = 'SELECT * FROM players WHERE $whereClause';
+    if (orderBy != null && orderBy.isNotEmpty) {
+      sql += ' ORDER BY $orderBy';
+    }
+    sql += ' LIMIT 100';
+
+    final result = await db.rawQuery(sql, args);
     return result.map((json) => Player.fromJson(json)).toList();
   }
 }

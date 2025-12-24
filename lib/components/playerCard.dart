@@ -12,8 +12,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class PlayerCard extends ConsumerStatefulWidget {
   final Player playerData;
+  final VoidCallback? onTap;
 
-  const PlayerCard({super.key, required this.playerData});
+  const PlayerCard({super.key, required this.playerData, this.onTap});
 
   @override
   ConsumerState<PlayerCard> createState() => _PlayerCardState();
@@ -39,8 +40,12 @@ class _PlayerCardState extends ConsumerState<PlayerCard> {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {
-        final count = ref.read(videoAdProvider);
-        onTapPlayer(count);
+        if (widget.onTap != null) {
+          widget.onTap!();
+        } else {
+          final count = ref.read(videoAdProvider);
+          onTapPlayer(count);
+        }
       },
       child: Padding(
         padding: const EdgeInsets.fromLTRB(15, 7, 15, 7),

@@ -3,6 +3,7 @@ import 'package:fc_stats_24/db/Player.dart';
 import 'package:fc_stats_24/db/players22.dart';
 import 'package:fc_stats_24/providers/favorites_provider.dart';
 import 'package:fc_stats_24/theme.dart';
+import 'package:fc_stats_24/components/playerCard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -25,6 +26,17 @@ class _SquadPlayerSelectionScreenState
   List<Player> _bestPlayers = [];
   bool _isLoadingSearch = false;
   bool _isLoadingBest = false;
+  String _sortOption = 'Overall';
+
+  final Map<String, String> _sortMap = {
+    'Overall': 'overall DESC',
+    'Potential': 'potential DESC',
+    'Position': 'player_positions ASC',
+    'Age': 'age ASC',
+    'Name': 'short_name ASC',
+    'Height': 'height_cm DESC',
+    'Value': 'value_eur DESC',
+  };
 
   @override
   void initState() {
@@ -38,6 +50,7 @@ class _SquadPlayerSelectionScreenState
     try {
       final players = await PlayersDatabase.instance.filterPlayers(
         minOverall: 85,
+        orderBy: _sortMap[_sortOption],
       );
       setState(() {
         _bestPlayers = players;
@@ -63,6 +76,7 @@ class _SquadPlayerSelectionScreenState
     _debounce = Timer(const Duration(milliseconds: 500), () async {
       final results = await PlayersDatabase.instance.filterPlayers(
         query: query,
+        orderBy: _sortMap[_sortOption],
       );
 
       if (mounted) {
@@ -72,6 +86,102 @@ class _SquadPlayerSelectionScreenState
         });
       }
     });
+  }
+
+  void _showSortOptions() {
+    final appColors = Theme.of(context).extension<AppColors>()!;
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.black,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
+      ),
+      builder: (context) {
+        return Container(
+          padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 40,
+                height: 4,
+                margin: const EdgeInsets.only(bottom: 20),
+                decoration: BoxDecoration(
+                  color: Colors.grey[800],
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const Text(
+                'SORT BY',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 2,
+                ),
+              ),
+              const SizedBox(height: 24),
+              Flexible(
+                child: GridView.count(
+                  shrinkWrap: true,
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 12,
+                  crossAxisSpacing: 12,
+                  childAspectRatio: 2.5,
+                  children: _sortMap.keys.map((option) {
+                    final isSelected = _sortOption == option;
+                    return InkWell(
+                      onTap: () {
+                        Navigator.pop(context);
+                        setState(() {
+                          _sortOption = option;
+                        });
+                        if (_searchController.text.isNotEmpty) {
+                          _onSearchChanged(_searchController.text);
+                        } else {
+                          _loadBestPlayers();
+                        }
+                      },
+                      borderRadius: BorderRadius.circular(12),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: isSelected
+                              ? appColors.posColor.withOpacity(0.1)
+                              : Colors.grey[900],
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: isSelected
+                                ? appColors.posColor
+                                : Colors.transparent,
+                            width: 1.5,
+                          ),
+                        ),
+                        child: Center(
+                          child: Text(
+                            option,
+                            style: TextStyle(
+                              color: isSelected
+                                  ? appColors.posColor
+                                  : Colors.white,
+                              fontWeight: isSelected
+                                  ? FontWeight.bold
+                                  : FontWeight.normal,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
+              const SizedBox(height: 20),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -90,6 +200,12 @@ class _SquadPlayerSelectionScreenState
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.sort),
+            onPressed: _showSortOptions,
+          ),
+        ],
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(110),
           child: Column(
@@ -162,7 +278,11 @@ class _SquadPlayerSelectionScreenState
       padding: const EdgeInsets.all(16),
       itemCount: _searchResults.length,
       itemBuilder: (context, index) {
-        return _buildPlayerCard(_searchResults[index]);
+        final player = _searchResults[index];
+        return PlayerCard(
+          playerData: player,
+          onTap: () => Navigator.pop(context, player),
+        );
       },
     );
   }
@@ -189,7 +309,11 @@ class _SquadPlayerSelectionScreenState
       padding: const EdgeInsets.all(16),
       itemCount: _bestPlayers.length,
       itemBuilder: (context, index) {
-        return _buildPlayerCard(_bestPlayers[index]);
+        final player = _bestPlayers[index];
+        return PlayerCard(
+          playerData: player,
+          onTap: () => Navigator.pop(context, player),
+        );
       },
     );
   }
@@ -235,7 +359,11 @@ class _SquadPlayerSelectionScreenState
           padding: const EdgeInsets.all(16),
           itemCount: snapshot.data!.length,
           itemBuilder: (context, index) {
-            return _buildPlayerCard(snapshot.data![index]);
+            final player = snapshot.data![index];
+            return PlayerCard(
+              playerData: player,
+              onTap: () => Navigator.pop(context, player),
+            );
           },
         );
       },
@@ -251,123 +379,6 @@ class _SquadPlayerSelectionScreenState
       }
     }
     return players;
-  }
-
-  Widget _buildPlayerCard(Player player) {
-    final appColors = Theme.of(context).extension<AppColors>()!;
-    final surfaceColor = Theme.of(context).colorScheme.surface;
-
-    return Card(
-      color: surfaceColor,
-      margin: const EdgeInsets.only(bottom: 12),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: InkWell(
-        onTap: () => Navigator.pop(context, player),
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Row(
-            children: [
-              // Player Image
-              Container(
-                width: 60,
-                height: 60,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: appColors.posColor.withOpacity(0.2),
-                ),
-                child: ClipOval(
-                  child: Image.network(
-                    player.playerFaceUrl ?? '',
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Center(
-                        child: Text(
-                          player.shortName?.substring(0, 1).toUpperCase() ??
-                              '?',
-                          style: TextStyle(
-                            color: appColors.posColor,
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ),
-              const SizedBox(width: 16),
-              // Player Info
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      player.shortName ?? 'Unknown',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      player.clubName ?? 'Free Agent',
-                      style: const TextStyle(
-                        color: Colors.grey,
-                        fontSize: 13,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 4),
-                    Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 6,
-                            vertical: 2,
-                          ),
-                          decoration: BoxDecoration(
-                            color: appColors.ovrColor,
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          child: Text(
-                            '${player.overall}',
-                            style: const TextStyle(
-                              color: Colors.black,
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          player.formattedPositions,
-                          style: TextStyle(
-                            color: appColors.posColor,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              // Select Icon
-              Icon(
-                Icons.add_circle_outline,
-                color: appColors.posColor,
-                size: 28,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
   }
 
   @override
