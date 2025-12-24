@@ -14,18 +14,14 @@ class OverallRating extends StatelessWidget {
 
   Color bgColor(BuildContext context) {
     final appColors = Theme.of(context).extension<AppColors>()!;
+    final rating = overall?.toDouble() ?? 0.0;
     if (overall == null) return Colors.grey;
-    if (overall! >= 90) {
-      return appColors.darkGreen;
-    } else if (overall! >= 80) {
-      return appColors.green;
-    } else if (overall! >= 70) {
-      return appColors.lightGreen;
-    } else if (overall! >= 50) {
-      return appColors.yellow;
-    } else {
-      return appColors.red;
-    }
+
+    if (rating >= 90) return appColors.darkGreen;
+    if (rating >= 80) return appColors.green;
+    if (rating >= 70) return appColors.lightGreen;
+    if (rating >= 50) return appColors.yellow;
+    return appColors.red;
   }
 
   @override

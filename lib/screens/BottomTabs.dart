@@ -1,5 +1,6 @@
 import 'package:fc_stats_24/screens/HomeScreen.dart';
 import 'package:fc_stats_24/screens/SearchScreen.dart';
+import 'package:fc_stats_24/screens/SquadsScreen.dart';
 import 'package:fc_stats_24/theme.dart';
 import 'package:flutter/material.dart';
 
@@ -14,7 +15,8 @@ class _BottomTabsState extends State<BottomTabs> {
   int _selectedIndex = 0;
   static const List<Widget> _widgetOptions = <Widget>[
     HomeScreen(),
-    SearchScreen()
+    SearchScreen(),
+    SquadsScreen(),
   ];
 
   void _onItemTapped(int index) {
@@ -46,6 +48,12 @@ class _BottomTabsState extends State<BottomTabs> {
               Icons.search,
             ),
             label: 'Search',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.groups,
+            ),
+            label: 'Squads',
           ),
         ],
         currentIndex: _selectedIndex,

@@ -12,6 +12,8 @@ class AppColors extends ThemeExtension<AppColors> {
   final Color red;
   final Color yellow;
 
+  final Color ovrColor;
+
   const AppColors({
     required this.posColor,
     required this.clubNameColor,
@@ -22,6 +24,7 @@ class AppColors extends ThemeExtension<AppColors> {
     required this.lightGreen,
     required this.red,
     required this.yellow,
+    required this.ovrColor,
   });
 
   @override
@@ -35,6 +38,7 @@ class AppColors extends ThemeExtension<AppColors> {
     Color? lightGreen,
     Color? red,
     Color? yellow,
+    Color? ovrColor,
   }) {
     return AppColors(
       posColor: posColor ?? this.posColor,
@@ -46,25 +50,30 @@ class AppColors extends ThemeExtension<AppColors> {
       lightGreen: lightGreen ?? this.lightGreen,
       red: red ?? this.red,
       yellow: yellow ?? this.yellow,
+      ovrColor: ovrColor ?? this.ovrColor,
     );
   }
 
   @override
-  AppColors lerp(ThemeExtension<AppColors>? other, double t) {
+  AppColors lerp(covariant ThemeExtension<AppColors>? other, double t) {
     if (other is! AppColors) {
       return this;
     }
     return AppColors(
-      posColor: Color.lerp(posColor, other.posColor, t)!,
-      clubNameColor: Color.lerp(clubNameColor, other.clubNameColor, t)!,
-      surfaceColor: Color.lerp(surfaceColor, other.surfaceColor, t)!,
+      posColor: Color.lerp(posColor, other.posColor, t) ?? posColor,
+      clubNameColor:
+          Color.lerp(clubNameColor, other.clubNameColor, t) ?? clubNameColor,
+      surfaceColor:
+          Color.lerp(surfaceColor, other.surfaceColor, t) ?? surfaceColor,
       surfaceColorLight:
-          Color.lerp(surfaceColorLight, other.surfaceColorLight, t)!,
-      darkGreen: Color.lerp(darkGreen, other.darkGreen, t)!,
-      green: Color.lerp(green, other.green, t)!,
-      lightGreen: Color.lerp(lightGreen, other.lightGreen, t)!,
-      red: Color.lerp(red, other.red, t)!,
-      yellow: Color.lerp(yellow, other.yellow, t)!,
+          Color.lerp(surfaceColorLight, other.surfaceColorLight, t) ??
+              surfaceColorLight,
+      darkGreen: Color.lerp(darkGreen, other.darkGreen, t) ?? darkGreen,
+      green: Color.lerp(green, other.green, t) ?? green,
+      lightGreen: Color.lerp(lightGreen, other.lightGreen, t) ?? lightGreen,
+      red: Color.lerp(red, other.red, t) ?? red,
+      yellow: Color.lerp(yellow, other.yellow, t) ?? yellow,
+      ovrColor: Color.lerp(ovrColor, other.ovrColor, t) ?? ovrColor,
     );
   }
 }
@@ -79,6 +88,8 @@ class ThemeClass {
   static const Color _lightGreen = Color(0xff75df3d);
   static const Color _red = Color(0xffdd4400);
   static const Color _yellow = Color(0xffe6b600);
+  static const Color _ovrColor =
+      Color(0xFFD000FF); // Bright Neon Purple/Magenta
 
   static ThemeData lightTheme = ThemeData(
     scaffoldBackgroundColor: Colors.white,
@@ -97,6 +108,7 @@ class ThemeClass {
         lightGreen: _lightGreen,
         red: _red,
         yellow: _yellow,
+        ovrColor: _ovrColor,
       ),
     ],
     appBarTheme: const AppBarTheme(
@@ -122,6 +134,7 @@ class ThemeClass {
         lightGreen: _lightGreen,
         red: _red,
         yellow: _yellow,
+        ovrColor: _ovrColor,
       ),
     ],
     appBarTheme: const AppBarTheme(
