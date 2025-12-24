@@ -117,6 +117,7 @@ class ThemeClass {
   );
 
   static ThemeData darkTheme = ThemeData(
+    useMaterial3: false,
     scaffoldBackgroundColor: Colors.black,
     colorScheme: const ColorScheme.dark(
       primary: _clubNameColor, // Cyan as primary in dark mode
@@ -138,8 +139,11 @@ class ThemeClass {
       ),
     ],
     appBarTheme: const AppBarTheme(
-      backgroundColor: Colors.transparent,
+      backgroundColor: Colors.black,
+      foregroundColor: Colors.white,
       elevation: 0,
+      surfaceTintColor: Colors.transparent,
+      scrolledUnderElevation: 0,
     ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,

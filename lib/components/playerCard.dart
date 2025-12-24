@@ -50,92 +50,77 @@ class _PlayerCardState extends ConsumerState<PlayerCard> {
       child: Padding(
         padding: const EdgeInsets.fromLTRB(15, 7, 15, 7),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            OverallRating(
-              overall: widget.playerData.overall,
-              cardWidth: AppLayout.mainPageWidth,
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                OverallRating(
+                  overall: widget.playerData.overall,
+                  cardWidth: AppLayout.mainPageWidth,
+                ),
+                SizedBox(
+                  width: queryData.size.width * 0.01,
+                ),
+                PotentialRating(
+                  potential: widget.playerData.potential,
+                  cardWidth: AppLayout.mainPageWidth,
+                ),
+                SizedBox(
+                  width: queryData.size.width * 0.01,
+                ),
+                AgeRating(
+                  age: widget.playerData.age,
+                  cardWidth: AppLayout.mainPageWidth,
+                ),
+                SizedBox(
+                  width: queryData.size.width * 0.02,
+                ),
+              ],
             ),
-            SizedBox(
-              width: queryData.size.width * 0.01,
-            ),
-            PotentialRating(
-              potential: widget.playerData.potential,
-              cardWidth: AppLayout.mainPageWidth,
-            ),
-            SizedBox(
-              width: queryData.size.width * 0.01,
-            ),
-            AgeRating(
-              age: widget.playerData.age,
-              cardWidth: AppLayout.mainPageWidth,
-            ),
-            SizedBox(
-              width: queryData.size.width * 0.02,
-            ),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  constraints:
+                      BoxConstraints(maxWidth: queryData.size.width / 2.3),
+                  child: Text(
                     widget.playerData.shortName ?? "Unknown",
                     style: const TextStyle(
                         fontSize: AppLayout.ratingCardFont,
-                        fontWeight: AppLayout.ratingCardWeight),
+                        fontWeight: AppLayout.ratingCardWeight,
+                        height: 1.2),
                     overflow: TextOverflow.ellipsis,
                   ),
-                  Text(
-                    widget.playerData.formattedPositions,
+                ),
+                Text(
+                  widget.playerData.formattedPositions,
+                  style: TextStyle(
+                      color: appColors.posColor,
+                      fontWeight: AppLayout.posFontWeight,
+                      fontSize: AppLayout.clubNameFontSize,
+                      height: 1.2),
+                ),
+                Container(
+                  constraints:
+                      BoxConstraints(maxWidth: queryData.size.width / 2.3),
+                  child: Text(
+                    widget.playerData.clubName ?? "Free Agent",
                     style: TextStyle(
-                        color: appColors.posColor,
-                        fontWeight: AppLayout.posFontWeight,
-                        fontSize: AppLayout.clubNameFontSize),
+                        color: appColors.clubNameColor,
+                        fontSize: AppLayout.clubNameFontSize,
+                        height: 1.2),
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  Row(
-                    children: [
-                      if (widget.playerData.clubLogoUrl != null &&
-                          widget.playerData.clubLogoUrl!.isNotEmpty)
-                        Padding(
-                          padding: const EdgeInsets.only(right: 5),
-                          child: Image.network(
-                            widget.playerData.clubLogoUrl!,
-                            width: 15,
-                            height: 15,
-                            errorBuilder: (context, error, stackTrace) =>
-                                const SizedBox.shrink(),
-                          ),
-                        ),
-                      if (widget.playerData.nationFlagUrl != null &&
-                          widget.playerData.nationFlagUrl!.isNotEmpty)
-                        Padding(
-                          padding: const EdgeInsets.only(right: 5),
-                          child: Image.network(
-                            widget.playerData.nationFlagUrl!,
-                            width: 15,
-                            height: 10,
-                            fit: BoxFit.contain,
-                            errorBuilder: (context, error, stackTrace) =>
-                                const SizedBox.shrink(),
-                          ),
-                        ),
-                      Expanded(
-                        child: Text(
-                          widget.playerData.clubName ?? "Free Agent",
-                          style: TextStyle(
-                              color: appColors.clubNameColor,
-                              fontWeight: AppLayout.clubNameFontWeight,
-                              fontSize: AppLayout.clubNameFontSize),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
+            Expanded(child: Container()),
             SizedBox(
-              width: queryData.size.width * 0.15,
-              height: queryData.size.width * 0.15,
+              width: queryData.size.width * 0.11,
+              height: queryData.size.width * 0.11,
               child: Image.network(
                 widget.playerData.playerFaceUrl ?? "",
                 loadingBuilder: (BuildContext context, Widget child,

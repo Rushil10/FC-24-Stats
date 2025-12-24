@@ -89,6 +89,10 @@ class _SquadBuilderScreenState extends State<SquadBuilderScreen> {
   void _showFormationPicker() {
     final appColors = Theme.of(context).extension<AppColors>()!;
 
+    // Find the index of the current formation
+    final selectedIndex = FormationData.formations
+        .indexWhere((f) => f.id == _currentFormation.id);
+
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.black,
@@ -103,6 +107,25 @@ class _SquadBuilderScreenState extends State<SquadBuilderScreen> {
           maxChildSize: 0.95,
           expand: false,
           builder: (context, scrollController) {
+            // Auto-scroll to selected formation after build
+            if (selectedIndex >= 0) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                // Calculate the row of the selected item (3 columns per row)
+                final row = selectedIndex ~/ 3;
+                // Each item height = width / childAspectRatio + spacing
+                // Approximate item height: ~150px, spacing: 12px
+                final scrollOffset = row.toDouble() * 162.0;
+
+                if (scrollController.hasClients) {
+                  scrollController.animateTo(
+                    scrollOffset,
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeOut,
+                  );
+                }
+              });
+            }
+
             return Container(
               padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
               child: Column(
@@ -317,37 +340,62 @@ class _SquadBuilderScreenState extends State<SquadBuilderScreen> {
 
   // Auto-save squad without showing dialog
   Future<void> _autoSaveSquad() async {
-    if (widget.squad == null) return; // Don't auto-save new squads
-
     try {
       final now = DateTime.now().toIso8601String();
 
-      final updatedSquad = Squad(
-        id: widget.squad!.id,
-        name: _squadName,
-        formationId: _currentFormation.id,
-        createdAt: widget.squad!.createdAt,
-        updatedAt: now,
-      );
-      await SquadsDatabase.instance.updateSquad(updatedSquad);
-
-      // Delete old players
-      await SquadsDatabase.instance.deleteAllSquadPlayers(widget.squad!.id!);
-
-      // Add current players
-      for (var entry in _selectedPlayers.entries) {
-        final positionIndex = entry.key;
-        final player = entry.value;
-        final position = _currentFormation.positions[positionIndex].label;
-
-        final squadPlayer = SquadPlayer(
-          squadId: widget.squad!.id!,
-          playerId: player.id!,
-          position: position,
-          positionIndex: positionIndex,
+      if (widget.squad == null) {
+        // For new squads, create them automatically with default name
+        final squad = Squad(
+          name: _squadName,
+          formationId: _currentFormation.id,
+          createdAt: now,
         );
+        final squadId = await SquadsDatabase.instance.createSquad(squad);
 
-        await SquadsDatabase.instance.addPlayerToSquad(squadPlayer);
+        // Add current players
+        for (var entry in _selectedPlayers.entries) {
+          final positionIndex = entry.key;
+          final player = entry.value;
+          final position = _currentFormation.positions[positionIndex].label;
+
+          final squadPlayer = SquadPlayer(
+            squadId: squadId,
+            playerId: player.id!,
+            position: position,
+            positionIndex: positionIndex,
+          );
+
+          await SquadsDatabase.instance.addPlayerToSquad(squadPlayer);
+        }
+      } else {
+        // Update existing squad
+        final updatedSquad = Squad(
+          id: widget.squad!.id,
+          name: _squadName,
+          formationId: _currentFormation.id,
+          createdAt: widget.squad!.createdAt,
+          updatedAt: now,
+        );
+        await SquadsDatabase.instance.updateSquad(updatedSquad);
+
+        // Delete old players
+        await SquadsDatabase.instance.deleteAllSquadPlayers(widget.squad!.id!);
+
+        // Add current players
+        for (var entry in _selectedPlayers.entries) {
+          final positionIndex = entry.key;
+          final player = entry.value;
+          final position = _currentFormation.positions[positionIndex].label;
+
+          final squadPlayer = SquadPlayer(
+            squadId: widget.squad!.id!,
+            playerId: player.id!,
+            position: position,
+            positionIndex: positionIndex,
+          );
+
+          await SquadsDatabase.instance.addPlayerToSquad(squadPlayer);
+        }
       }
     } catch (e) {
       // Silently fail for auto-save
@@ -478,8 +526,8 @@ class _SquadBuilderScreenState extends State<SquadBuilderScreen> {
       return {
         'avgOverall': 0,
         'avgPotential': 0,
-        'totalValue': 0,
-        'totalWage': 0,
+        'totalValue': 0.0,
+        'totalWage': 0.0,
         'avgAge': 0,
         'playerCount': 0,
       };

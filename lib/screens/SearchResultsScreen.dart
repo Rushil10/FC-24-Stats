@@ -153,11 +153,10 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
   @override
   Widget build(BuildContext context) {
     final appColors = Theme.of(context).extension<AppColors>()!;
-    final surfaceColor = Theme.of(context).colorScheme.surface;
     final scaffoldColor = Theme.of(context).scaffoldBackgroundColor;
 
     return Scaffold(
-      backgroundColor: surfaceColor,
+      backgroundColor: Colors.black,
       appBar: AppBar(
         title: const Text("Search Results"),
         backgroundColor: scaffoldColor,
