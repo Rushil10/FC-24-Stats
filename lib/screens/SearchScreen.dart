@@ -104,7 +104,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen>
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => const PositionSelectionScreen(),
+        builder: (context) => PositionSelectionScreen(
+          provider: searchFiltersProvider,
+        ),
       ),
     );
   }
@@ -113,7 +115,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen>
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => const SkillsSelectionScreen(),
+        builder: (context) => SkillsSelectionScreen(
+          provider: searchFiltersProvider,
+        ),
       ),
     );
   }
@@ -122,7 +126,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen>
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => const GameAttributesSelectionScreen(),
+        builder: (context) => GameAttributesSelectionScreen(
+          provider: searchFiltersProvider,
+        ),
       ),
     );
   }

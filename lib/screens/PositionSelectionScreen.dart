@@ -5,13 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class PositionSelectionScreen extends ConsumerWidget {
-  const PositionSelectionScreen({super.key});
+  final StateNotifierProvider<SearchFiltersNotifier, SearchFilters> provider;
+  PositionSelectionScreen({super.key, required this.provider});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final appColors = Theme.of(context).extension<AppColors>()!;
     final scaffoldColor = Theme.of(context).scaffoldBackgroundColor;
-    final currentPositions = ref.watch(searchFiltersProvider).selectedPositions;
+    final currentPositions = ref.watch(provider).selectedPositions;
 
     const positions = [
       'GK',
@@ -71,7 +72,7 @@ class PositionSelectionScreen extends ConsumerWidget {
                 selectedPositions: currentPositions,
                 availablePositions: positions,
                 onToggle: (pos) {
-                  ref.read(searchFiltersProvider.notifier).togglePosition(pos);
+                  ref.read(provider.notifier).togglePosition(pos);
                 },
               ),
             ),

@@ -5,14 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class SkillsSelectionScreen extends ConsumerWidget {
-  const SkillsSelectionScreen({super.key});
+  final StateNotifierProvider<SearchFiltersNotifier, SearchFilters> provider;
+  SkillsSelectionScreen({super.key, required this.provider});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final appColors = Theme.of(context).extension<AppColors>()!;
     final scaffoldColor = Theme.of(context).scaffoldBackgroundColor;
-    final filters = ref.watch(searchFiltersProvider);
-    final notifier = ref.read(searchFiltersProvider.notifier);
+    final filters = ref.watch(provider);
+    final notifier = ref.read(provider.notifier);
 
     return Scaffold(
       backgroundColor: scaffoldColor,

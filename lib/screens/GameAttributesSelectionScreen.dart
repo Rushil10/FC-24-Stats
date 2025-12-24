@@ -5,12 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class GameAttributesSelectionScreen extends ConsumerWidget {
-  const GameAttributesSelectionScreen({super.key});
+  final StateNotifierProvider<SearchFiltersNotifier, SearchFilters> provider;
+  GameAttributesSelectionScreen({super.key, required this.provider});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final filters = ref.watch(searchFiltersProvider);
-    final notifier = ref.read(searchFiltersProvider.notifier);
+    final filters = ref.watch(provider);
+    final notifier = ref.read(provider.notifier);
     final appColors = Theme.of(context).extension<AppColors>()!;
 
     return Scaffold(

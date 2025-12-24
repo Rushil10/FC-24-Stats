@@ -485,3 +485,8 @@ final searchFiltersProvider =
     StateNotifierProvider<SearchFiltersNotifier, SearchFilters>((ref) {
   return SearchFiltersNotifier();
 });
+
+final squadSearchFiltersProvider =
+    StateNotifierProvider<SearchFiltersNotifier, SearchFilters>((ref) {
+  return SearchFiltersNotifier();
+});
