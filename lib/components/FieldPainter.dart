@@ -4,49 +4,46 @@ class FieldPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.white
+      ..color = Colors.white.withOpacity(0.3)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2;
 
-    // Draw field border
-    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), paint);
-
-    // Draw center line
-    canvas.drawLine(
-      Offset(size.width / 2, 0),
-      Offset(size.width / 2, size.height),
-      paint,
-    );
-
-    // Draw center circle
+    // Center circle
     canvas.drawCircle(
       Offset(size.width / 2, size.height / 2),
       size.width * 0.15,
       paint,
     );
 
-    // Draw penalty areas
-    final penaltyWidth = size.width * 0.6;
-    final penaltyHeight = size.height * 0.2;
+    // Center line
+    canvas.drawLine(
+      Offset(0, size.height / 2),
+      Offset(size.width, size.height / 2),
+      paint,
+    );
 
-    // Top penalty area
+    // Penalty boxes
+    final penaltyBoxWidth = size.width * 0.6;
+    final penaltyBoxHeight = size.height * 0.18;
+
+    // Top penalty box
     canvas.drawRect(
       Rect.fromLTWH(
-        (size.width - penaltyWidth) / 2,
+        (size.width - penaltyBoxWidth) / 2,
         0,
-        penaltyWidth,
-        penaltyHeight,
+        penaltyBoxWidth,
+        penaltyBoxHeight,
       ),
       paint,
     );
 
-    // Bottom penalty area
+    // Bottom penalty box
     canvas.drawRect(
       Rect.fromLTWH(
-        (size.width - penaltyWidth) / 2,
-        size.height - penaltyHeight,
-        penaltyWidth,
-        penaltyHeight,
+        (size.width - penaltyBoxWidth) / 2,
+        size.height - penaltyBoxHeight,
+        penaltyBoxWidth,
+        penaltyBoxHeight,
       ),
       paint,
     );

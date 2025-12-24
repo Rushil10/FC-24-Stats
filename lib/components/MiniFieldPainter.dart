@@ -5,21 +5,21 @@ class MiniFieldPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.white.withOpacity(0.3)
+      ..color = Colors.white.withOpacity(0.2)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 0.5;
 
-    // Draw center line
+    // Center line
     canvas.drawLine(
-      Offset(size.width / 2, 0),
-      Offset(size.width / 2, size.height),
+      Offset(0, size.height / 2),
+      Offset(size.width, size.height / 2),
       paint,
     );
 
-    // Draw center circle
+    // Center circle (small)
     canvas.drawCircle(
       Offset(size.width / 2, size.height / 2),
-      size.width * 0.15,
+      size.width * 0.12,
       paint,
     );
   }
