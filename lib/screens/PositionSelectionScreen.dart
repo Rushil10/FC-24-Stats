@@ -66,7 +66,7 @@ class PositionSelectionScreen extends ConsumerWidget {
             ),
           ),
           Expanded(
-            child: SingleChildScrollView(
+            child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: TacticalFieldSelector(
                 selectedPositions: currentPositions,
@@ -96,7 +96,7 @@ class PositionSelectionScreen extends ConsumerWidget {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: appColors.posColor,
                   foregroundColor: Colors.black,
-                  padding: const EdgeInsets.symmetric(vertical: 18),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16)),
                   elevation: 0,
