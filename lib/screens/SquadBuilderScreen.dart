@@ -32,7 +32,7 @@ class _SquadBuilderScreenState extends State<SquadBuilderScreen> {
   Formation _currentFormation = FormationData.formations[0];
   Map<int, Player> _selectedPlayers = {}; // position index -> Player
   bool _isLoading = false;
-  bool _showStats = true;
+  bool _showStats = false;
   String _squadName = 'My Squad';
   int? _squadId; // Track the squad ID after first save
   bool _hasUnsavedChanges = false; // Track if auto-save has occurred
@@ -427,200 +427,225 @@ class _SquadBuilderScreenState extends State<SquadBuilderScreen> {
                 child: CircularProgressIndicator(color: appColors.posColor))
             : Column(
                 children: [
-                  // Compact Professional Stats Panel
-                  Container(
-                    margin: const EdgeInsets.fromLTRB(12, 4, 12, 8),
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: appColors.posColor.withOpacity(0.3),
-                        width: 1.5,
-                      ),
-                      borderRadius: BorderRadius.circular(12),
-                      color: Colors.transparent,
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          // Header - Always visible
-                          InkWell(
-                            onTap: () =>
-                                setState(() => _showStats = !_showStats),
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 12, vertical: 8),
-                              decoration: BoxDecoration(
-                                color: appColors.surfaceColor.withOpacity(0.5),
-                              ),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    _currentFormation.name,
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  Icon(
-                                    _showStats
-                                        ? Icons.keyboard_arrow_up
-                                        : Icons.keyboard_arrow_down,
-                                    color: appColors.posColor,
-                                    size: 18,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          // Animated Stats Content
-                          AnimatedSize(
-                            duration: const Duration(milliseconds: 200),
-                            curve: Curves.easeInOut,
-                            child: _showStats
-                                ? Container(
-                                    padding: const EdgeInsets.all(10),
-                                    decoration: const BoxDecoration(
-                                      color: Colors.transparent,
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        // Left Column - Overall & Potential
-                                        Expanded(
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceEvenly,
-                                            children: [
-                                              _buildMiniStatCircle(
-                                                'OVR',
-                                                stats['avgOverall'].toString(),
-                                                appColors.ovrColor,
-                                              ),
-                                              _buildMiniStatCircle(
-                                                'POT',
-                                                stats['avgPotential']
-                                                    .toString(),
-                                                appColors.clubNameColor,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        // Vertical Divider
-                                        Container(
-                                          width: 1,
-                                          height: 50,
-                                          color: Colors.grey[800],
-                                          margin: const EdgeInsets.symmetric(
-                                              horizontal: 8),
-                                        ),
-                                        // Right Column - Value/Wage & Ages
-                                        Expanded(
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              // Row 1: Value & Wage
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceEvenly,
-                                                children: [
-                                                  _buildTinyStatItem(
-                                                    'VALUE',
-                                                    _formatCurrency(
-                                                        stats['totalValue']),
-                                                  ),
-                                                  _buildTinyStatItem(
-                                                    'WAGE',
-                                                    _formatCurrency(
-                                                        stats['totalWage']),
-                                                  ),
-                                                ],
-                                              ),
-                                              const SizedBox(height: 6),
-                                              // Row 2: Ages & Players
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceEvenly,
-                                                children: [
-                                                  _buildTinyStatItem(
-                                                    'AVG AGE',
-                                                    '${stats['avgAge']}',
-                                                  ),
-                                                  _buildTinyStatItem(
-                                                    'PLAYERS',
-                                                    '${stats['playerCount']}/11',
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  )
-                                : const SizedBox.shrink(),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                  const SizedBox(height: 12),
                   // Football Field
                   Expanded(
-                    child: RepaintBoundary(
-                      key: _fieldKey,
-                      child: Container(
-                        color: scaffoldColor,
-                        child: FootballField(
-                          formation: _currentFormation,
-                          selectedPlayers: _selectedPlayers,
-                          onPositionTap: _selectPlayer,
-                          onPlayerLongPress: _removePlayer,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      child: RepaintBoundary(
+                        key: _fieldKey,
+                        child: Container(
+                          color: scaffoldColor,
+                          child: FootballField(
+                            formation: _currentFormation,
+                            selectedPlayers: _selectedPlayers,
+                            onPositionTap: _selectPlayer,
+                            onPlayerLongPress: _removePlayer,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                  // Formation Button with SafeArea
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: appColors.surfaceColor,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.3),
-                          blurRadius: 10,
-                          offset: const Offset(0, -2),
+                  const SizedBox(height: 12),
+                  // Formation Box | Stats Box (in same row at bottom)
+                  SafeArea(
+                    top: false,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // Row with Formation and Stats buttons
+                        Row(
+                          children: [
+                            // Formation Selector Box
+                            Expanded(
+                              child: InkWell(
+                                onTap: _showFormationPicker,
+                                child: Container(
+                                  margin:
+                                      const EdgeInsets.fromLTRB(12, 0, 6, 0),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 12, vertical: 10),
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color:
+                                          appColors.posColor.withOpacity(0.3),
+                                      width: 1.5,
+                                    ),
+                                    borderRadius: BorderRadius.circular(12),
+                                    color:
+                                        appColors.surfaceColor.withOpacity(0.5),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Icon(
+                                        Icons.grid_view,
+                                        color: Colors.white,
+                                        size: 16,
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Expanded(
+                                        child: Text(
+                                          _currentFormation.name,
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                      Icon(
+                                        Icons.chevron_right,
+                                        color: appColors.posColor,
+                                        size: 16,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            // Stats Toggle Button
+                            Expanded(
+                              child: InkWell(
+                                onTap: () =>
+                                    setState(() => _showStats = !_showStats),
+                                child: Container(
+                                  margin:
+                                      const EdgeInsets.fromLTRB(6, 0, 12, 0),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 12, vertical: 10),
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color:
+                                          appColors.posColor.withOpacity(0.3),
+                                      width: 1.5,
+                                    ),
+                                    borderRadius: BorderRadius.circular(12),
+                                    color:
+                                        appColors.surfaceColor.withOpacity(0.5),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Text(
+                                        'Stats',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Icon(
+                                        _showStats
+                                            ? Icons.keyboard_arrow_down
+                                            : Icons.keyboard_arrow_up,
+                                        color: appColors.posColor,
+                                        size: 16,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        // Expanded Stats Panel (full width, appears below)
+                        AnimatedSize(
+                          duration: const Duration(milliseconds: 200),
+                          curve: Curves.easeInOut,
+                          child: _showStats
+                              ? Container(
+                                  margin:
+                                      const EdgeInsets.fromLTRB(12, 8, 12, 8),
+                                  padding: const EdgeInsets.all(12),
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color:
+                                          appColors.posColor.withOpacity(0.3),
+                                      width: 1.5,
+                                    ),
+                                    borderRadius: BorderRadius.circular(12),
+                                    color:
+                                        appColors.surfaceColor.withOpacity(0.5),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      // Left Column - Overall & Potential
+                                      Expanded(
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            _buildMiniStatCircle(
+                                              'OVR',
+                                              stats['avgOverall'].toString(),
+                                              appColors.ovrColor,
+                                            ),
+                                            _buildMiniStatCircle(
+                                              'POT',
+                                              stats['avgPotential'].toString(),
+                                              appColors.clubNameColor,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      // Vertical Divider
+                                      Container(
+                                        width: 1,
+                                        height: 50,
+                                        color: Colors.grey[800],
+                                        margin: const EdgeInsets.symmetric(
+                                            horizontal: 8),
+                                      ),
+                                      // Right Column - Value/Wage & Ages
+                                      Expanded(
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            // Row 1: Value & Wage
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                _buildTinyStatItem(
+                                                  'VALUE',
+                                                  _formatCurrency(
+                                                      stats['totalValue']),
+                                                ),
+                                                _buildTinyStatItem(
+                                                  'WAGE',
+                                                  _formatCurrency(
+                                                      stats['totalWage']),
+                                                ),
+                                              ],
+                                            ),
+                                            const SizedBox(height: 6),
+                                            // Row 2: Ages & Players
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                _buildTinyStatItem(
+                                                  'AVG AGE',
+                                                  '${stats['avgAge']}',
+                                                ),
+                                                _buildTinyStatItem(
+                                                  'PLAYERS',
+                                                  '${stats['playerCount']}/11',
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              : const SizedBox.shrink(),
                         ),
                       ],
-                    ),
-                    child: SafeArea(
-                      top: false,
-                      child: SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton.icon(
-                          onPressed: _showFormationPicker,
-                          icon:
-                              const Icon(Icons.grid_view, color: Colors.black),
-                          label: Text(
-                            _currentFormation.name,
-                            style: const TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                          ),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: appColors.posColor,
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                        ),
-                      ),
                     ),
                   ),
                 ],

@@ -47,6 +47,17 @@ class FieldPainter extends CustomPainter {
       ),
       paint,
     );
+
+    // Field border
+    final borderPaint = Paint()
+      ..color = Colors.white.withOpacity(0.3)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2;
+
+    canvas.drawRect(
+      Rect.fromLTWH(0, 0, size.width, size.height),
+      borderPaint,
+    );
   }
 
   @override
