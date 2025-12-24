@@ -245,6 +245,104 @@ class SearchFilters {
     );
   }
 
+  bool get isGameAttributesSelected {
+    return heightRange.start != 120 ||
+        heightRange.end != 220 ||
+        weightRange.start != 40 ||
+        weightRange.end != 110 ||
+        skillMovesRange.start != 1 ||
+        skillMovesRange.end != 5 ||
+        weakFootRange.start != 1 ||
+        weakFootRange.end != 5 ||
+        internationalReputationRange.start != 1 ||
+        internationalReputationRange.end != 5;
+  }
+
+  bool get isSkillsSelected {
+    return paceRange.start != 0 ||
+        paceRange.end != 99 ||
+        shootingRange.start != 0 ||
+        shootingRange.end != 99 ||
+        passingRange.start != 0 ||
+        passingRange.end != 99 ||
+        dribblingRange.start != 0 ||
+        dribblingRange.end != 99 ||
+        defendingRange.start != 0 ||
+        defendingRange.end != 99 ||
+        physicalRange.start != 0 ||
+        physicalRange.end != 99 ||
+        accelerationRange.start != 0 ||
+        accelerationRange.end != 99 ||
+        sprintSpeedRange.start != 0 ||
+        sprintSpeedRange.end != 99 ||
+        positioningRange.start != 0 ||
+        positioningRange.end != 99 ||
+        finishingRange.start != 0 ||
+        finishingRange.end != 99 ||
+        shotPowerRange.start != 0 ||
+        shotPowerRange.end != 99 ||
+        longShotsRange.start != 0 ||
+        longShotsRange.end != 99 ||
+        volleysRange.start != 0 ||
+        volleysRange.end != 99 ||
+        penaltiesRange.start != 0 ||
+        penaltiesRange.end != 99 ||
+        visionRange.start != 0 ||
+        visionRange.end != 99 ||
+        crossingRange.start != 0 ||
+        crossingRange.end != 99 ||
+        fkAccuracyRange.start != 0 ||
+        fkAccuracyRange.end != 99 ||
+        shortPassingRange.start != 0 ||
+        shortPassingRange.end != 99 ||
+        longPassingRange.start != 0 ||
+        longPassingRange.end != 99 ||
+        curveRange.start != 0 ||
+        curveRange.end != 99 ||
+        agilityRange.start != 0 ||
+        agilityRange.end != 99 ||
+        balanceRange.start != 0 ||
+        balanceRange.end != 99 ||
+        reactionsRange.start != 0 ||
+        reactionsRange.end != 99 ||
+        ballControlRange.start != 0 ||
+        ballControlRange.end != 99 ||
+        dribblingSkillRange.start != 0 ||
+        dribblingSkillRange.end != 99 ||
+        composureRange.start != 0 ||
+        composureRange.end != 99 ||
+        interceptionsRange.start != 0 ||
+        interceptionsRange.end != 99 ||
+        headingAccuracyRange.start != 0 ||
+        headingAccuracyRange.end != 99 ||
+        markingRange.start != 0 ||
+        markingRange.end != 99 ||
+        standingTackleRange.start != 0 ||
+        standingTackleRange.end != 99 ||
+        slidingTackleRange.start != 0 ||
+        slidingTackleRange.end != 99 ||
+        jumpingRange.start != 0 ||
+        jumpingRange.end != 99 ||
+        staminaRange.start != 0 ||
+        staminaRange.end != 99 ||
+        strengthRange.start != 0 ||
+        strengthRange.end != 99 ||
+        aggressionRange.start != 0 ||
+        aggressionRange.end != 99 ||
+        gkDivingRange.start != 0 ||
+        gkDivingRange.end != 99 ||
+        gkHandlingRange.start != 0 ||
+        gkHandlingRange.end != 99 ||
+        gkKickingRange.start != 0 ||
+        gkKickingRange.end != 99 ||
+        gkReflexesRange.start != 0 ||
+        gkReflexesRange.end != 99 ||
+        gkSpeedRange.start != 0 ||
+        gkSpeedRange.end != 99 ||
+        gkPositioningRange.start != 0 ||
+        gkPositioningRange.end != 99;
+  }
+
   void reset() {}
 }
 

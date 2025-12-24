@@ -274,13 +274,14 @@ class _SearchScreenState extends ConsumerState<SearchScreen>
                       FilterGridButton(
                         label: "Game Attributes",
                         icon: Icons.settings_applications,
-                        value: "Modify",
+                        value:
+                            filters.isGameAttributesSelected ? "Active" : "Any",
                         onTap: _openGameAttributesSelector,
                       ),
                       FilterGridButton(
                         label: "Skills",
                         icon: Icons.bar_chart,
-                        value: "Set Constraints",
+                        value: filters.isSkillsSelected ? "Active" : "Any",
                         onTap: _openSkillsSelector,
                       ),
                     ],
