@@ -1,1 +1,1 @@
-const bool showAds = false;
+const bool showAds = true;

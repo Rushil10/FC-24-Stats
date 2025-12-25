@@ -3,7 +3,6 @@ import 'package:fc_stats_24/components/playerCard.dart';
 import 'package:fc_stats_24/db/Player.dart';
 import 'package:fc_stats_24/db/players22.dart';
 import 'package:fc_stats_24/theme.dart';
-import 'package:fc_stats_24/ads/BannerAdSmall.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -141,7 +140,6 @@ class _FavouritesState extends ConsumerState<Favourites> {
                               playerData: players[index],
                             );
                           })),
-                  if (showAds) const BannerSmallAd(),
                 ],
               )
             : Center(

@@ -1,4 +1,3 @@
-import 'package:fc_stats_24/ads/BannerAdSmall.dart';
 import 'package:fc_stats_24/db/configureDB.dart';
 import 'package:fc_stats_24/screens/BottomTabs.dart';
 import 'package:fc_stats_24/theme.dart';
@@ -244,8 +243,6 @@ class _SetUpLocalDbState extends State<SetUpLocalDb>
                           ),
                         ],
                       )),
-                      const BannerSmallAd(),
-                      const SizedBox(height: 10),
                     ],
                   ),
                 )

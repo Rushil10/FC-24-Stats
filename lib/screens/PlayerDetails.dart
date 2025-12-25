@@ -1,7 +1,5 @@
 import 'package:fc_stats_24/config_ads.dart';
 import 'package:fc_stats_24/State/VideoAdState.dart';
-
-import 'package:fc_stats_24/ads/BannerAdSmall.dart';
 import 'package:fc_stats_24/ads/ad_helper.dart';
 import 'package:fc_stats_24/components/ClubDetails.dart';
 import 'package:fc_stats_24/ads/MediumNativeAd.dart';
@@ -136,7 +134,6 @@ class _PlayerDetailsState extends ConsumerState<PlayerDetails> {
                           child: Text('Loading Details...'),
                         ),
                       ))),
-        if (showAds) const BannerSmallAd(),
       ]),
     );
   }

@@ -1,3 +1,4 @@
+import 'package:fc_stats_24/ads/BannerAdSmall.dart';
 import 'package:fc_stats_24/config_ads.dart';
 import 'package:flutter/services.dart';
 import 'package:fc_stats_24/screens/SetUpLocalDb.dart';
@@ -26,6 +27,16 @@ class MyApp extends StatelessWidget {
       darkTheme: ThemeClass.darkTheme,
       theme: ThemeClass.lightTheme,
       debugShowCheckedModeBanner: false,
+      builder: (context, child) {
+        return Scaffold(
+          body: Column(
+            children: [
+              Expanded(child: child!),
+              if (showAds) const BannerSmallAd(),
+            ],
+          ),
+        );
+      },
       home: const SetUpLocalDb(),
     );
   }

@@ -1,5 +1,4 @@
 import 'package:fc_stats_24/State/VideoAdState.dart';
-import 'package:fc_stats_24/ads/BannerAdSmall.dart';
 import 'package:fc_stats_24/components/playerCard.dart';
 import 'package:fc_stats_24/db/Player.dart';
 import 'package:fc_stats_24/db/players22.dart';
@@ -154,7 +153,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               playerData: players[index],
                             );
                           })),
-                  const BannerSmallAd(),
                 ],
               )
             : Center(
