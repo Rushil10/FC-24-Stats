@@ -1,4 +1,4 @@
-import 'package:fc_stats_24/State/VideoAdState.dart';
+import 'package:fc_stats_24/config_ads.dart';
 import 'package:fc_stats_24/screens/FavouritesScreen.dart';
 import 'package:fc_stats_24/theme.dart';
 import 'package:flutter/material.dart';
@@ -21,21 +21,21 @@ class GlobalDrawer extends ConsumerWidget {
             decoration: BoxDecoration(
               color: appColors.posColor,
             ),
-            child: const Column(
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Text(
-                  'Player Stats 24',
-                  style: TextStyle(
+                  appTitle,
+                  style: const TextStyle(
                     color: Colors.black,
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 Text(
-                  'FC 24 Database',
-                  style: TextStyle(
+                  'FC $appYear Database',
+                  style: const TextStyle(
                     color: Colors.black54,
                     fontSize: 14,
                   ),
@@ -72,16 +72,13 @@ class GlobalDrawer extends ConsumerWidget {
             leading: const Icon(Icons.star, color: Colors.amber),
             title: const Text('Favourites'),
             onTap: () {
-              final count = ref.read(videoAdProvider);
-              ref.read(videoAdProvider.notifier).increment();
               Navigator.pop(context);
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => Favourites(
+                  builder: (context) => const Favourites(
                     type: "Fav",
                     title: "Favourites",
-                    count: count,
                   ),
                 ),
               );
@@ -91,16 +88,13 @@ class GlobalDrawer extends ConsumerWidget {
             leading: const Icon(Icons.trending_up, color: Colors.green),
             title: const Text('Emerging Players'),
             onTap: () {
-              final count = ref.read(videoAdProvider);
-              ref.read(videoAdProvider.notifier).increment();
               Navigator.pop(context);
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => Favourites(
+                  builder: (context) => const Favourites(
                     type: "Young",
                     title: "Emerging Players",
-                    count: count,
                   ),
                 ),
               );
@@ -110,16 +104,13 @@ class GlobalDrawer extends ConsumerWidget {
             leading: const Icon(Icons.person_search, color: Colors.blue),
             title: const Text('Free Agents'),
             onTap: () {
-              final count = ref.read(videoAdProvider);
-              ref.read(videoAdProvider.notifier).increment();
               Navigator.pop(context);
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => Favourites(
+                  builder: (context) => const Favourites(
                     type: "Free",
                     title: "Free Agents",
-                    count: count,
                   ),
                 ),
               );

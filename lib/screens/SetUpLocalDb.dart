@@ -1,3 +1,4 @@
+import 'package:fc_stats_24/config_ads.dart';
 import 'package:fc_stats_24/db/configureDB.dart';
 import 'package:fc_stats_24/screens/BottomTabs.dart';
 import 'package:fc_stats_24/theme.dart';
@@ -165,7 +166,7 @@ class _SetUpLocalDbState extends State<SetUpLocalDb>
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Text(
-                                    'Player Stats 24',
+                                    appTitle,
                                     style: TextStyle(
                                       color: appColors.posColor,
                                       fontSize: 35,

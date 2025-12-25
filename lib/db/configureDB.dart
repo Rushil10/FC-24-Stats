@@ -1,3 +1,4 @@
+import 'package:fc_stats_24/config_ads.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart';
 import 'package:csv/csv.dart';
@@ -13,7 +14,7 @@ Future<void> readDB() async {
 Future<bool> checkDbExists() async {
   try {
     final dbPath = await getDatabasesPath();
-    final path = join(dbPath, 'players22.db');
+    final path = join(dbPath, 'players$appYear.db');
     final exists = await databaseExists(path);
     return exists;
   } catch (e) {
@@ -105,7 +106,8 @@ String? _parseString(dynamic value) {
 
 Future<void> createListOfFields(int start, Function(int) f) async {
   try {
-    final mydata = await rootBundle.loadString('assets/images/players_24.csv');
+    final mydata =
+        await rootBundle.loadString('assets/images/players_$appYear.csv');
 
     // Parse CSV in a background isolate to avoid freezing the UI
     final con = await compute(_parseCsv, mydata);

@@ -24,7 +24,7 @@ if (flutterVersionName == null) {
 }
 
 android {
-    namespace "com.example.fc_stats_24"
+    namespace "com.rushi.fcstats24"
     compileSdk flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
 
@@ -42,16 +42,61 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.example.fc_stats_24"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-        minSdkVersion flutter.minSdkVersion
+        applicationId "com.rushi.fcstats24"
         minSdkVersion flutter.minSdkVersion
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         multiDexEnabled true
+    }
+
+    flavorDimensions "game", "version"
+
+    productFlavors {
+        fc24 {
+            dimension "game"
+            applicationId "com.rushi.fcstats24"
+            // Add a manifest placeholder so we can use it in Dart too
+            manifestPlaceholders = [gameYear: "24"]
+        }
+
+        fc23 {
+            dimension "game"
+            applicationId "com.rushi.fcstats23" // Different ID for older version
+            manifestPlaceholders = [gameYear: "23"]
+        }
+
+        fc26 {
+            dimension "game"
+            applicationId "com.rushi.fcstats26" // New ID for 2026 version
+            manifestPlaceholders = [gameYear: "26"]
+        }
+
+        free {
+            dimension "version"
+            applicationIdSuffix ".free"
+        }
+
+        pro {
+            dimension "version"
+            applicationIdSuffix ".pro"
+        }
+    }
+
+    // Automatically set the App Name based on which Game and Version is being built
+    applicationVariants.all { variant ->
+        def flavs = variant.productFlavors
+        def gameFlav = flavs[0] // e.g. fc24
+        def versionFlav = flavs[1] // e.g. free
+        
+        def year = gameFlav.name.replaceAll("[^0-9]", "") // extracts '24' from 'fc24'
+        def name = "Player Stats " + year
+        
+        if (versionFlav.name == "pro") {
+            name += " (No Ads)"
+        }
+        
+        variant.resValue "string", "app_name", name
     }
 
     buildTypes {

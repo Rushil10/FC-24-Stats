@@ -6,8 +6,8 @@ buildscript {
     }
 
     dependencies {
-        // Bumped AGP to 8.3.2 to avoid Java 21 + AGP < 8.2.1 bug
-        classpath 'com.android.tools.build:gradle:8.3.2'
+        // Bumped AGP to 8.7.0 to avoid Kotlin metadata issues
+        classpath 'com.android.tools.build:gradle:8.7.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }

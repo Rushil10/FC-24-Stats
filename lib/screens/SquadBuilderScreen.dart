@@ -411,7 +411,7 @@ class _SquadBuilderScreenState extends State<SquadBuilderScreen> {
           elevation: 0,
           actions: [
             IconButton(
-              icon: const Icon(Icons.screenshot_outlined),
+              icon: const Icon(Icons.camera_alt),
               onPressed: _captureAndShareSquad,
               tooltip: 'Share Squad',
             ),
@@ -464,14 +464,14 @@ class _SquadBuilderScreenState extends State<SquadBuilderScreen> {
                                   margin:
                                       const EdgeInsets.fromLTRB(12, 0, 6, 0),
                                   padding: const EdgeInsets.symmetric(
-                                      horizontal: 12, vertical: 10),
+                                      horizontal: 12, vertical: 14),
                                   decoration: BoxDecoration(
                                     border: Border.all(
                                       color:
                                           appColors.posColor.withOpacity(0.3),
-                                      width: 1.5,
+                                      width: 2.0,
                                     ),
-                                    borderRadius: BorderRadius.circular(12),
+                                    borderRadius: BorderRadius.circular(15),
                                     color:
                                         appColors.surfaceColor.withOpacity(0.5),
                                   ),
@@ -482,7 +482,7 @@ class _SquadBuilderScreenState extends State<SquadBuilderScreen> {
                                       const Icon(
                                         Icons.grid_view,
                                         color: Colors.white,
-                                        size: 16,
+                                        size: 18,
                                       ),
                                       const SizedBox(width: 8),
                                       Expanded(
@@ -490,7 +490,7 @@ class _SquadBuilderScreenState extends State<SquadBuilderScreen> {
                                           _currentFormation.name,
                                           style: const TextStyle(
                                             color: Colors.white,
-                                            fontSize: 12,
+                                            fontSize: 14,
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
@@ -498,7 +498,7 @@ class _SquadBuilderScreenState extends State<SquadBuilderScreen> {
                                       Icon(
                                         Icons.chevron_right,
                                         color: appColors.posColor,
-                                        size: 16,
+                                        size: 18,
                                       ),
                                     ],
                                   ),
@@ -514,14 +514,14 @@ class _SquadBuilderScreenState extends State<SquadBuilderScreen> {
                                   margin:
                                       const EdgeInsets.fromLTRB(6, 0, 12, 0),
                                   padding: const EdgeInsets.symmetric(
-                                      horizontal: 12, vertical: 10),
+                                      horizontal: 12, vertical: 14),
                                   decoration: BoxDecoration(
                                     border: Border.all(
                                       color:
                                           appColors.posColor.withOpacity(0.3),
-                                      width: 1.5,
+                                      width: 2.0,
                                     ),
-                                    borderRadius: BorderRadius.circular(12),
+                                    borderRadius: BorderRadius.circular(15),
                                     color:
                                         appColors.surfaceColor.withOpacity(0.5),
                                   ),
@@ -533,7 +533,7 @@ class _SquadBuilderScreenState extends State<SquadBuilderScreen> {
                                         'Stats',
                                         style: TextStyle(
                                           color: Colors.white,
-                                          fontSize: 12,
+                                          fontSize: 14,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
@@ -542,7 +542,7 @@ class _SquadBuilderScreenState extends State<SquadBuilderScreen> {
                                             ? Icons.keyboard_arrow_down
                                             : Icons.keyboard_arrow_up,
                                         color: appColors.posColor,
-                                        size: 16,
+                                        size: 18,
                                       ),
                                     ],
                                   ),
@@ -645,6 +645,8 @@ class _SquadBuilderScreenState extends State<SquadBuilderScreen> {
                                 )
                               : const SizedBox.shrink(),
                         ),
+                        // Space for banner ad
+                        const SizedBox(height: 20),
                       ],
                     ),
                   ),

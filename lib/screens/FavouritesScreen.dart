@@ -1,23 +1,14 @@
-import 'package:fc_stats_24/ads/ad_helper.dart';
 import 'package:fc_stats_24/components/playerCard.dart';
 import 'package:fc_stats_24/db/Player.dart';
 import 'package:fc_stats_24/db/players22.dart';
 import 'package:fc_stats_24/theme.dart';
 import 'package:flutter/material.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:fc_stats_24/State/VideoAdState.dart';
-import 'package:fc_stats_24/config_ads.dart';
 
 class Favourites extends ConsumerStatefulWidget {
   final String type;
   final String title;
-  final int count;
-  const Favourites(
-      {super.key,
-      required this.type,
-      required this.title,
-      required this.count});
+  const Favourites({super.key, required this.type, required this.title});
 
   @override
   ConsumerState<Favourites> createState() => _FavouritesState();
@@ -26,7 +17,6 @@ class Favourites extends ConsumerStatefulWidget {
 class _FavouritesState extends ConsumerState<Favourites> {
   bool loading = true;
   List<Player> players = [];
-  InterstitialAd? _interstitialAd;
 
   @override
   void initState() {
@@ -40,24 +30,6 @@ class _FavouritesState extends ConsumerState<Favourites> {
     if (widget.type == "Free") {
       getAllFreePlayers();
     }
-    if (showAds && widget.count % 5 == 0) {
-      addInterstitialAd();
-    }
-  }
-
-  void addInterstitialAd() async {
-    InterstitialAd.load(
-        adUnitId: AdHelper.videoAdUnitId,
-        request: const AdRequest(),
-        adLoadCallback: InterstitialAdLoadCallback(
-          onAdLoaded: (InterstitialAd ad) {
-            _interstitialAd = ad;
-            _interstitialAd!.setImmersiveMode(true);
-            _interstitialAd!.show();
-            ref.read(videoAdProvider.notifier).increment();
-          },
-          onAdFailedToLoad: (LoadAdError error) {},
-        ));
   }
 
   void getFavouritePlayers() async {

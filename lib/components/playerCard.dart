@@ -3,7 +3,6 @@ import 'package:fc_stats_24/components/OverallRating.dart';
 import 'package:fc_stats_24/components/PotentialRating.dart';
 import 'package:fc_stats_24/db/Player.dart';
 import 'package:fc_stats_24/layout.dart';
-import 'package:fc_stats_24/State/VideoAdState.dart';
 import 'package:fc_stats_24/screens/PlayerDetails.dart';
 import 'package:fc_stats_24/theme.dart';
 import 'package:flutter/foundation.dart';
@@ -21,14 +20,13 @@ class PlayerCard extends ConsumerStatefulWidget {
 }
 
 class _PlayerCardState extends ConsumerState<PlayerCard> {
-  void onTapPlayer(int count) {
+  void onTapPlayer() {
     if (kDebugMode) {
       print("${widget.playerData.shortName} card tapped");
     }
     Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => PlayerDetails(
               player: widget.playerData,
-              count: count,
             )));
   }
 
@@ -43,8 +41,7 @@ class _PlayerCardState extends ConsumerState<PlayerCard> {
         if (widget.onTap != null) {
           widget.onTap!();
         } else {
-          final count = ref.read(videoAdProvider);
-          onTapPlayer(count);
+          onTapPlayer();
         }
       },
       child: Padding(

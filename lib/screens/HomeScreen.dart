@@ -1,7 +1,7 @@
-import 'package:fc_stats_24/State/VideoAdState.dart';
 import 'package:fc_stats_24/components/playerCard.dart';
 import 'package:fc_stats_24/db/Player.dart';
 import 'package:fc_stats_24/db/players22.dart';
+import 'package:fc_stats_24/config_ads.dart';
 import 'package:fc_stats_24/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -29,7 +29,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    ref.read(videoAdProvider);
     getTop100PlayerData();
   }
 
@@ -52,7 +51,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     return Scaffold(
         appBar: AppBar(
-          title: const Text("Player Stats 24"),
+          title: const Text(appTitle),
           leading: IconButton(
             icon: const Icon(Icons.menu),
             onPressed: widget.onOpenDrawer,

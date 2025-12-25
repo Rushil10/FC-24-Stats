@@ -1,3 +1,4 @@
+import 'package:fc_stats_24/config_ads.dart';
 import 'package:fc_stats_24/db/Player.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
@@ -14,7 +15,7 @@ class PlayersDatabase {
       return _database!;
     }
 
-    _database = await _initDB('players22.db');
+    _database = await _initDB('players$appYear.db');
     return _database!;
   }
 
@@ -31,7 +32,7 @@ class PlayersDatabase {
       }
 
       final dbPath = await getDatabasesPath();
-      final path = join(dbPath, 'players22.db');
+      final path = join(dbPath, 'players$appYear.db');
 
       if (await databaseExists(path)) {
         await deleteDatabase(path);
@@ -78,7 +79,7 @@ class PlayersDatabase {
 
   Future<bool> checkDbExists() async {
     final dbPath = await getDatabasesPath();
-    final path = join(dbPath, 'players22.db');
+    final path = join(dbPath, 'players$appYear.db');
     return await databaseExists(path);
   }
 

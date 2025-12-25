@@ -1,5 +1,7 @@
+import 'package:fc_stats_24/config_ads.dart';
 import 'package:fc_stats_24/db/Squad.dart';
 import 'package:fc_stats_24/db/Player.dart';
+import 'package:fc_stats_24/db/players22.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -11,7 +13,7 @@ class SquadsDatabase {
 
   Future<Database> get database async {
     if (_database != null) return _database!;
-    _database = await _initDB('squads.db');
+    _database = await _initDB('squads$appYear.db');
     return _database!;
   }
 
@@ -157,9 +159,7 @@ class SquadsDatabase {
     if (playerIds.isEmpty) return {};
 
     // Query players from the players database
-    final playersDb = await openDatabase(
-      join(await getDatabasesPath(), 'players22.db'),
-    );
+    final playersDb = await PlayersDatabase.instance.database;
 
     final placeholders = List.filled(playerIds.length, '?').join(',');
     final result = await playersDb.query(

@@ -10,7 +10,6 @@ import 'package:fc_stats_24/screens/GameAttributesSelectionScreen.dart';
 import 'package:fc_stats_24/theme.dart';
 import 'package:fc_stats_24/providers/search_provider.dart';
 import 'package:fc_stats_24/screens/PlayerDetails.dart';
-import 'package:fc_stats_24/State/VideoAdState.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -415,16 +414,11 @@ class _SearchScreenState extends ConsumerState<SearchScreen>
                                               color: appColors.posColor,
                                               fontSize: 14)),
                                       onTap: () {
-                                        final count = ref.read(videoAdProvider);
-                                        ref
-                                            .read(videoAdProvider.notifier)
-                                            .increment();
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) => PlayerDetails(
                                               player: p,
-                                              count: count,
                                             ),
                                           ),
                                         );
