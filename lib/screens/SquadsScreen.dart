@@ -177,17 +177,21 @@ class _SquadsScreenState extends State<SquadsScreen> {
                         FormationData.getFormation(squad.formationId);
                     final stats = _squadStats[squad.id] ?? {};
 
-                    return Card(
-                      color: Theme.of(context).colorScheme.surface,
-                      margin: const EdgeInsets.only(bottom: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
+                    return Container(
+                      margin: const EdgeInsets.only(bottom: 12),
+                      decoration: BoxDecoration(
+                        color: appColors.surfaceColor.withOpacity(0.3),
+                        border: Border.all(
+                          color: appColors.posColor.withOpacity(0.3),
+                          width: 1.5,
+                        ),
+                        borderRadius: BorderRadius.circular(12),
                       ),
                       child: InkWell(
                         onTap: () => _navigateToBuilder(squad: squad),
-                        borderRadius: BorderRadius.circular(16),
+                        borderRadius: BorderRadius.circular(12),
                         child: Padding(
-                          padding: const EdgeInsets.all(16),
+                          padding: const EdgeInsets.all(12),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -201,65 +205,123 @@ class _SquadsScreenState extends State<SquadsScreen> {
                                       squad.name,
                                       style: const TextStyle(
                                         color: Colors.white,
-                                        fontSize: 20,
+                                        fontSize: 16,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                   ),
                                   IconButton(
                                     icon: const Icon(Icons.delete_outline,
-                                        color: Colors.red),
+                                        color: Colors.red, size: 20),
+                                    padding: EdgeInsets.zero,
+                                    constraints: const BoxConstraints(),
                                     onPressed: () => _confirmDelete(squad),
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 4),
                               // Formation
                               Text(
                                 formation.name,
                                 style: TextStyle(
                                   color: appColors.posColor,
-                                  fontSize: 14,
+                                  fontSize: 12,
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
-                              const SizedBox(height: 16),
+                              const SizedBox(height: 10),
                               // Divider
-                              Divider(color: Colors.grey[800], height: 1),
-                              const SizedBox(height: 16),
-                              // Stats row with circles and values
+                              Container(
+                                height: 1,
+                                color: appColors.posColor.withOpacity(0.2),
+                              ),
+                              const SizedBox(height: 10),
+                              // Stats row - more compact
                               Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
                                 children: [
-                                  _buildStatCircle(
-                                    stats['avgOverall']?.toString() ?? '0',
-                                    appColors.ovrColor, // Purple
+                                  // OVR
+                                  Expanded(
+                                    child: Column(
+                                      children: [
+                                        _buildStatCircle(
+                                          stats['avgOverall']?.toString() ??
+                                              '0',
+                                          appColors.ovrColor,
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          'OVR',
+                                          style: TextStyle(
+                                            color: appColors.ovrColor,
+                                            fontSize: 10,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                  _buildStatCircle(
-                                    stats['avgPotential']?.toString() ?? '0',
-                                    appColors.clubNameColor, // Cyan
+                                  // POT
+                                  Expanded(
+                                    child: Column(
+                                      children: [
+                                        _buildStatCircle(
+                                          stats['avgPotential']?.toString() ??
+                                              '0',
+                                          appColors.clubNameColor,
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          'POT',
+                                          style: TextStyle(
+                                            color: appColors.clubNameColor,
+                                            fontSize: 10,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                  _buildStatValue(
-                                    _formatCurrency(stats['totalValue'] ?? 0.0),
-                                    'VALUE',
+                                  // Vertical separator
+                                  Container(
+                                    width: 1,
+                                    height: 50,
+                                    color: appColors.posColor.withOpacity(0.2),
+                                    margin: const EdgeInsets.symmetric(
+                                        horizontal: 8),
                                   ),
-                                  _buildStatValue(
-                                    _formatCurrency(stats['totalWage'] ?? 0.0),
-                                    'WAGE',
+                                  // VALUE & WAGE
+                                  Expanded(
+                                    flex: 2,
+                                    child: Column(
+                                      children: [
+                                        _buildStatValue(
+                                          _formatCurrency(
+                                              stats['totalValue'] ?? 0.0),
+                                          'VALUE',
+                                        ),
+                                        const SizedBox(height: 6),
+                                        _buildStatValue(
+                                          _formatCurrency(
+                                              stats['totalWage'] ?? 0.0),
+                                          'WAGE',
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 16),
+                              const SizedBox(height: 10),
                               // Divider
-                              Divider(color: Colors.grey[800], height: 1),
-                              const SizedBox(height: 12),
+                              Container(
+                                height: 1,
+                                color: appColors.posColor.withOpacity(0.2),
+                              ),
+                              const SizedBox(height: 8),
                               // Created date
                               Text(
                                 'Created on ${_formatDate(squad.createdAt)}',
-                                style: const TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 12,
+                                style: TextStyle(
+                                  color: Colors.grey[600],
+                                  fontSize: 11,
                                 ),
                               ),
                             ],
