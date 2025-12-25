@@ -10,27 +10,42 @@ class StatCircle extends StatelessWidget {
     super.key,
     required this.value,
     required this.color,
-    this.size = 55,
+    this.size = 50,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    // Parse the value to calculate progress (0-99 scale)
+    final numValue = int.tryParse(value) ?? 0;
+    final progress = (numValue / 99).clamp(0.0, 1.0);
+
+    return SizedBox(
       width: size,
       height: size,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(color: color, width: 2.5),
-      ),
-      child: Center(
-        child: Text(
-          value,
-          style: TextStyle(
-            color: color,
-            fontSize: size * 0.33, // Proportional to size
-            fontWeight: FontWeight.bold,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          // Circular progress indicator
+          SizedBox(
+            width: size,
+            height: size,
+            child: CircularProgressIndicator(
+              value: progress,
+              strokeWidth: 3.5,
+              backgroundColor: color.withOpacity(0.2),
+              valueColor: AlwaysStoppedAnimation<Color>(color),
+            ),
           ),
-        ),
+          // Value text in center
+          Text(
+            value,
+            style: TextStyle(
+              color: color,
+              fontSize: size * 0.36, // Increased for better visibility
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -51,25 +66,40 @@ class MiniStatCircle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Parse the value to calculate progress (0-99 scale)
+    final numValue = int.tryParse(value) ?? 0;
+    final progress = (numValue / 99).clamp(0.0, 1.0);
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Container(
-          width: 42,
-          height: 42,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(color: color, width: 2),
-          ),
-          child: Center(
-            child: Text(
-              value,
-              style: TextStyle(
-                color: color,
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
+        SizedBox(
+          width: 38,
+          height: 38,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              // Circular progress indicator
+              SizedBox(
+                width: 38,
+                height: 38,
+                child: CircularProgressIndicator(
+                  value: progress,
+                  strokeWidth: 3,
+                  backgroundColor: color.withOpacity(0.2),
+                  valueColor: AlwaysStoppedAnimation<Color>(color),
+                ),
               ),
-            ),
+              // Value text in center
+              Text(
+                value,
+                style: TextStyle(
+                  color: color,
+                  fontSize: 13,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
           ),
         ),
         const SizedBox(height: 4),
@@ -107,7 +137,7 @@ class StatValue extends StatelessWidget {
           value,
           style: const TextStyle(
             color: Colors.white,
-            fontSize: 16,
+            fontSize: 14,
             fontWeight: FontWeight.bold,
           ),
         ),
