@@ -134,7 +134,7 @@ class _SetUpLocalDbState extends State<SetUpLocalDb>
       body: Container(
           decoration: const BoxDecoration(
             image: DecorationImage(
-              image: AssetImage("assets/images/image.png"),
+              image: AssetImage("assets/common/image.png"),
               fit: BoxFit.cover,
             ),
           ),

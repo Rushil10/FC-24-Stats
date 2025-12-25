@@ -107,7 +107,7 @@ String? _parseString(dynamic value) {
 Future<void> createListOfFields(int start, Function(int) f) async {
   try {
     final mydata =
-        await rootBundle.loadString('assets/images/players_$appYear.csv');
+        await rootBundle.loadString('assets/data/fc$appYear/players.csv');
 
     // Parse CSV in a background isolate to avoid freezing the UI
     final con = await compute(_parseCsv, mydata);

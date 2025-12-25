@@ -125,13 +125,13 @@ class _PlayerCardState extends ConsumerState<PlayerCard> {
                   if (loadingProgress == null) {
                     return child;
                   } else {
-                    return Image.asset('assets/images/player_icon.webp',
+                    return Image.asset('assets/common/player_icon.webp',
                         fit: BoxFit.contain);
                   }
                 },
                 errorBuilder: (BuildContext context, Object error,
                     StackTrace? stackTrace) {
-                  return Image.asset('assets/images/player_icon.webp',
+                  return Image.asset('assets/common/player_icon.webp',
                       fit: BoxFit.contain);
                 },
               ),

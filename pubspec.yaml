@@ -55,7 +55,7 @@ dependencies:
 flutter_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "assets/images/icon.png"
+  image_path: "assets/common/icon.png"
 
 dev_dependencies:
   flutter_test:
@@ -74,7 +74,15 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
   assets:
-    - assets/images/
+    # Shared assets (images, icons)
+    - assets/common/
+    # Flavor-specific data folders (for development - flutter run picks based on YEAR)
+    # For PRODUCTION builds, use build_flavor.ps1 which copies only the needed CSV
+    - assets/data/fc23/
+    - assets/data/fc24/
+    - assets/data/fc26/
+    # Alternative: Use assets/data/current/ for builds (created by build_flavor.ps1)
+    # - assets/data/current/
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

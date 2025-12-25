@@ -56,12 +56,12 @@ class ClubDetails extends StatelessWidget {
                   loadingBuilder: (BuildContext context, Widget child,
                       ImageChunkEvent? loadingProgress) {
                     if (loadingProgress == null) return child;
-                    return Image.asset('assets/images/icon.png',
+                    return Image.asset('assets/common/icon.png',
                         fit: BoxFit.fitWidth);
                   },
                   errorBuilder: (BuildContext context, Object error,
                       StackTrace? stackTrace) {
-                    return Image.asset('assets/images/icon.png',
+                    return Image.asset('assets/common/icon.png',
                         fit: BoxFit.fitWidth);
                   },
                 ),

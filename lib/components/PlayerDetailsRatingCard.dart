@@ -105,13 +105,13 @@ class PlayerDetailsRatingCard extends StatelessWidget {
                               return child;
                             } else {
                               return Image.asset(
-                                  'assets/images/player_icon.webp',
+                                  'assets/common/player_icon.webp',
                                   fit: BoxFit.fitWidth);
                             }
                           },
                           errorBuilder: (BuildContext context, Object error,
                               StackTrace? stackTrace) {
-                            return Image.asset('assets/images/player_icon.webp',
+                            return Image.asset('assets/common/player_icon.webp',
                                 fit: BoxFit.fitWidth);
                           },
                         ),
@@ -188,12 +188,12 @@ class PlayerDetailsRatingCard extends StatelessWidget {
                       loadingBuilder: (BuildContext context, Widget child,
                           ImageChunkEvent? loadingProgress) {
                         if (loadingProgress == null) return child;
-                        return Image.asset('assets/images/icon.png',
+                        return Image.asset('assets/common/icon.png',
                             fit: BoxFit.fitWidth);
                       },
                       errorBuilder: (BuildContext context, Object error,
                           StackTrace? stackTrace) {
-                        return Image.asset('assets/images/icon.png',
+                        return Image.asset('assets/common/icon.png',
                             fit: BoxFit.fitWidth);
                       },
                     ),
