@@ -1,5 +1,6 @@
 import 'package:fc_stats_24/config_ads.dart';
 import 'package:fc_stats_24/State/VideoAdState.dart';
+import 'package:fc_stats_24/providers/favorites_provider.dart';
 import 'package:fc_stats_24/ads/ad_helper.dart';
 import 'package:fc_stats_24/components/ClubDetails.dart';
 import 'package:fc_stats_24/ads/MediumNativeAd.dart';
@@ -25,8 +26,6 @@ class _PlayerDetailsState extends ConsumerState<PlayerDetails> {
   bool loading = true;
   Player? playerDetails;
   InterstitialAd? _interstitialAd;
-  bool fav = false;
-
   @override
   void initState() {
     super.initState();
@@ -35,7 +34,6 @@ class _PlayerDetailsState extends ConsumerState<PlayerDetails> {
       addInterstitialAd();
     }
     getPlayerData();
-    checkIfFav();
   }
 
   void addInterstitialAd() async {
@@ -73,24 +71,15 @@ class _PlayerDetailsState extends ConsumerState<PlayerDetails> {
     });
   }
 
-  void checkIfFav() async {
-    if (widget.player.id == null) return;
-    bool f = await PlayersDatabase.instance.checkFav(widget.player.id!);
-    setState(() {
-      fav = f;
-    });
-  }
-
   void addToFavourites() async {
     if (widget.player.id == null) return;
-    await PlayersDatabase.instance.searchFavourites(widget.player.id!);
-    setState(() {
-      fav = !fav;
-    });
+    ref.read(favoritesProvider.notifier).toggleFavorite(widget.player.id!);
   }
 
   @override
   Widget build(BuildContext context) {
+    final isFav = ref.watch(favoritesProvider).contains(widget.player.id);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.player.shortName ?? "Player Details"),
@@ -98,7 +87,7 @@ class _PlayerDetailsState extends ConsumerState<PlayerDetails> {
           IconButton(
             icon: Icon(
               Icons.star_border_rounded,
-              color: fav ? Colors.amber : Colors.white,
+              color: isFav ? Colors.amber : Colors.white,
               size: 32,
             ),
             onPressed: () {

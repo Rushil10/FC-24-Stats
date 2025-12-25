@@ -1,5 +1,5 @@
+import 'package:fc_stats_24/db/players22.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class FavoritesNotifier extends StateNotifier<List<int>> {
   FavoritesNotifier() : super([]) {
@@ -7,26 +7,19 @@ class FavoritesNotifier extends StateNotifier<List<int>> {
   }
 
   Future<void> _loadFavorites() async {
-    final prefs = await SharedPreferences.getInstance();
-    final favorites = prefs.getStringList('favorite_players') ?? [];
-    state = favorites.map((e) => int.parse(e)).toList();
+    final favorites = await PlayersDatabase.instance.getFavourites();
+    state = favorites.map((p) => p.id!).toList();
   }
 
-  Future<void> _saveFavorites() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setStringList(
-      'favorite_players',
-      state.map((e) => e.toString()).toList(),
-    );
-  }
+  Future<void> toggleFavorite(int playerId) async {
+    await PlayersDatabase.instance.searchFavourites(playerId);
 
-  void toggleFavorite(int playerId) {
+    // Update local state to reflect change immediately
     if (state.contains(playerId)) {
       state = state.where((id) => id != playerId).toList();
     } else {
       state = [...state, playerId];
     }
-    _saveFavorites();
   }
 
   bool isFavorite(int playerId) {

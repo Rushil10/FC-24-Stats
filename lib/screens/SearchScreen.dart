@@ -15,7 +15,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class SearchScreen extends ConsumerStatefulWidget {
-  const SearchScreen({super.key});
+  final VoidCallback? onOpenDrawer;
+  final VoidCallback? onSquadsTab;
+  const SearchScreen({
+    super.key,
+    this.onOpenDrawer,
+    this.onSquadsTab,
+  });
 
   @override
   ConsumerState<SearchScreen> createState() => _SearchScreenState();
@@ -147,15 +153,23 @@ class _SearchScreenState extends ConsumerState<SearchScreen>
       backgroundColor: scaffoldColor,
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: const Text("Player Potentials",
-            style: TextStyle(fontWeight: FontWeight.bold)),
+        title:
+            const Text("Search", style: TextStyle(fontWeight: FontWeight.bold)),
         backgroundColor: Colors.transparent,
         elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.menu),
+          onPressed: widget.onOpenDrawer,
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.filter_alt_off),
             onPressed: () => filtersNotifier.reset(),
-          )
+          ),
+          IconButton(
+            icon: const Icon(Icons.groups),
+            onPressed: widget.onSquadsTab,
+          ),
         ],
       ),
       body: Stack(

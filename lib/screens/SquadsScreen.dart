@@ -8,7 +8,14 @@ import 'package:fc_stats_24/utils/SquadHelpers.dart';
 import 'package:flutter/material.dart';
 
 class SquadsScreen extends StatefulWidget {
-  const SquadsScreen({super.key});
+  final VoidCallback? onOpenDrawer;
+  final VoidCallback? onSearchTab;
+
+  const SquadsScreen({
+    super.key,
+    this.onOpenDrawer,
+    this.onSearchTab,
+  });
 
   @override
   State<SquadsScreen> createState() => _SquadsScreenState();
@@ -133,6 +140,16 @@ class _SquadsScreenState extends State<SquadsScreen> {
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.menu),
+          onPressed: widget.onOpenDrawer,
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.search),
+            onPressed: widget.onSearchTab,
+          ),
+        ],
       ),
       body: _isLoading
           ? Center(

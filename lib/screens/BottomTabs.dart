@@ -1,3 +1,4 @@
+import 'package:fc_stats_24/components/GlobalDrawer.dart';
 import 'package:fc_stats_24/screens/HomeScreen.dart';
 import 'package:fc_stats_24/screens/SearchScreen.dart';
 import 'package:fc_stats_24/screens/SquadsScreen.dart';
@@ -13,11 +14,7 @@ class BottomTabs extends StatefulWidget {
 
 class _BottomTabsState extends State<BottomTabs> {
   int _selectedIndex = 0;
-  static const List<Widget> _widgetOptions = <Widget>[
-    HomeScreen(),
-    SearchScreen(),
-    SquadsScreen(),
-  ];
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   void _onItemTapped(int index) {
     setState(() {
@@ -29,8 +26,31 @@ class _BottomTabsState extends State<BottomTabs> {
   Widget build(BuildContext context) {
     final appColors = Theme.of(context).extension<AppColors>()!;
 
+    final List<Widget> _widgetOptions = <Widget>[
+      HomeScreen(
+        onOpenDrawer: () => _scaffoldKey.currentState?.openDrawer(),
+        onSearchTab: () => _onItemTapped(1),
+        onSquadsTab: () => _onItemTapped(2),
+      ),
+      SearchScreen(
+        onOpenDrawer: () => _scaffoldKey.currentState?.openDrawer(),
+        onSquadsTab: () => _onItemTapped(2),
+      ),
+      SquadsScreen(
+        onOpenDrawer: () => _scaffoldKey.currentState?.openDrawer(),
+        onSearchTab: () => _onItemTapped(1),
+      ),
+    ];
+
     return Scaffold(
-      //body: _widgetOptions.elementAt(_selectedIndex),
+      key: _scaffoldKey,
+      drawer: GlobalDrawer(
+        onTabRequested: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
+      ),
       body: IndexedStack(
         index: _selectedIndex,
         children: _widgetOptions,
@@ -41,26 +61,26 @@ class _BottomTabsState extends State<BottomTabs> {
             icon: Icon(
               Icons.sports_soccer_rounded,
             ),
-            label: 'Top 200 Players',
+            label: '',
           ),
           BottomNavigationBarItem(
             icon: Icon(
               Icons.search,
             ),
-            label: 'Search',
+            label: '',
           ),
           BottomNavigationBarItem(
             icon: Icon(
               Icons.groups,
             ),
-            label: 'Squads',
+            label: '',
           ),
         ],
         currentIndex: _selectedIndex,
         selectedItemColor: appColors.posColor,
         backgroundColor: Colors.black,
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
+        showSelectedLabels: true,
+        showUnselectedLabels: true,
         onTap: _onItemTapped,
       ),
     );
